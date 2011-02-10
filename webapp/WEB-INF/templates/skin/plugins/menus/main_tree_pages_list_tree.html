@@ -1,0 +1,17 @@
+<#if menu.childs?has_content>
+	<div id="content">
+		<ul>
+			<#list menu.childs as submenu >
+				<a href="${site_path}?page_id=${submenu.page.id}" target="_top">${submenu.page.name} - ${submenu.page.description}</a></li>
+					<#if submenu.childs?has_content>
+						<ul>
+							<#list submenu.childs as subsubmenu >
+								<li><a href="${site_path}?page_id=${subsubmenu.page.id}" target="_top">${subsubmenu.page.name} - ${subsubmenu.page.description}</a></li> 		
+								
+							</#list>
+						</ul>
+					</#if>
+			</#list>
+		</ul>
+	</div>	
+</#if>
