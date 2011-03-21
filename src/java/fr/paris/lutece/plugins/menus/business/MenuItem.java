@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.menus.business;
 
 import fr.paris.lutece.portal.business.page.Page;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ import java.util.List;
 /**
  * Menu Item
  */
-public class MenuItem
+public class MenuItem implements Serializable
 {
     private PageInfo _page;
     private List<MenuItem> _listItems = new ArrayList<MenuItem>(  );
