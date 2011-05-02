@@ -107,13 +107,14 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
             int nCurrentPageId;
 			
             /* test parameter name: page_id parameter for a PageContentService, current_page_id for a DocumentContentService */
-            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : PARAMETER_CURRENT_PAGE_ID;
+            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : 
+            		PARAMETER_CURRENT_PAGE_ID;
 			
             try
             {
-                nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0
+                nCurrentPageId = ( request.getParameter( strParameterPageId ) == null ) ? 0
                                                                                         : Integer.parseInt( request.getParameter( 
-                            Parameters.PAGE_ID ) );
+                    		strParameterPageId ) );
             }
             catch ( NumberFormatException nfe )
             {
