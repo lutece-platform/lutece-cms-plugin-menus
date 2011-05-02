@@ -66,7 +66,10 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     //Templates
     private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/main_tree_pages_list.html";
     private static final String TEMPLATE_MENU_PAGES_TREE = "skin/plugins/menus/main_tree_pages_list_tree.html";
-
+    
+	// Parameters
+    private final static String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
+	
     // Markers
     private static final String MARK_MENU = "menu";
     private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
@@ -102,7 +105,10 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
         if ( request != null )
         {
             int nCurrentPageId;
-
+			
+            /* test parameter name: page_id parameter for a PageContentService, current_page_id for a DocumentContentService */
+            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : PARAMETER_CURRENT_PAGE_ID;
+			
             try
             {
                 nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0
