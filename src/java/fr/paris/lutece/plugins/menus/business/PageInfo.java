@@ -34,14 +34,17 @@
 
 package fr.paris.lutece.plugins.menus.business;
 
+import java.io.Serializable;
+
 import fr.paris.lutece.portal.business.page.Page;
 
 /**
  * PageInfo
  */
-public class PageInfo 
+public class PageInfo implements Serializable
 {
-    private int _nId;
+	private static final long serialVersionUID = 1L;
+	private int _nId;
     private String _strName;
     private String _strDescription;
 
