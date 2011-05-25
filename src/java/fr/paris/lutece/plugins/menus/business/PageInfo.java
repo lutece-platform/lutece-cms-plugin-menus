@@ -43,7 +43,7 @@ import fr.paris.lutece.portal.business.page.Page;
  */
 public class PageInfo implements Serializable
 {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1106190081472015466L;
 	private int _nId;
     private String _strName;
     private String _strDescription;

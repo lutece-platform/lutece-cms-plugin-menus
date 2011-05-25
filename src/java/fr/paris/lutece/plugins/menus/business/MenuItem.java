@@ -45,7 +45,8 @@ import java.util.List;
  */
 public class MenuItem implements Serializable
 {
-    private PageInfo _page;
+	private static final long serialVersionUID = 2672166049242627079L;
+	private PageInfo _page;
     private List<MenuItem> _listItems = new ArrayList<MenuItem>(  );
 
     /**
