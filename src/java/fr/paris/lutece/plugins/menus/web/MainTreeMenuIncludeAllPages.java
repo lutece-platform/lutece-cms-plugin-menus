@@ -277,7 +277,16 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
 
         int nParentTree = nParentPageId;
 
-        while ( nParentPageId != 1 )
+        int nPageRootId = 1;
+        try
+        {
+        	nPageRootId = Integer.parseInt( AppPropertiesService.getProperty( "lutece.page.root" ) );
+        }
+        catch( Exception e )
+        {
+        	AppLogService.error( "lutece.page.root is not defined" , e );
+        }
+        while ( nParentPageId != nPageRootId )
         {
             nParentTree = nParentPageId;
 
