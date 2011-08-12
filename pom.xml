@@ -33,8 +33,8 @@
 
 	<properties>
 		<componentName>menus</componentName>
-		<jiraProjectName>LUTECE</jiraProjectName>
-		<jiraComponentId>10035</jiraComponentId>
+		<jiraProjectName>MENUS</jiraProjectName>
+		<jiraComponentId>10208</jiraComponentId>
 	</properties>
     <scm>
         <connection>scm:svn:http://dev.lutece.paris.fr/svn/lutece/portal/trunk/plugins/cms/plugin-menus</connection>
