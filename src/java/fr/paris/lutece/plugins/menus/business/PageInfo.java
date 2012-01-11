@@ -47,12 +47,14 @@ public class PageInfo implements Serializable
 	private int _nId;
     private String _strName;
     private String _strDescription;
+    private int _nParentPageId;
 
     PageInfo( Page page )
     {
         _nId = page.getId();
         _strName = page.getName();
         _strDescription = page.getDescription();
+        _nParentPageId = page.getParentPageId();
     }
 
     /**
@@ -101,6 +103,22 @@ public class PageInfo implements Serializable
     public void setDescription( String description )
     {
         _strDescription = description;
+    }
+    
+    /**
+     * @return the id
+     */
+    public int getParentPageId()
+    {
+        return _nParentPageId;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setParentPageId( int nParentPageId )
+    {
+        _nParentPageId = nParentPageId;
     }
 
 }
