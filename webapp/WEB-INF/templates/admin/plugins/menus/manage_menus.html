@@ -1,35 +1,39 @@
-
-<div class="content-box" >
-    <h2>#i18n{menus.manage_menus.tableLabel}</h2>
-
-    <table>
-        <tr>
-            <th width="20%">#i18n{menus.manage_menus.columnName}</th>
-            <th width="20%">#i18n{menus.manage_menus.columnType}</th>
-            <th width="20%">#i18n{menus.manage_menus.IdRootPage}</th>
-            <th width="20%">#i18n{menus.manage_menus.columnMarker}</th>
-            <th width="*">#i18n{menus.manage_menus.columnTitleActions}</th>
-        </tr>
-        
-        <#list menus_list as menus >
-
-        <tr>
-            <td>
-                <a href="" class="bullet-link">${menus.menuName}</a>
-            </td>
-            <td>
-                ${menus.menuType}
-            </td>
-            <td>
-                ${menus.idPageRoot}
-            </td>
-            <td>
-                ${menus.menuMarker}
-            </td>
-            <td>&nbsp;</td>
-        </tr>
-
-        </#list>
-
-    </table>
+<div class="row" >
+	<div class="span12" >
+	<fieldset>
+    <legend>#i18n{menus.manage_menus.tableLabel}</legend>
+		<table class="table table-striped table-condensed">
+		<thead>
+			<tr>
+				<th>#i18n{menus.manage_menus.columnName}</th>
+				<th>#i18n{menus.manage_menus.columnType}</th>
+				<th>#i18n{menus.manage_menus.IdRootPage}</th>
+				<th>#i18n{menus.manage_menus.columnMarker}</th>
+				<th>#i18n{menus.manage_menus.columnTitleActions}</th>
+			</tr>
+		</thead>   
+		<tbody>
+		<#list menus_list as menus >
+		<tr>
+			<td>
+				<a class="btn btn-primary btn-mini" href=""  title="null" >
+					<i class="icon-question-sign icon-white"></i>
+				</a>
+			</td>
+			<td>
+				${menus.menuType}
+			</td>
+			<td>
+				${menus.idPageRoot}
+			</td>
+			<td>
+				${menus.menuMarker}
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		</#list>
+		</tbody>
+		</table>
+	</fieldset>
+	</div>
 </div>
