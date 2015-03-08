@@ -86,7 +86,16 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     private static final String DEFAULT_CACHE_ENABLED = "true";
     private static final String KEY_MAIN = "main";
     private static final String KEY_TREE = "menu";
-    private static boolean _bInit;
+
+    public MainTreeMenuIncludeAllPages( )
+    {
+        String strCacheEnabled = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED_ALLPAGES, DEFAULT_CACHE_ENABLED );
+
+        if ( strCacheEnabled.equalsIgnoreCase( DEFAULT_CACHE_ENABLED ) )
+        {
+            initCache( CACHE_NAME );
+        }
+    }
 
     /**
      * Substitue specific Freemarker markers in the page template.
@@ -97,11 +106,6 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
      */
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
-        if ( !_bInit )
-        {
-            init(  );
-        }
-
         if ( request != null )
         {
             int nCurrentPageId;
@@ -134,22 +138,6 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     public String getName(  )
     {
         return CACHE_NAME;
-    }
-
-    /**
-     * Initialization for cache management
-     */
-    private void init(  )
-    {
-        String strCacheEnabled = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED_ALLPAGES, DEFAULT_CACHE_ENABLED );
-
-        if ( strCacheEnabled.equalsIgnoreCase( DEFAULT_CACHE_ENABLED ) )
-        {
-            initCache( CACHE_NAME );
-        }
-
-        PortalService.registerCacheableService( CACHE_NAME, this );
-        _bInit = true;
     }
 
     /**
