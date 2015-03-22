@@ -40,6 +40,9 @@ import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.includes.PageInclude;
+import fr.paris.lutece.portal.service.page.PageEvent;
+import fr.paris.lutece.portal.service.page.PageEventListener;
+import fr.paris.lutece.portal.service.page.PageService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -58,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * MainTreeMenuInclude
  */
-public abstract class AbstractMainTreeMenuInclude extends AbstractCacheableService implements PageInclude
+public abstract class AbstractMainTreeMenuInclude extends AbstractCacheableService implements PageInclude, PageEventListener
 {
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -90,6 +93,8 @@ public abstract class AbstractMainTreeMenuInclude extends AbstractCacheableServi
         {
             initCache( getName( ) );
         }
+
+        PageService.addPageEventListener( this );
     }
 
     protected abstract String getPropertyCacheEnabled( );
@@ -279,4 +284,12 @@ public abstract class AbstractMainTreeMenuInclude extends AbstractCacheableServi
             }
         }
     }
+
+    @Override
+    public void processPageEvent( PageEvent event )
+    {
+        // a page was added, removed or updated
+        resetCache( );
+    }
+
 }

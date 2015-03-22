@@ -187,7 +187,6 @@ public abstract class AbstractMainTreeMenuIncludeTest extends LuteceTestCase
         }
     }
 
-    /**
     @Test
     public void testGetMenuContent( )
     {
@@ -242,7 +241,6 @@ public abstract class AbstractMainTreeMenuIncludeTest extends LuteceTestCase
             ( ( AbstractCacheableService ) mainTreeMenuInclude ).enableCache( cacheStatus );
         }
     }
-    */
 
     protected abstract String getTestGetMenuContentMark( );
 
