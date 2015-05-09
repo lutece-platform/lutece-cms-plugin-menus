@@ -10,7 +10,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-menus</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.1.1</version>
     <name>Lutece menus plugin</name>
 
     <repositories>
@@ -41,7 +41,7 @@
         <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-cms-plugin-menus.git</url>
-      <tag>HEAD</tag>
+      <tag>lutece-cms-plugin-menus-2.1.1</tag>
   </scm>
     
 </project>
