@@ -44,7 +44,7 @@ public final class MainTreeMenuCacheService extends AbstractCacheableService
     private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu Cache";
     private static final String CACHE_KEY_MAIN = "menus.main";
     private static final String CACHE_KEY_TREE = "menus.tree";
-    
+
     private static MainTreeMenuCacheService _instance = new MainTreeMenuCacheService( );
 
     /**
@@ -80,7 +80,7 @@ public final class MainTreeMenuCacheService extends AbstractCacheableService
      * Get the cache key for a given menu tree
      * 
      * @param nCurrentPageId
-     *            The id of the menu tree 
+     *            The id of the menu tree
      * @return The cache key for the menu tree
      */
     public String getMenuTreeCacheKey( int nCurrentPageId )

@@ -39,7 +39,6 @@ import fr.paris.lutece.util.sql.DAOUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 /**
  * This class provides Data Access methods for Menus objects
  */
@@ -56,32 +55,37 @@ public final class MenusDAO implements IMenusDAO
 
     /**
      * Generates a new primary key
-     * @param plugin The Plugin
+     * 
+     * @param plugin
+     *            The Plugin
      * @return The new primary key
      */
     public int newPrimaryKey( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_NEW_PK, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nKey;
 
-        if ( !daoUtil.next(  ) )
+        if ( !daoUtil.next( ) )
         {
             // if the table is empty
             nKey = 1;
         }
 
         nKey = daoUtil.getInt( 1 ) + 1;
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nKey;
     }
 
     /**
      * Insert a new record in the table.
-     * @param menus instance of the Menus object to insert
-     * @param plugin The plugin
+     * 
+     * @param menus
+     *            instance of the Menus object to insert
+     * @param plugin
+     *            The plugin
      */
     public void insert( Menus menus, Plugin plugin )
     {
@@ -89,33 +93,36 @@ public final class MenusDAO implements IMenusDAO
 
         menus.setIdMenu( newPrimaryKey( plugin ) );
 
-        daoUtil.setInt( 1, menus.getIdMenu(  ) );
-        daoUtil.setString( 2, menus.getMenuName(  ) );
-        daoUtil.setString( 3, menus.getMenuType(  ) );
-        daoUtil.setInt( 4, menus.getIdPageRoot(  ) );
-        daoUtil.setString( 5, menus.getMenuMarker(  ) );
+        daoUtil.setInt( 1, menus.getIdMenu( ) );
+        daoUtil.setString( 2, menus.getMenuName( ) );
+        daoUtil.setString( 3, menus.getMenuType( ) );
+        daoUtil.setInt( 4, menus.getIdPageRoot( ) );
+        daoUtil.setString( 5, menus.getMenuMarker( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the data of the menus from the table
-     * @param nId The identifier of the menus
-     * @param plugin The plugin
+     * 
+     * @param nId
+     *            The identifier of the menus
+     * @param plugin
+     *            The plugin
      * @return the instance of the Menus
      */
     public Menus load( int nId, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
         daoUtil.setInt( 1, nId );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         Menus menus = null;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
-            menus = new Menus(  );
+            menus = new Menus( );
 
             menus.setIdMenu( daoUtil.getInt( 1 ) );
             menus.setMenuName( daoUtil.getString( 2 ) );
@@ -124,58 +131,66 @@ public final class MenusDAO implements IMenusDAO
             menus.setMenuMarker( daoUtil.getString( 5 ) );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return menus;
     }
 
     /**
      * Delete a record from the table
-     * @param nMenusId The identifier of the menus
-     * @param plugin The plugin
+     * 
+     * @param nMenusId
+     *            The identifier of the menus
+     * @param plugin
+     *            The plugin
      */
     public void delete( int nMenusId, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
         daoUtil.setInt( 1, nMenusId );
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Update the record in the table
-     * @param menus The reference of the menus
-     * @param plugin The plugin
+     * 
+     * @param menus
+     *            The reference of the menus
+     * @param plugin
+     *            The plugin
      */
     public void store( Menus menus, Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
 
-        daoUtil.setInt( 1, menus.getIdMenu(  ) );
-        daoUtil.setString( 2, menus.getMenuName(  ) );
-        daoUtil.setString( 3, menus.getMenuType(  ) );
-        daoUtil.setInt( 4, menus.getIdPageRoot(  ) );
-        daoUtil.setString( 5, menus.getMenuMarker(  ) );
-        daoUtil.setInt( 6, menus.getIdMenu(  ) );
+        daoUtil.setInt( 1, menus.getIdMenu( ) );
+        daoUtil.setString( 2, menus.getMenuName( ) );
+        daoUtil.setString( 3, menus.getMenuType( ) );
+        daoUtil.setInt( 4, menus.getIdPageRoot( ) );
+        daoUtil.setString( 5, menus.getMenuMarker( ) );
+        daoUtil.setInt( 6, menus.getIdMenu( ) );
 
-        daoUtil.executeUpdate(  );
-        daoUtil.free(  );
+        daoUtil.executeUpdate( );
+        daoUtil.free( );
     }
 
     /**
      * Load the data of all the menuss and returns them as a collection
-     * @param plugin The plugin
+     * 
+     * @param plugin
+     *            The plugin
      * @return The Collection which contains the data of all the menuss
      */
     public Collection<Menus> selectAll( Plugin plugin )
     {
-        Collection<Menus> menusList = new ArrayList<Menus>(  );
+        Collection<Menus> menusList = new ArrayList<Menus>( );
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
-        while ( daoUtil.next(  ) )
+        while ( daoUtil.next( ) )
         {
-            Menus menus = new Menus(  );
+            Menus menus = new Menus( );
 
             menus.setIdMenu( daoUtil.getInt( 1 ) );
             menus.setMenuName( daoUtil.getString( 2 ) );
@@ -186,29 +201,31 @@ public final class MenusDAO implements IMenusDAO
             menusList.add( menus );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return menusList;
     }
 
     /**
      * Returns the menus count
-     * @param plugin The plugin
+     * 
+     * @param plugin
+     *            The plugin
      * @return nCount
      */
     public int selectNbMenus( Plugin plugin )
     {
         DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_NB_MENUS, plugin );
-        daoUtil.executeQuery(  );
+        daoUtil.executeQuery( );
 
         int nCount = 0;
 
-        if ( daoUtil.next(  ) )
+        if ( daoUtil.next( ) )
         {
             nCount = daoUtil.getInt( 1 );
         }
 
-        daoUtil.free(  );
+        daoUtil.free( );
 
         return nCount;
     }

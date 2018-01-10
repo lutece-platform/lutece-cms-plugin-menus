@@ -35,9 +35,9 @@ package fr.paris.lutece.plugins.menus.service;
 
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 
-
 /**
  * The Menus Plugin
+ * 
  * @author lenaini
  */
 public class MenusPlugin extends PluginDefaultImplementation
@@ -48,8 +48,8 @@ public class MenusPlugin extends PluginDefaultImplementation
     /**
      * Initialize the plugin Menus
      */
-    public void init(  )
+    public void init( )
     {
-        MenusService.getInstance(  ).init(  );
+        MenusService.getInstance( ).init( );
     }
 }

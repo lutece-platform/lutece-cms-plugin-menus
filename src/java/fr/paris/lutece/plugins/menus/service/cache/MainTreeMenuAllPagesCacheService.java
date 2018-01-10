@@ -44,7 +44,7 @@ public final class MainTreeMenuAllPagesCacheService extends AbstractCacheableSer
     private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu All Pages Cache";
     private static final String CACHE_KEY_MAIN_ALL_PAGES = "menus.main.allpages";
     private static final String CACHE_KEY_TREE_ALL_PAGES = "menus.tree.allpages";
-    
+
     private static MainTreeMenuAllPagesCacheService _instance = new MainTreeMenuAllPagesCacheService( );
 
     /**

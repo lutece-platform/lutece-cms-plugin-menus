@@ -49,55 +49,56 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * MainTreeMenuInclude
  */
 public class MainTreeMenuIncludeAllPages implements PageInclude
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////////////////
     // Constants
 
-    //Templates
+    // Templates
     private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/main_tree_pages_list.html";
     private static final String TEMPLATE_MENU_PAGES_TREE = "skin/plugins/menus/main_tree_pages_list_tree.html";
-    
+
     // Parameters
     private static final String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
-    
+
     // Markers
     private static final String MARK_MENU = "menu";
     private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
     private static final String MARK_ROOT_PAGE_ID = "root_page_id";
     private static final String MARK_PAGE_MENU_MAIN_ALL_PAGES = "page_tree_menu_main_all_pages";
     private static final String MARK_PAGE_MENU_TREE_ALL_PAGES = "page_tree_menu_tree_all_pages";
-    
+
     /**
      * Substitue specific Freemarker markers in the page template.
-     * @param rootModel the HashMap containing markers to substitute
-     * @param data A PageData object containing applications data
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param rootModel
+     *            the HashMap containing markers to substitute
+     * @param data
+     *            A PageData object containing applications data
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      */
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
         if ( request != null )
         {
             int nCurrentPageId;
-			
+
             /* test parameter name: page_id parameter for a PageContentService, current_page_id for a DocumentContentService */
-            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : 
-            		PARAMETER_CURRENT_PAGE_ID;
-			
+            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : PARAMETER_CURRENT_PAGE_ID;
+
             try
             {
-                nCurrentPageId = ( request.getParameter( strParameterPageId ) == null ) ? 0
-                                                                                        : Integer.parseInt( request.getParameter( 
-                    		strParameterPageId ) );
+                nCurrentPageId = ( request.getParameter( strParameterPageId ) == null ) ? 0 : Integer.parseInt( request.getParameter( strParameterPageId ) );
             }
-            catch ( NumberFormatException nfe )
+            catch( NumberFormatException nfe )
             {
-                AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage(  ) );
+                AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
                 nCurrentPageId = 0;
             }
 
@@ -108,14 +109,18 @@ public class MainTreeMenuIncludeAllPages implements PageInclude
 
     /**
      * Display the list of childpages pages for first level of childpages
-     * @param nCurrentPageId The current page id
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param nCurrentPageId
+     *            The current page id
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      * @return the list of childpages
      */
     private String getMainPageList( int nCurrentPageId, int nMode, HttpServletRequest request )
     {
-        HashMap<String, Object> modelList = new HashMap<String, Object>(  );
+        HashMap<String, Object> modelList = new HashMap<String, Object>( );
         Locale locale = null;
         if ( request != null )
         {
@@ -132,23 +137,27 @@ public class MainTreeMenuIncludeAllPages implements PageInclude
         modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
         // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance(  ).getSitePath( nMode ) );
+        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES, locale, modelList );
 
-        return templateList.getHtml(  );
+        return templateList.getHtml( );
     }
 
     /**
      * Display the list of childpages pages for other levels
-     * @param nCurrentPageId The current page id
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param nCurrentPageId
+     *            The current page id
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      * @return the list of chilpages
      */
     private String getTreePageList( int nCurrentPageId, int nMode, HttpServletRequest request )
     {
-        HashMap<String, Object> modelList = new HashMap<String, Object>(  );
+        HashMap<String, Object> modelList = new HashMap<String, Object>( );
         Locale locale = null;
         if ( request != null )
         {
@@ -165,11 +174,11 @@ public class MainTreeMenuIncludeAllPages implements PageInclude
         modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
         // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance(  ).getSitePath( nMode ) );
+        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES_TREE, locale, modelList );
 
-        return templateList.getHtml(  );
+        return templateList.getHtml( );
     }
 
 }

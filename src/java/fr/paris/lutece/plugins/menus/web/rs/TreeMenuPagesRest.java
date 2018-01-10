@@ -82,7 +82,8 @@ public class TreeMenuPagesRest
     /**
      * Return the tree of menu pages
      * 
-     * @param request httpServletRequest
+     * @param request
+     *            httpServletRequest
      * @return the tree of menu pages
      */
     @GET
@@ -90,11 +91,11 @@ public class TreeMenuPagesRest
     public Response getTreeMenuPages( @Context HttpServletRequest request )
     {
         String strStatus = STATUS_OK;
-        
+
         String strTreeOfMenuPages = StringUtils.EMPTY;
 
-        setPageFullLink( AppPathService.getBaseUrl( request ) + MenusService.getInstance(  ).getSitePath( 0 ) + "?page_id=" );
-        
+        setPageFullLink( AppPathService.getBaseUrl( request ) + MenusService.getInstance( ).getSitePath( 0 ) + "?page_id=" );
+
         try
         {
             MenuItem rootMenuItem = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
@@ -196,7 +197,7 @@ public class TreeMenuPagesRest
     /**
      * Returns the page full link
      *
-     * @return The page full link 
+     * @return The page full link
      */
     public String getPageFullLink( )
     {
@@ -213,5 +214,5 @@ public class TreeMenuPagesRest
     {
         _strPageFullLink = strPageFullLink;
     }
-    
+
 }

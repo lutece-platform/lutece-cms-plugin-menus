@@ -39,28 +39,30 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Menu Item
  */
 public class MenuItem implements Serializable
 {
-	private static final long serialVersionUID = 2672166049242627079L;
-	private PageInfo _page;
-    private final List<MenuItem> _listItems = new ArrayList<MenuItem>(  );
+    private static final long serialVersionUID = 2672166049242627079L;
+    private PageInfo _page;
+    private final List<MenuItem> _listItems = new ArrayList<MenuItem>( );
 
     /**
      * Returns the Page
+     * 
      * @return The Page
      */
-    public PageInfo getPage(  )
+    public PageInfo getPage( )
     {
         return _page;
     }
 
     /**
      * Sets the Page
-     * @param page The Page
+     * 
+     * @param page
+     *            The Page
      */
     public void setPage( Page page )
     {
@@ -69,7 +71,9 @@ public class MenuItem implements Serializable
 
     /**
      * Add child
-     * @param item Child
+     * 
+     * @param item
+     *            Child
      */
     public void addChild( MenuItem item )
     {
@@ -78,9 +82,10 @@ public class MenuItem implements Serializable
 
     /**
      * Gets list of childs
+     * 
      * @return The list of childs
      */
-    public List<MenuItem> getChilds(  )
+    public List<MenuItem> getChilds( )
     {
         return _listItems;
     }

@@ -36,10 +36,9 @@ package fr.paris.lutece.plugins.menus.service;
 import fr.paris.lutece.plugins.menus.business.Menus;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
-
 /**
- * This Service manages contactListt actions (create, delete, modify ...)
- * and notify listeners.
+ * This Service manages contactListt actions (create, delete, modify ...) and notify listeners.
+ * 
  * @author lenaini
  */
 public class MenusService
@@ -48,15 +47,15 @@ public class MenusService
     public static final int MODE_ADMIN = 1;
     public static final String MARKER_SITE_PATH = "site_path";
 
-    private static MenusService _singleton = new MenusService(  );
+    private static MenusService _singleton = new MenusService( );
 
     /**
-    * Initializes the Menus service
-    *
-    */
-    public void init(  )
+     * Initializes the Menus service
+     *
+     */
+    public void init( )
     {
-        Menus.init(  );
+        Menus.init( );
     }
 
     /**
@@ -64,23 +63,25 @@ public class MenusService
      *
      * @return The instance of the singleton
      */
-    public static MenusService getInstance(  )
+    public static MenusService getInstance( )
     {
         return _singleton;
     }
 
     /**
      * Define the site path : Portal Url when mode isn't admin mode, otherwise AdminPortalUrl
-     * @param nMode the mode define by the request
+     * 
+     * @param nMode
+     *            the mode define by the request
      * @return site path depending on the mode
      */
     public String getSitePath( int nMode )
     {
-        String strSitePath = AppPathService.getAdminPortalUrl(  );
+        String strSitePath = AppPathService.getAdminPortalUrl( );
 
         if ( nMode != MODE_ADMIN )
         {
-            strSitePath = AppPathService.getPortalUrl(  );
+            strSitePath = AppPathService.getPortalUrl( );
         }
 
         return strSitePath;

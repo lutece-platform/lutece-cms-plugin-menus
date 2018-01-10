@@ -52,14 +52,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  *
  * @author lenaini
  */
 public class AccessibilityAnchorMenuInclude implements PageInclude
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////////////////
     // Constants
     private static final String TEMPLATE_MENU_ACCESSIBILITY_ANCHOR = "skin/plugins/menus/accessibility_anchor_page.html";
     private static final String MARK_PAGE_PARAMETER = "page_parameter";
@@ -71,10 +70,15 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 
     /**
      * Substitue specific Freemarker markers in the page template.
-     * @param rootModel the HashMap containing markers to substitute
-     * @param data A PageData object containing applications data
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param rootModel
+     *            the HashMap containing markers to substitute
+     * @param data
+     *            A PageData object containing applications data
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      */
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
@@ -84,9 +88,9 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 
             for ( Menus menus : MenusHome.findAll( plugin ) )
             {
-                if ( menus.getMenuType(  ).equals( MENU_MARKER ) )
+                if ( menus.getMenuType( ).equals( MENU_MARKER ) )
                 {
-                    String strMarkerMenuXPage = menus.getMenuMarker(  );
+                    String strMarkerMenuXPage = menus.getMenuMarker( );
                     rootModel.put( strMarkerMenuXPage, getAccessibilityTemplate( nMode, request ) );
                 }
             }
@@ -95,13 +99,16 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 
     /**
      * Display the accessibility anchor app
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      * @return the page
      */
     public String getAccessibilityTemplate( int nMode, HttpServletRequest request )
     {
-        HashMap<String, Object> modelList = new HashMap<String, Object>(  );
+        HashMap<String, Object> modelList = new HashMap<String, Object>( );
         Locale locale = null;
         if ( request != null )
         {
@@ -122,13 +129,11 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 
         try
         {
-            nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0
-                                                                                    : Integer.parseInt( request.getParameter( 
-                        Parameters.PAGE_ID ) );
+            nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0 : Integer.parseInt( request.getParameter( Parameters.PAGE_ID ) );
         }
-        catch ( NumberFormatException nfe )
+        catch( NumberFormatException nfe )
         {
-            AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage(  ) );
+            AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
             nCurrentPageId = 0;
         }
 
@@ -145,11 +150,10 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
         modelList.put( MARK_PAGE_PARAMETER_VALUE, strPageParameterValue );
 
         // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance(  ).getSitePath( nMode ) );
+        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_ACCESSIBILITY_ANCHOR, locale,
-                modelList );
+        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_ACCESSIBILITY_ANCHOR, locale, modelList );
 
-        return templateList.getHtml(  );
+        return templateList.getHtml( );
     }
 }

@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
 
-
 /**
  * This class provides instances management methods (create, find, ...) for Menus objects
  */
@@ -52,15 +51,18 @@ public final class MenusHome
     /**
      * Private constructor - this class need not be instantiated
      */
-    private MenusHome(  )
+    private MenusHome( )
     {
     }
 
     /**
      * Create an instance of the menus class
-     * @param menus The instance of the Menus which contains the informations to store
-     * @param plugin the Plugin
-     * @return The  instance of menus which has been created with its primary key.
+     * 
+     * @param menus
+     *            The instance of the Menus which contains the informations to store
+     * @param plugin
+     *            the Plugin
+     * @return The instance of menus which has been created with its primary key.
      */
     public static Menus create( Menus menus, Plugin plugin )
     {
@@ -71,8 +73,10 @@ public final class MenusHome
 
     /**
      * Create an instance of the menus class
-     * @param menus The instance of the Menus which contains the informations to store
-     * @return The  instance of menus which has been created with its primary key.
+     * 
+     * @param menus
+     *            The instance of the Menus which contains the informations to store
+     * @return The instance of menus which has been created with its primary key.
      */
     public static Menus create( Menus menus )
     {
@@ -83,9 +87,12 @@ public final class MenusHome
 
     /**
      * Update of the menus which is specified in parameter
-     * @param menus The instance of the Menus which contains the data to store
-     * @param plugin the Plugin
-     * @return The instance of the  menus which has been updated
+     * 
+     * @param menus
+     *            The instance of the Menus which contains the data to store
+     * @param plugin
+     *            the Plugin
+     * @return The instance of the menus which has been updated
      */
     public static Menus update( Menus menus, Plugin plugin )
     {
@@ -96,8 +103,10 @@ public final class MenusHome
 
     /**
      * Update of the menus which is specified in parameter
-     * @param menus The instance of the Menus which contains the data to store
-     * @return The instance of the  menus which has been updated
+     * 
+     * @param menus
+     *            The instance of the Menus which contains the data to store
+     * @return The instance of the menus which has been updated
      */
     public static Menus update( Menus menus )
     {
@@ -108,8 +117,11 @@ public final class MenusHome
 
     /**
      * Remove the menus whose identifier is specified in parameter
-     * @param nMenusId The menus Id
-     * @param plugin the Plugin
+     * 
+     * @param nMenusId
+     *            The menus Id
+     * @param plugin
+     *            the Plugin
      */
     public static void remove( int nMenusId, Plugin plugin )
     {
@@ -118,20 +130,25 @@ public final class MenusHome
 
     /**
      * Remove the menus whose identifier is specified in parameter
-     * @param nMenusId The menus Id
+     * 
+     * @param nMenusId
+     *            The menus Id
      */
     public static void remove( int nMenusId )
     {
         _dao.delete( nMenusId, _plugin );
     }
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Returns an instance of a menus whose identifier is specified in parameter
-     * @param nKey The menus primary key
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The menus primary key
+     * @param plugin
+     *            the Plugin
      * @return an instance of Menus
      */
     public static Menus findByPrimaryKey( int nKey, Plugin plugin )
@@ -141,7 +158,9 @@ public final class MenusHome
 
     /**
      * Returns an instance of a menus whose identifier is specified in parameter
-     * @param nKey The menus primary key
+     * 
+     * @param nKey
+     *            The menus primary key
      * @return an instance of Menus
      */
     public static Menus findByPrimaryKey( int nKey )
@@ -151,7 +170,9 @@ public final class MenusHome
 
     /**
      * Load the data of all the menus objects and returns them in form of a collection
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return the collection which contains the data of all the menus objects
      */
     public static Collection<Menus> findAll( Plugin plugin )
@@ -161,6 +182,7 @@ public final class MenusHome
 
     /**
      * Load the data of all the menus objects and returns them in form of a collection
+     * 
      * @return the collection which contains the data of all the menus objects
      */
     public static Collection<Menus> findAll( )
@@ -171,7 +193,8 @@ public final class MenusHome
     /**
      * Search the number of menus
      *
-     * @param plugin the Plugin
+     * @param plugin
+     *            the Plugin
      * @return int the number of menus
      */
     public static int getNbMenus( Plugin plugin )

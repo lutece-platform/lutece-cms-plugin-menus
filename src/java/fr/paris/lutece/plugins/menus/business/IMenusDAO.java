@@ -37,54 +37,69 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 
 import java.util.Collection;
 
-
 /**
-* IMenusDAO Interface
-*/
+ * IMenusDAO Interface
+ */
 public interface IMenusDAO
 {
     /**
      * Insert a new record in the table.
-     * @param menus instance of the Menus object to inssert
-     * @param plugin the Plugin
+     * 
+     * @param menus
+     *            instance of the Menus object to inssert
+     * @param plugin
+     *            the Plugin
      */
     void insert( Menus menus, Plugin plugin );
 
     /**
-    * Update the record in the table
-    * @param menus the reference of the Menus
-    * @param plugin the Plugin
-    */
+     * Update the record in the table
+     * 
+     * @param menus
+     *            the reference of the Menus
+     * @param plugin
+     *            the Plugin
+     */
     void store( Menus menus, Plugin plugin );
 
     /**
      * Delete a record from the table
-     * @param nIdMenus int identifier of the Menus to delete
-     * @param plugin the Plugin
+     * 
+     * @param nIdMenus
+     *            int identifier of the Menus to delete
+     * @param plugin
+     *            the Plugin
      */
     void delete( int nIdMenus, Plugin plugin );
 
-    ///////////////////////////////////////////////////////////////////////////
+    // /////////////////////////////////////////////////////////////////////////
     // Finders
 
     /**
      * Load the data from the table
-     * @param nKey The identifier of the menus
-     * @param plugin the Plugin
+     * 
+     * @param nKey
+     *            The identifier of the menus
+     * @param plugin
+     *            the Plugin
      * @return The instance of the menus
      */
     Menus load( int nKey, Plugin plugin );
 
     /**
-    * Load the data of all the menus objects and returns them as a collection
-    * @param plugin the Plugin
-    * @return The collection which contains the data of all the menus objects
-    */
+     * Load the data of all the menus objects and returns them as a collection
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The collection which contains the data of all the menus objects
+     */
     Collection<Menus> selectAll( Plugin plugin );
 
     /**
      * Returns the menus count
-     * @param plugin the Plugin
+     * 
+     * @param plugin
+     *            the Plugin
      * @return nCount
      */
     int selectNbMenus( Plugin plugin );

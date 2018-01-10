@@ -33,7 +33,6 @@
  */
 package fr.paris.lutece.plugins.menus.business;
 
-
 /**
  * This is the business class for the object Menus
  */
@@ -49,23 +48,26 @@ public class Menus
     /**
      * Initialize the Menus
      */
-    public static void init(  )
+    public static void init( )
     {
         // Nothing to do
     }
 
     /**
      * Returns the IdMenu
+     * 
      * @return The IdMenu
      */
-    public int getIdMenu(  )
+    public int getIdMenu( )
     {
         return _nIdMenu;
     }
 
     /**
      * Sets the IdMenu
-     * @param nIdMenu The IdMenu
+     * 
+     * @param nIdMenu
+     *            The IdMenu
      */
     public void setIdMenu( int nIdMenu )
     {
@@ -74,16 +76,19 @@ public class Menus
 
     /**
      * Returns the MenuName
+     * 
      * @return The MenuName
      */
-    public String getMenuName(  )
+    public String getMenuName( )
     {
         return _strMenuName;
     }
 
     /**
      * Sets the MenuName
-     * @param strMenuName The MenuName
+     * 
+     * @param strMenuName
+     *            The MenuName
      */
     public void setMenuName( String strMenuName )
     {
@@ -92,16 +97,19 @@ public class Menus
 
     /**
      * Returns the TypeMenu
+     * 
      * @return The TypeMenu
      */
-    public String getMenuType(  )
+    public String getMenuType( )
     {
         return _strMenuType;
     }
 
     /**
      * Sets the TypeMenu
-     * @param strTypeMenu The TypeMenu
+     * 
+     * @param strTypeMenu
+     *            The TypeMenu
      */
     public void setTypeMenu( String strTypeMenu )
     {
@@ -110,16 +118,19 @@ public class Menus
 
     /**
      * Returns the IdPageRoot
+     * 
      * @return The IdPageRoot
      */
-    public int getIdPageRoot(  )
+    public int getIdPageRoot( )
     {
         return _nIdPageRoot;
     }
 
     /**
      * Sets the IdPageRoot
-     * @param nIdPageRoot The IdPageRoot
+     * 
+     * @param nIdPageRoot
+     *            The IdPageRoot
      */
     public void setIdPageRoot( int nIdPageRoot )
     {
@@ -128,16 +139,19 @@ public class Menus
 
     /**
      * Returns the MenuMarker
+     * 
      * @return The MenuMarker
      */
-    public String getMenuMarker(  )
+    public String getMenuMarker( )
     {
         return _strMenuMarker;
     }
 
     /**
      * Sets the MenuMarker
-     * @param strMenuMarker The MenuMarker
+     * 
+     * @param strMenuMarker
+     *            The MenuMarker
      */
     public void setMenuMarker( String strMenuMarker )
     {

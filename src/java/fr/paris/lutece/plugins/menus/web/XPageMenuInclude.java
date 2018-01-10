@@ -54,13 +54,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
- * This class provides  the list of the xpage on a Html Menu
+ * This class provides the list of the xpage on a Html Menu
  */
 public class XPageMenuInclude implements PageInclude
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////////////////
     // Constants
     private static final String TEMPLATE_MENU_XPAGES = "skin/plugins/menus/xpages_list.html";
     private static final String MARK_XPAGES_LIST = "xpages_list";
@@ -68,10 +67,15 @@ public class XPageMenuInclude implements PageInclude
 
     /**
      * Substitue specific Freemarker markers in the page template.
-     * @param rootModel the HashMap containing markers to substitute
-     * @param data A PageData object containing applications data
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * 
+     * @param rootModel
+     *            the HashMap containing markers to substitute
+     * @param data
+     *            A PageData object containing applications data
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      */
     public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
     {
@@ -81,9 +85,9 @@ public class XPageMenuInclude implements PageInclude
 
             for ( Menus menus : MenusHome.findAll( plugin ) )
             {
-                if ( menus.getMenuType(  ).equals( MENU_MARKER ) )
+                if ( menus.getMenuType( ).equals( MENU_MARKER ) )
                 {
-                    String strMarkerMenuXPage = menus.getMenuMarker(  );
+                    String strMarkerMenuXPage = menus.getMenuMarker( );
                     rootModel.put( strMarkerMenuXPage, getXPageList( nMode, request ) );
                 }
             }
@@ -93,14 +97,16 @@ public class XPageMenuInclude implements PageInclude
     /**
      * Display the list of plugins app installed on the instance of lutece
      *
-     * @param nMode The current mode
-     * @param request The HTTP request
+     * @param nMode
+     *            The current mode
+     * @param request
+     *            The HTTP request
      * @return the list
      */
     private String getXPageList( int nMode, HttpServletRequest request )
     {
-        HashMap<String, Object> modelList = new HashMap<String, Object>(  );
-        Collection<Plugin> pluginList = new ArrayList<Plugin>(  );
+        HashMap<String, Object> modelList = new HashMap<String, Object>( );
+        Collection<Plugin> pluginList = new ArrayList<Plugin>( );
         Locale locale = null;
         if ( request != null )
         {
@@ -108,11 +114,11 @@ public class XPageMenuInclude implements PageInclude
         }
 
         // Scan of the list
-        for ( XPageApplicationEntry entry : XPageAppService.getXPageApplicationsList(  ) )
+        for ( XPageApplicationEntry entry : XPageAppService.getXPageApplicationsList( ) )
         {
-            if ( entry.isEnable(  ) )
+            if ( entry.isEnable( ) )
             {
-                Plugin plugin = entry.getPlugin(  );
+                Plugin plugin = entry.getPlugin( );
 
                 if ( plugin != null )
                 {
@@ -122,13 +128,13 @@ public class XPageMenuInclude implements PageInclude
         }
 
         // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance(  ).getSitePath( nMode ) );
+        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
         // Insert the rows in the list
         modelList.put( MARK_XPAGES_LIST, pluginList );
 
         HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_XPAGES, locale, modelList );
 
-        return templateList.getHtml(  );
+        return templateList.getHtml( );
     }
 }

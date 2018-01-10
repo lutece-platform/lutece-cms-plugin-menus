@@ -42,15 +42,14 @@ import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
-
 /**
  * MainTreeMenuAllPagesService
  */
 public class MainTreeMenuService
 {
-    /////////////////////////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////////////////////
     // Constants
-    
+
     // Properties
     private static final String PROPERTY_DEPTH_MAIN_LEVEL = "menus.mainTreeMenu.depth.main";
     private static final String PROPERTY_DEPTH_TREE_LEVEL = "menus.mainTreeMenu.depth.tree";
@@ -67,7 +66,7 @@ public class MainTreeMenuService
     {
         return _instance;
     }
-    
+
     /**
      * Return the root MenuItem
      * 
@@ -77,7 +76,7 @@ public class MainTreeMenuService
     {
         // Define the level of tree
         int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_MAIN_LEVEL, 1 );
-        
+
         String strCacheKey = _cacheService.getMainMenuCacheKey( );
         MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
 
@@ -88,15 +87,17 @@ public class MainTreeMenuService
             buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
             _cacheService.putInCache( strCacheKey, root );
         }
-        
+
         return root;
     }
-    
+
     /**
      * Return the TreeMenuItems from root MenuItem
      * 
-     * @param nCurrentPageId The current page id
-     * @param nRootParentTree The root page id
+     * @param nCurrentPageId
+     *            The current page id
+     * @param nRootParentTree
+     *            The root page id
      * @return the TreeMenuItems from root MenuItem
      */
     public MenuItem getTreeMenuItems( int nCurrentPageId, int nRootParentTree )
@@ -112,13 +113,13 @@ public class MainTreeMenuService
             int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_TREE_LEVEL, 0 );
 
             // if the current page isn't root (1) and isn't 0, we need two levels of childpages, other 0
-            if ( nCurrentPageId != PortalService.getRootPageId(  ) && nCurrentPageId != 0 )
+            if ( nCurrentPageId != PortalService.getRootPageId( ) && nCurrentPageId != 0 )
             {
                 nDepth = 2;
             }
 
             // If the root tree isn't site root tree (1), search the list of childpages from this nRootTree, the number of levels defined by nDepth
-            if ( nRootParentTree != PortalService.getRootPageId(  ) )
+            if ( nRootParentTree != PortalService.getRootPageId( ) )
             {
                 buildMenuTree( root, nRootParentTree, nDepth );
             }
@@ -131,19 +132,21 @@ public class MainTreeMenuService
 
             _cacheService.putInCache( strCacheKey, root );
         }
-        
+
         return root;
     }
-    
+
     /**
      * Define the root tree id of a page
-     * @param nPageId The page identifier
+     * 
+     * @param nPageId
+     *            The page identifier
      * @return The parent page identifier or root tree
      */
     public int getRootParentTree( int nPageId )
     {
         Page page = PageHome.getPage( nPageId );
-        int nParentPageId = page.getParentPageId(  );
+        int nParentPageId = page.getParentPageId( );
 
         if ( nParentPageId == 0 )
         {
@@ -152,24 +155,28 @@ public class MainTreeMenuService
 
         int nParentTree = nParentPageId;
 
-        int nPageRootId = PortalService.getRootPageId(  );
-        
+        int nPageRootId = PortalService.getRootPageId( );
+
         while ( nParentPageId != nPageRootId )
         {
             nParentTree = nParentPageId;
 
             Page parentPage = PageHome.getPage( nParentPageId );
-            nParentPageId = parentPage.getParentPageId(  );
+            nParentPageId = parentPage.getParentPageId( );
         }
 
         return nParentTree;
     }
-    
+
     /**
      * Build the menu tree from nPageId, the number of levels defined by nDepth
-     * @param item The MenunItem object
-     * @param nPageId The page identifier
-     * @param nDepth The page level
+     * 
+     * @param item
+     *            The MenunItem object
+     * @param nPageId
+     *            The page identifier
+     * @param nDepth
+     *            The page level
      */
     private void buildMenuTree( MenuItem item, int nPageId, int nDepth )
     {
@@ -179,16 +186,17 @@ public class MainTreeMenuService
 
             for ( Page page : listPages )
             {
-                MenuItem menuItem = new MenuItem(  );
-                menuItem.setPage( PageHome.findByPrimaryKey( page.getId(  ) ) );
+                MenuItem menuItem = new MenuItem( );
+                menuItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
                 item.addChild( menuItem );
-                buildMenuTree( menuItem, page.getId(  ), nDepth - 1 );
+                buildMenuTree( menuItem, page.getId( ), nDepth - 1 );
             }
         }
     }
-    
+
     /**
      * Get the cacheService
+     * 
      * @return the MainTreeMenuCacheService
      */
     public MainTreeMenuCacheService getCacheService( )
