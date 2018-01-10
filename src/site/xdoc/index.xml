@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<properties>
-		<title>Plugin</title>
-	</properties>
-	<body>
-		<section name="Plugin">
-			<subsection name="Introduction">
-			</subsection>
-		</section>
-	</body>
+    <properties>
+        <title>Plugin menus</title>
+    </properties>
+    <body>
+        <section name="Plugin menus">
+            <subsection name="Introduction">
+                <p>This plugin allows to display the menu of the pages of the site</p>
+                <p>It is possible to display :
+                    <li>a main menu to access to the pages of one specific level. The first level of menu is displayed by default as main menu</li>
+                    <li>a full menu in tree form to access to the pages of the site whatever the level</li>
+                </p>
+                <p>It is possible to display these different menus in the pages of the site by adding specific markers in the page template <code>page_frameset.html</code></p>
+                <p>These markers are the following :
+                    <li><code>${page_tree_menu_main}</code> : allow to display the menu of pages of one specific level. By default the first level is displayed</li>
+                    <li><code>${page_tree_menu_tree}</code> : allow to display the menu of child pages of the current page</li>
+                    <li><code>${page_tree_menu_tree_all_pages}</code> : allow to display the full menu in tree form</li>
+                </p>
+                <p>This plugin provides a REST service allowing to get the full menu of the site in tree form in JSON format. In the response, each menu item contain page informations with especially the URL to access to the page</p>
+            </subsection>
+            <subsection name="Configuration">
+                <p>The menus display is configurable from parameters of the plugin file properties</p>
+                <p>The main parameters are the following :
+                    <li><code>menus.mainTreeMenu.depth.main</code> : defines the level of pages displayed through the marker <code>${page_tree_menu_main}</code></li>
+                    <li><code>menus.mainTreeMenu.depth.tree</code> : defines the level of the current page to display the menu of child pages through the marker <code>${page_tree_menu_tre}</code></li>
+                    <li><code>menus.mainTreeMenu.depth.tree.allpages</code> : defines the number of level to display when displaying the full menu through the marker <code>${page_tree_menu_tree_all_pages}</code></li>
+                </p>
+            </subsection>
+            <subsection name="Usage">
+                <p>
+                   URL to access to the REST service allowing to get the full menu in JSON format : <code>${base_url}/rest/menus/tree_menu_pages</code>
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>

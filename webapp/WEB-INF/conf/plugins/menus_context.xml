@@ -3,7 +3,10 @@
 
 <beans>
     
-   <!-- package sqlquery -->
-  <bean id="menusDAO"  class="fr.paris.lutece.plugins.menus.business.MenusDAO" />   
+  <!-- DAO -->
+  <bean id="menus.menusDAO"  class="fr.paris.lutece.plugins.menus.business.MenusDAO" />   
+
+  <!-- REST -->
+  <bean id="menus.treeMenuPagesRest" class="fr.paris.lutece.plugins.menus.web.rs.TreeMenuPagesRest" />
   
 </beans>

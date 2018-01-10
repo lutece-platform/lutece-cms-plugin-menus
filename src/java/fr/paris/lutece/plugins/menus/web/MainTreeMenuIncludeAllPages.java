@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,20 +34,15 @@
 package fr.paris.lutece.plugins.menus.web;
 
 import fr.paris.lutece.plugins.menus.business.MenuItem;
+import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.service.MenusService;
-import fr.paris.lutece.portal.business.page.Page;
-import fr.paris.lutece.portal.business.page.PageHome;
-import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.includes.PageInclude;
-import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * MainTreeMenuInclude
  */
-public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implements PageInclude
+public class MainTreeMenuIncludeAllPages implements PageInclude
 {
     /////////////////////////////////////////////////////////////////////////////////////////////
     // Constants
@@ -67,36 +62,16 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/main_tree_pages_list.html";
     private static final String TEMPLATE_MENU_PAGES_TREE = "skin/plugins/menus/main_tree_pages_list_tree.html";
     
-	// Parameters
-    private final static String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
-	
+    // Parameters
+    private static final String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
+    
     // Markers
     private static final String MARK_MENU = "menu";
     private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
     private static final String MARK_ROOT_PAGE_ID = "root_page_id";
     private static final String MARK_PAGE_MENU_MAIN_ALL_PAGES = "page_tree_menu_main_all_pages";
     private static final String MARK_PAGE_MENU_TREE_ALL_PAGES = "page_tree_menu_tree_all_pages";
-    private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu All Pages Cache";
     
-    // Properties
-    private static final String PROPERTY_CACHE_ENABLED_ALLPAGES = "menus.mainTreeMenu.cache.enabled.allpages";
-    private static final String PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.main.allpages";
-    private static final String PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.tree.allpages";
-
-    private static final String DEFAULT_CACHE_ENABLED = "true";
-    private static final String KEY_MAIN = "main";
-    private static final String KEY_TREE = "menu";
-
-    public MainTreeMenuIncludeAllPages( )
-    {
-        String strCacheEnabled = AppPropertiesService.getProperty( PROPERTY_CACHE_ENABLED_ALLPAGES, DEFAULT_CACHE_ENABLED );
-
-        if ( strCacheEnabled.equalsIgnoreCase( DEFAULT_CACHE_ENABLED ) )
-        {
-            initCache( CACHE_NAME );
-        }
-    }
-
     /**
      * Substitue specific Freemarker markers in the page template.
      * @param rootModel the HashMap containing markers to substitute
@@ -132,50 +107,25 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     }
 
     /**
-     * Returns the cache name
-     * @return The cache name
-     */
-    public String getName(  )
-    {
-        return CACHE_NAME;
-    }
-
-    /**
      * Display the list of childpages pages for first level of childpages
      * @param nCurrentPageId The current page id
+     * @param nMode The current mode
      * @param request The HTTP request
      * @return the list of childpages
      */
     private String getMainPageList( int nCurrentPageId, int nMode, HttpServletRequest request )
     {
         HashMap<String, Object> modelList = new HashMap<String, Object>(  );
-        Locale locale = ( request == null ) ? null : request.getLocale(  );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
+        }
 
         // Define the root tree for each childpages of root page
-        int nRootParentTree = getRootParentTree( nCurrentPageId );
+        int nRootParentTree = MainTreeMenuAllPagesService.getInstance( ).getRootParentTree( nCurrentPageId );
 
-        MenuItem root = null;
-
-        // Define the level of tree
-        int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, 0);
-
-        // Search the list of childpages from the root page, the number of levels defined by nDepth
-        // and store it in root object
-        if ( isCacheEnable(  ) )
-        {
-            root = (MenuItem) getFromCache( KEY_MAIN );
-        }
-
-        if ( root == null )
-        {
-            root = new MenuItem(  );
-            buildMenuTree( root, PortalService.getRootPageId(  ), nDepth );
-
-            if ( isCacheEnable(  ) )
-            {
-                putInCache( KEY_MAIN, root );
-            }
-        }
+        MenuItem root = MainTreeMenuAllPagesService.getInstance( ).getMainMenuItems( );
 
         modelList.put( MARK_MENU, root );
         modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
@@ -190,51 +140,25 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
     }
 
     /**
-     * Display the list of childpages pages for other levels (nDepth define how many level to add on the list)
+     * Display the list of childpages pages for other levels
      * @param nCurrentPageId The current page id
+     * @param nMode The current mode
      * @param request The HTTP request
      * @return the list of chilpages
      */
     private String getTreePageList( int nCurrentPageId, int nMode, HttpServletRequest request )
     {
         HashMap<String, Object> modelList = new HashMap<String, Object>(  );
-        Locale locale = ( request == null ) ? null : request.getLocale(  );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
+        }
 
         // Define the root tree for each childpages of root page
-        int nRootParentTree = getRootParentTree( nCurrentPageId );
+        int nRootParentTree = MainTreeMenuAllPagesService.getInstance( ).getRootParentTree( nCurrentPageId );
 
-        MenuItem root = null;
-        String strCacheKey = KEY_TREE + nCurrentPageId;
-
-        if ( isCacheEnable(  ) )
-        {
-            root = (MenuItem) getFromCache( strCacheKey );
-        }
-
-        if ( root == null )
-        {
-            root = new MenuItem(  );
-
-            // Define the level of tree
-            int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, 3);
-            
-            // If the root tree isn't site root tree (1), search the list of childpages from this nRootTree, the number of levels defined by nDepth
-            //if ( nRootParentTree != PortalService.getRootPageId(  ) )
-           // {
-                buildMenuTree( root, PortalService.getRootPageId(  ), nDepth );
-            //}
-
-            // If the root tree is the site root tree (1), search the list of childpages from the current page, the number of levels defined by nDepth
-           /* else
-            {
-                buildMenuTree( root, nCurrentPageId, nDepth );
-            }*/
-
-            if ( isCacheEnable(  ) )
-            {
-                putInCache( strCacheKey, root );
-            }
-        }
+        MenuItem root = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( nCurrentPageId );
 
         modelList.put( MARK_MENU, root );
         modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
@@ -248,55 +172,4 @@ public class MainTreeMenuIncludeAllPages extends AbstractCacheableService implem
         return templateList.getHtml(  );
     }
 
-    /**
-     * Define the root tree id of a page
-     * @param nPageId The page identifier
-     * @return The parent page identifier or root tree
-     */
-    private int getRootParentTree( int nPageId )
-    {
-        Page page = PageHome.getPage( nPageId );
-        int nParentPageId = page.getParentPageId(  );
-
-        if ( nParentPageId == 0 )
-        {
-            return nPageId;
-        }
-
-        int nParentTree = nParentPageId;
-
-        int nPageRootId = PortalService.getRootPageId(  );
-        
-        while ( nParentPageId != nPageRootId )
-        {
-            nParentTree = nParentPageId;
-
-            Page parentPage = PageHome.getPage( nParentPageId );
-            nParentPageId = parentPage.getParentPageId(  );
-        }
-
-        return nParentTree;
-    }
-
-    /**
-     * Build the menu tree from nPageId, the number of levels defined by nDepth
-     * @param item The MenunItem object
-     * @param nPageId The page identifier
-     * @param nDepth The page level
-     */
-    private void buildMenuTree( MenuItem item, int nPageId, int nDepth )
-    {
-        if ( nDepth > 0 )
-        {
-            Collection<Page> listPages = PageHome.getChildPages( nPageId );
-
-            for ( Page page : listPages )
-            {
-                MenuItem mi = new MenuItem(  );
-                mi.setPage( PageHome.findByPrimaryKey( page.getId(  ) ) );
-                item.addChild( mi );
-                buildMenuTree( mi, page.getId(  ), nDepth - 1 );
-            }
-        }
-    }
 }

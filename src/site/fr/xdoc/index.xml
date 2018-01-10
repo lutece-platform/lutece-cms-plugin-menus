@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<properties>
-		<title>Plugin</title>
-	</properties>
-	<body>
-		<section name="Plugin">
-			<subsection name="Introduction">
-			</subsection>
-		</section>
-	</body>
+    <properties>
+        <title>Plugin menus</title>
+    </properties>
+    <body>
+        <section name="Plugin menus">
+            <subsection name="Introduction">
+                <p>Ce plugin permet d'afficher des menus permettant d'accéder aux pages du site</p>
+                <p>Il offre la possibilité d'afficher :
+                    <li>un menu principal pour accéder aux pages d'un niveau spécifique. Le premier niveau de menu est affiché par défaut comme menu principal</li>
+                    <li>un menu complet sous forme d'arbre permettant d'accéder à l'ensemble des pages du site quelque soit le niveau</li>
+                </p>
+                <p>Ces différents menus peuvent être affichés dans les pages d'un site grâce à des markers spécifiques à insérer dans le template de page du site <code>page_frameset.html</code></p>
+                <p>Les différents markers sont les suivants :
+                    <li><code>${page_tree_menu_main}</code> : permet d'afficher sous forme de menu les pages d'un niveau spécifique. Par défaut, le premier niveau est affiché</li>
+                    <li><code>${page_tree_menu_tree}</code> : permet d'afficher sous forme de menu les pages filles de la page courante affichée</li>
+                    <li><code>${page_tree_menu_tree_all_pages}</code> : permet d'afficher le menu sous forme d'arbre de l'ensemble des pages du site</li>
+                </p>
+                <p>Ce plugin offre un service REST permettant de récupérer le menu complet des pages du site sous forme d'arbre au format JSON. Dans la réponse, chaque item de menu contient les informations de chaque page du site avec notamment l'URL d'accès à la page</p>
+            </subsection>
+            <subsection name="Configuration">
+                <p>L'affichage des menus est configurable à partir de paramètres présent dans le fichier de properties du plugin</p>
+                <p>Les principaux paramètres sont les suivants :
+                    <li><code>menus.mainTreeMenu.depth.main</code> : définit le niveau des pages à afficher via le marker <code>${page_tree_menu_main}</code></li>
+                    <li><code>menus.mainTreeMenu.depth.tree</code> : définit le niveau de la page courante pour l'affichage du menu des pages filles via le marker <code>${page_tree_menu_tree}</code></li>
+                    <li><code>menus.mainTreeMenu.depth.tree.allpages</code> : définit le nombre de niveau à afficher lors de l'affichage du menu complet via le marker <code>${page_tree_menu_tree_all_pages}</code></li>
+                </p>
+            </subsection>
+            <subsection name="Usage">
+                <p>
+                   URL d'accès au service REST permettant de récupérer le menu complet sous forme d'arbre au format JSON : <code>${base_url}/rest/menus/tree_menu_pages</code>
+                </p>
+            </subsection>
+        </section>
+    </body>
 </document>

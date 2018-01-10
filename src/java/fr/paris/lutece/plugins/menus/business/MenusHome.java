@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.menus.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
+import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import java.util.Collection;
@@ -45,7 +46,8 @@ import java.util.Collection;
 public final class MenusHome
 {
     // Static variable pointed at the DAO instance
-    private static IMenusDAO _dao = (IMenusDAO) SpringContextService.getPluginBean( "menus", "menusDAO" );
+    private static IMenusDAO _dao = SpringContextService.getBean( "menus.menusDAO" );
+    private static Plugin _plugin = PluginService.getPlugin( "menus" );
 
     /**
      * Private constructor - this class need not be instantiated
@@ -68,6 +70,18 @@ public final class MenusHome
     }
 
     /**
+     * Create an instance of the menus class
+     * @param menus The instance of the Menus which contains the informations to store
+     * @return The  instance of menus which has been created with its primary key.
+     */
+    public static Menus create( Menus menus )
+    {
+        _dao.insert( menus, _plugin );
+
+        return menus;
+    }
+
+    /**
      * Update of the menus which is specified in parameter
      * @param menus The instance of the Menus which contains the data to store
      * @param plugin the Plugin
@@ -81,6 +95,18 @@ public final class MenusHome
     }
 
     /**
+     * Update of the menus which is specified in parameter
+     * @param menus The instance of the Menus which contains the data to store
+     * @return The instance of the  menus which has been updated
+     */
+    public static Menus update( Menus menus )
+    {
+        _dao.store( menus, _plugin );
+
+        return menus;
+    }
+
+    /**
      * Remove the menus whose identifier is specified in parameter
      * @param nMenusId The menus Id
      * @param plugin the Plugin
@@ -88,6 +114,15 @@ public final class MenusHome
     public static void remove( int nMenusId, Plugin plugin )
     {
         _dao.delete( nMenusId, plugin );
+    }
+
+    /**
+     * Remove the menus whose identifier is specified in parameter
+     * @param nMenusId The menus Id
+     */
+    public static void remove( int nMenusId )
+    {
+        _dao.delete( nMenusId, _plugin );
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -105,6 +140,16 @@ public final class MenusHome
     }
 
     /**
+     * Returns an instance of a menus whose identifier is specified in parameter
+     * @param nKey The menus primary key
+     * @return an instance of Menus
+     */
+    public static Menus findByPrimaryKey( int nKey )
+    {
+        return _dao.load( nKey, _plugin );
+    }
+
+    /**
      * Load the data of all the menus objects and returns them in form of a collection
      * @param plugin the Plugin
      * @return the collection which contains the data of all the menus objects
@@ -115,13 +160,32 @@ public final class MenusHome
     }
 
     /**
-     * Search the number of portlet type for a portlet
+     * Load the data of all the menus objects and returns them in form of a collection
+     * @return the collection which contains the data of all the menus objects
+     */
+    public static Collection<Menus> findAll( )
+    {
+        return _dao.selectAll( _plugin );
+    }
+
+    /**
+     * Search the number of menus
      *
-     * @param strPortletTypeId The Type Id of portlet
-     * @return int
+     * @param plugin the Plugin
+     * @return int the number of menus
      */
     public static int getNbMenus( Plugin plugin )
     {
         return _dao.selectNbMenus( plugin );
+    }
+
+    /**
+     * Search the number of menus
+     *
+     * @return int the number of menus
+     */
+    public static int getNbMenus( )
+    {
+        return _dao.selectNbMenus( _plugin );
     }
 }
