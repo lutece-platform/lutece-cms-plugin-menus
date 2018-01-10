@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,10 +44,11 @@ import fr.paris.lutece.portal.service.util.AppPathService;
  */
 public class MenusService
 {
-    private static MenusService _singleton = new MenusService(  );
     public static final int MODE_SITE = 0;
     public static final int MODE_ADMIN = 1;
     public static final String MARKER_SITE_PATH = "site_path";
+
+    private static MenusService _singleton = new MenusService(  );
 
     /**
     * Initializes the Menus service

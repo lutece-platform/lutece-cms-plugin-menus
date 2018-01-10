@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -93,6 +93,7 @@ public class XPageMenuInclude implements PageInclude
     /**
      * Display the list of plugins app installed on the instance of lutece
      *
+     * @param nMode The current mode
      * @param request The HTTP request
      * @return the list
      */
@@ -100,7 +101,11 @@ public class XPageMenuInclude implements PageInclude
     {
         HashMap<String, Object> modelList = new HashMap<String, Object>(  );
         Collection<Plugin> pluginList = new ArrayList<Plugin>(  );
-        Locale locale = ( request == null ) ? null : request.getLocale(  );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
+        }
 
         // Scan of the list
         for ( XPageApplicationEntry entry : XPageAppService.getXPageApplicationsList(  ) )

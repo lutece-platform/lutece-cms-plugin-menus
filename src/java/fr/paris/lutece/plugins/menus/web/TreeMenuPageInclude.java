@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -119,6 +119,7 @@ public class TreeMenuPageInclude implements PageInclude
      *
      * @param nIdPage The page id
      * @param nMode the mode id
+     * @param menus the current menu
      * @param request The HttpServletRequest
      * @return The list of the tree menus layed out with the stylesheet of the mode
      */
@@ -128,11 +129,9 @@ public class TreeMenuPageInclude implements PageInclude
 
         String strCurrentPageId = Integer.toString( nIdPage );
 
-        nIdPage = menus.getIdPageRoot(  );
-
         Collection<Page> listPagesMenu;
 
-        listPagesMenu = PageHome.getChildPagesMinimalData( nIdPage );
+        listPagesMenu = PageHome.getChildPagesMinimalData( menus.getIdPageRoot(  ) );
         strXml.append( XmlUtil.getXmlHeader(  ) );
         XmlUtil.beginElement( strXml, XmlContent.TAG_MENU_LIST );
 

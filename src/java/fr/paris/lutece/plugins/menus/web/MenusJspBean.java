@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,20 +58,17 @@ public class MenusJspBean extends PluginAdminPageJspBean
     // properties for page titles
     private static final String PROPERTY_PAGE_TITLE_MENUS_LIST = "menus.manage_menus.pageTitle";
 
-    // properties
-    private static final String PROPERTY_MENUS_LIST = "menus.list";
-    private static final String PROPERTY_PREFIX = "menu.";
-    private static final String PROPERTY_SUFFIX_NAME = ".name";
-    private static final String PROPERTY_SUFFIX_TYPE_MENU = ".typeMenu";
-    private static final String PROPERTY_SUFFIX_ID_ROOT = ".idPageRoot";
-    private static final String PROPERTY_SUFFIX_MARKER = ".marker";
-
     // Markers
     private static final String MARK_MENU_LIST = "menus_list";
 
     // templates
     private static final String TEMPLATE_MANAGE_MENUS = "/admin/plugins/menus/manage_menus.html";
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -4105692805533343351L;
+    
     /**
      * returns the template of the MenusLists management
      * @param request The HttpRequest

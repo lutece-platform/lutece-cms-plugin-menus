@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public interface IMenusDAO
 
     /**
      * Load the data from the table
-     * @param strId The identifier of the menus
+     * @param nKey The identifier of the menus
      * @param plugin the Plugin
      * @return The instance of the menus
      */
@@ -84,6 +84,7 @@ public interface IMenusDAO
 
     /**
      * Returns the menus count
+     * @param plugin the Plugin
      * @return nCount
      */
     int selectNbMenus( Plugin plugin );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,10 @@ public class PageInfo implements Serializable
     private String _strDescription;
     private int _nParentPageId;
 
+    /**
+     * Contructor
+     * @param page the corresponding page instance
+     */
     PageInfo( Page page )
     {
         _nId = page.getId();
@@ -98,7 +102,7 @@ public class PageInfo implements Serializable
     }
 
     /**
-     * @param decription the description to set
+     * @param description the description to set
      */
     public void setDescription( String description )
     {
@@ -114,7 +118,7 @@ public class PageInfo implements Serializable
     }
 
     /**
-     * @param id the id to set
+     * @param nParentPageId the id to set
      */
     public void setParentPageId( int nParentPageId )
     {

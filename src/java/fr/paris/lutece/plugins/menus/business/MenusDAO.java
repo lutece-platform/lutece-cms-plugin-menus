@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -193,6 +193,7 @@ public final class MenusDAO implements IMenusDAO
 
     /**
      * Returns the menus count
+     * @param plugin The plugin
      * @return nCount
      */
     public int selectNbMenus( Plugin plugin )

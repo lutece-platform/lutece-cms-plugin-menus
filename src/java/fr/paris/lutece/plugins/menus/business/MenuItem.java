@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ public class MenuItem implements Serializable
 {
 	private static final long serialVersionUID = 2672166049242627079L;
 	private PageInfo _page;
-    private List<MenuItem> _listItems = new ArrayList<MenuItem>(  );
+    private final List<MenuItem> _listItems = new ArrayList<MenuItem>(  );
 
     /**
      * Returns the Page
@@ -60,7 +60,7 @@ public class MenuItem implements Serializable
 
     /**
      * Sets the Page
-     * @param Page The Page
+     * @param page The Page
      */
     public void setPage( Page page )
     {

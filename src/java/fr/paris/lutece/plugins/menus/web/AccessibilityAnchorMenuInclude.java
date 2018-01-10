@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2014, Mairie de Paris
+ * Copyright (c) 2002-2017, Mairie de Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,13 +95,18 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 
     /**
      * Display the accessibility anchor app
+     * @param nMode The current mode
      * @param request The HTTP request
      * @return the page
      */
     public String getAccessibilityTemplate( int nMode, HttpServletRequest request )
     {
         HashMap<String, Object> modelList = new HashMap<String, Object>(  );
-        Locale locale = ( request == null ) ? null : request.getLocale(  );
+        Locale locale = null;
+        if ( request != null )
+        {
+            locale = request.getLocale( );
+        }
 
         String strXPageParameter = request.getParameter( PARAMETER_XPAGE_NAME );
         String strPageParameter = PARAMETER_XPAGE_NAME + PARAMETER_PAGE_OPERATOR;
