@@ -33,6 +33,9 @@
  */
 package fr.paris.lutece.plugins.menus.web.rs;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,16 +44,18 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.business.PageInfo;
 import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.service.MenusService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 /**
  * REST service for MyFavorites resource
@@ -128,8 +133,22 @@ public class TreeMenuPagesRest
     private String formatResponse( String strStatus, String strResponse )
     {
         JSONObject jsonResponse = new JSONObject( );
-        jsonResponse.accumulate( KEY_MENUS_STATUS_RESPONSE, strStatus );
-        jsonResponse.accumulate( KEY_MENUS_RESPONSE_RESULT, strResponse );
+        try
+        {
+            jsonResponse.accumulate( KEY_MENUS_STATUS_RESPONSE, strStatus );
+        }
+        catch ( JSONException e1 )
+        {
+            AppLogService.error( e1.getMessage( ), e1 );
+        }
+        try
+        {
+            jsonResponse.accumulate( KEY_MENUS_RESPONSE_RESULT, strResponse );
+        }
+        catch ( JSONException e )
+        {
+            AppLogService.error( e.getMessage( ), e );
+        }
 
         return jsonResponse.toString( );
     }
@@ -146,7 +165,13 @@ public class TreeMenuPagesRest
         JSONObject jsonResponse = new JSONObject( );
         JSONArray jsonAllMenusItems = formatListMenuItems( rootMenuItem );
 
-        jsonResponse.accumulate( KEY_ROOT_MENU_PAGES, jsonAllMenusItems );
+        try
+        {
+            jsonResponse.accumulate( KEY_ROOT_MENU_PAGES, jsonAllMenusItems );
+        }
+        catch( JSONException e ) {
+            AppLogService.error( e.getMessage( ), e );
+        }
 
         return jsonResponse.toString( );
     }
@@ -167,8 +192,15 @@ public class TreeMenuPagesRest
             JSONObject jsonMenus = new JSONObject( );
             add( jsonMenus, childMenuItem.getPage( ) );
             JSONArray jsonChildMenusList = formatListMenuItems( childMenuItem );
-            jsonMenus.accumulate( KEY_MENU_PAGES, jsonChildMenusList );
-            jsonMenusList.add( jsonMenus );
+            try
+            {
+                jsonMenus.accumulate( KEY_MENU_PAGES, jsonChildMenusList );
+            }
+            catch ( JSONException e )
+            {
+                AppLogService.error( e.getMessage( ), e );
+            }
+            ((List<MenuItem>) jsonMenusList).addAll( (Collection<? extends MenuItem>) jsonMenus );
         }
 
         return jsonMenusList;
@@ -186,11 +218,19 @@ public class TreeMenuPagesRest
     {
         if ( jsonMenus != null && pageInfo != null )
         {
-            jsonMenus.accumulate( KEY_PAGE_ID, pageInfo.getId( ) );
-            jsonMenus.accumulate( KEY_PAGE_PARENT_ID, pageInfo.getParentPageId( ) );
-            jsonMenus.accumulate( KEY_PAGE_NAME, pageInfo.getName( ) );
-            jsonMenus.accumulate( KEY_PAGE_DESC, pageInfo.getDescription( ) );
-            jsonMenus.accumulate( KEY_PAGE_FULL_LINK, getPageFullLink( ) + pageInfo.getId( ) );
+            try
+            {
+                jsonMenus.accumulate( KEY_PAGE_ID, pageInfo.getId( ) );
+                jsonMenus.accumulate( KEY_PAGE_PARENT_ID, pageInfo.getParentPageId( ) );
+                jsonMenus.accumulate( KEY_PAGE_NAME, pageInfo.getName( ) );
+                jsonMenus.accumulate( KEY_PAGE_DESC, pageInfo.getDescription( ) );
+                jsonMenus.accumulate( KEY_PAGE_FULL_LINK, getPageFullLink( ) + pageInfo.getId( ) );
+            }
+            catch ( JSONException e )
+            {
+                AppLogService.error( e.getMessage( ), e );
+            }
+            
         }
     }
 
