@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,15 +45,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.business.PageInfo;
 import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.service.MenusService;
 import fr.paris.lutece.plugins.rest.service.RestConstants;
+
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
@@ -63,196 +64,201 @@ import fr.paris.lutece.portal.service.util.AppPathService;
 @Path( RestConstants.BASE_PATH + TreeMenuPagesRest.PLUGIN_PATH + TreeMenuPagesRest.TREE_MENUS_PAGES_PATH )
 public class TreeMenuPagesRest
 {
-    // Path constants
-    protected static final String PLUGIN_PATH = "menus/";
-    protected static final String TREE_MENUS_PAGES_PATH = "tree_menu_pages/";
+	// Path constants
+	protected static final String PLUGIN_PATH = "menus/";
+	protected static final String TREE_MENUS_PAGES_PATH = "tree_menu_pages/";
 
-    // Format constants
-    private static final String KEY_MENUS_STATUS_RESPONSE = "status";
-    private static final String KEY_MENUS_RESPONSE_RESULT = "result";
-    private static final String KEY_ROOT_MENU_PAGES = "root_menu_pages";
-    private static final String KEY_MENU_PAGES = "menu_pages";
-    private static final String KEY_PAGE_PARENT_ID = "parentId";
-    private static final String KEY_PAGE_ID = "id";
-    private static final String KEY_PAGE_NAME = "name";
-    private static final String KEY_PAGE_DESC = "description";
-    private static final String KEY_PAGE_FULL_LINK = "pageFullLink";
+	// Format constants
+	private static final String KEY_MENUS_STATUS_RESPONSE = "status";
+	private static final String KEY_MENUS_RESPONSE_RESULT = "result";
+	private static final String KEY_ROOT_MENU_PAGES = "root_menu_pages";
+	private static final String KEY_MENU_PAGES = "menu_pages";
+	private static final String KEY_PAGE_PARENT_ID = "parentId";
+	private static final String KEY_PAGE_ID = "id";
+	private static final String KEY_PAGE_NAME = "name";
+	private static final String KEY_PAGE_DESC = "description";
+	private static final String KEY_PAGE_FULL_LINK = "pageFullLink";
 
-    // Status constants
-    private static final String STATUS_OK = "OK";
-    private static final String STATUS_KO = "KO";
+	// Status constants
+	private static final String STATUS_OK = "OK";
+	private static final String STATUS_KO = "KO";
 
-    private String _strPageFullLink;
+	private String _strPageFullLink;
 
-    /**
-     * Return the tree of menu pages
-     * 
-     * @param request
-     *            httpServletRequest
-     * @return the tree of menu pages
-     */
-    @GET
-    @Produces( MediaType.APPLICATION_JSON )
-    public Response getTreeMenuPages( @Context HttpServletRequest request )
-    {
-        String strStatus = STATUS_OK;
+	/**
+	 * Return the tree of menu pages
+	 * 
+	 * @param request
+	 *                httpServletRequest
+	 * @return the tree of menu pages
+	 */
+	@GET
+	@Produces( MediaType.APPLICATION_JSON )
+	public Response getTreeMenuPages( @Context HttpServletRequest request )
+	{
+		String strStatus = STATUS_OK;
 
-        String strTreeOfMenuPages = StringUtils.EMPTY;
+		String strTreeOfMenuPages = StringUtils.EMPTY;
 
-        setPageFullLink( AppPathService.getBaseUrl( request ) + MenusService.getInstance( ).getSitePath( 0 ) + "?page_id=" );
+		setPageFullLink(
+				AppPathService.getBaseUrl( request ) + MenusService.getInstance( ).getSitePath( 0 ) + "?page_id=" );
 
-        try
-        {
-            MenuItem rootMenuItem = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
-            if ( rootMenuItem != null )
-            {
-                strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem );
-            }
-        }
-        catch( Exception exception )
-        {
-            // We set the status at KO if an error occurred during the processing
-            strStatus = STATUS_KO;
-        }
+		try
+		{
+			MenuItem rootMenuItem = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
+			if( rootMenuItem != null )
+			{
+				strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem );
+			}
+		}
+		catch( Exception exception )
+		{
+			// We set the status at KO if an error occurred during the processing
+			strStatus = STATUS_KO;
+		}
 
-        // Format the response with the given status and the tree of menu pages
-        String strResponse = formatResponse( strStatus, strTreeOfMenuPages );
+		// Format the response with the given status and the tree of menu pages
+		String strResponse = formatResponse( strStatus, strTreeOfMenuPages );
 
-        return Response.ok( strResponse, MediaType.APPLICATION_JSON ).build( );
-    }
+		return Response.ok( strResponse, MediaType.APPLICATION_JSON ).build( );
+	}
 
-    /**
-     * Return the Json response with the given status
-     * 
-     * @param strStatus
-     *            The status of the treatment "OK" by default "KO" if an error occurred during the processing
-     * @param strResponse
-     *            The response to send
-     * @return the Json response with the given status
-     */
-    private String formatResponse( String strStatus, String strResponse )
-    {
-        JSONObject jsonResponse = new JSONObject( );
-        try
-        {
-            jsonResponse.accumulate( KEY_MENUS_STATUS_RESPONSE, strStatus );
-        }
-        catch ( JSONException e1 )
-        {
-            AppLogService.error( e1.getMessage( ), e1 );
-        }
-        try
-        {
-            jsonResponse.accumulate( KEY_MENUS_RESPONSE_RESULT, strResponse );
-        }
-        catch ( JSONException e )
-        {
-            AppLogService.error( e.getMessage( ), e );
-        }
+	/**
+	 * Return the Json response with the given status
+	 * 
+	 * @param strStatus
+	 *                    The status of the treatment "OK" by default "KO" if an
+	 *                    error occurred during the processing
+	 * @param strResponse
+	 *                    The response to send
+	 * @return the Json response with the given status
+	 */
+	private String formatResponse( String strStatus, String strResponse )
+	{
+		// Création de l'ObjectMapper et du nœud JSON
+		ObjectMapper mapper = new ObjectMapper( );
+		ObjectNode jsonResponse = mapper.createObjectNode( );
 
-        return jsonResponse.toString( );
-    }
+		try
+		{
+			jsonResponse.put( KEY_MENUS_STATUS_RESPONSE, strStatus );
+			jsonResponse.put( KEY_MENUS_RESPONSE_RESULT, strResponse );
+		}
+		catch( Exception e )
+		{
+			AppLogService.error( e.getMessage( ), e );
+		}
 
-    /**
-     * Return the Json tree of menu pages
-     * 
-     * @param rootMenuItem
-     *            the root MenuItem
-     * @return the Json tree of menu pages
-     */
-    private String formatTreeMenuItems( MenuItem rootMenuItem )
-    {
-        JSONObject jsonResponse = new JSONObject( );
-        JSONArray jsonAllMenusItems = formatListMenuItems( rootMenuItem );
+		return jsonResponse.toString( );
+	}
 
-        try
-        {
-            jsonResponse.accumulate( KEY_ROOT_MENU_PAGES, jsonAllMenusItems );
-        }
-        catch( JSONException e ) {
-            AppLogService.error( e.getMessage( ), e );
-        }
+	/**
+	 * Return the Json tree of menu pages
+	 * 
+	 * @param rootMenuItem
+	 *                     the root MenuItem
+	 * @return the Json tree of menu pages
+	 */
+	private String formatTreeMenuItems( MenuItem rootMenuItem )
+	{
+		ObjectMapper mapper = new ObjectMapper( );
+		ObjectNode jsonResponse = mapper.createObjectNode( );
 
-        return jsonResponse.toString( );
-    }
+		ArrayNode jsonAllMenusItems = formatListMenuItems( rootMenuItem );
 
-    /**
-     * Return the Json list of menu items
-     * 
-     * @param currentMenuItem
-     *            the current MenuItem
-     * @return the Json list of the current MenuItem
-     */
-    private JSONArray formatListMenuItems( MenuItem currentMenuItem )
-    {
-        JSONArray jsonMenusList = new JSONArray( );
+		try
+		{
+			jsonResponse.set( KEY_ROOT_MENU_PAGES, jsonAllMenusItems );
+		}
+		catch( Exception e )
+		{
+			AppLogService.error( e.getMessage( ), e );
+		}
 
-        for ( MenuItem childMenuItem : currentMenuItem.getChilds( ) )
-        {
-            JSONObject jsonMenus = new JSONObject( );
-            add( jsonMenus, childMenuItem.getPage( ) );
-            JSONArray jsonChildMenusList = formatListMenuItems( childMenuItem );
-            try
-            {
-                jsonMenus.accumulate( KEY_MENU_PAGES, jsonChildMenusList );
-            }
-            catch ( JSONException e )
-            {
-                AppLogService.error( e.getMessage( ), e );
-            }
-            ((List<MenuItem>) jsonMenusList).addAll( (Collection<? extends MenuItem>) jsonMenus );
-        }
+		return jsonResponse.toString( );
+	}
 
-        return jsonMenusList;
-    }
+	/**
+	 * Return the Json list of menu items
+	 * 
+	 * @param currentMenuItem
+	 *                        the current MenuItem
+	 * @return the Json list of the current MenuItem
+	 */
+	private ArrayNode formatListMenuItems( MenuItem currentMenuItem )
+	{
+		ObjectMapper mapper = new ObjectMapper( );
+		ArrayNode jsonMenusList = mapper.createArrayNode( );
 
-    /**
-     * Add the data from a Menus object to a JsonObject
-     * 
-     * @param jsonMenus
-     *            the Json to include the data
-     * @param pageInfo
-     *            the information of the page
-     */
-    private void add( JSONObject jsonMenus, PageInfo pageInfo )
-    {
-        if ( jsonMenus != null && pageInfo != null )
-        {
-            try
-            {
-                jsonMenus.accumulate( KEY_PAGE_ID, pageInfo.getId( ) );
-                jsonMenus.accumulate( KEY_PAGE_PARENT_ID, pageInfo.getParentPageId( ) );
-                jsonMenus.accumulate( KEY_PAGE_NAME, pageInfo.getName( ) );
-                jsonMenus.accumulate( KEY_PAGE_DESC, pageInfo.getDescription( ) );
-                jsonMenus.accumulate( KEY_PAGE_FULL_LINK, getPageFullLink( ) + pageInfo.getId( ) );
-            }
-            catch ( JSONException e )
-            {
-                AppLogService.error( e.getMessage( ), e );
-            }
-            
-        }
-    }
+		for( MenuItem childMenuItem : currentMenuItem.getChilds( ) )
+		{
+			ObjectNode jsonMenus = mapper.createObjectNode( );
 
-    /**
-     * Returns the page full link
-     *
-     * @return The page full link
-     */
-    public String getPageFullLink( )
-    {
-        return _strPageFullLink;
-    }
+			add( jsonMenus, childMenuItem.getPage( ) );
 
-    /**
-     * Sets the page full link
-     *
-     * @param strPageFullLink
-     *            The page full link
-     */
-    public void setPageFullLink( String strPageFullLink )
-    {
-        _strPageFullLink = strPageFullLink;
-    }
+			ArrayNode jsonChildMenusList = formatListMenuItems( childMenuItem );
+
+			try
+			{
+				jsonMenus.set( KEY_MENU_PAGES, jsonChildMenusList );
+
+				jsonMenusList.add( jsonMenus );
+			}
+			catch( Exception e )
+			{
+				AppLogService.error( e.getMessage( ), e );
+			}
+		}
+
+		return jsonMenusList;
+	}
+
+	/**
+	 * Add the data from a Menus object to a JsonObject
+	 * 
+	 * @param jsonMenus
+	 *                  the Json to include the data
+	 * @param pageInfo
+	 *                  the information of the page
+	 */
+	private void add( ObjectNode jsonMenus, PageInfo pageInfo )
+	{
+		if( jsonMenus != null && pageInfo != null )
+		{
+			try
+			{
+				jsonMenus.put( KEY_PAGE_ID, pageInfo.getId( ) );
+				jsonMenus.put( KEY_PAGE_PARENT_ID, pageInfo.getParentPageId( ) );
+				jsonMenus.put( KEY_PAGE_NAME, pageInfo.getName( ) );
+				jsonMenus.put( KEY_PAGE_DESC, pageInfo.getDescription( ) );
+				jsonMenus.put( KEY_PAGE_FULL_LINK, getPageFullLink( ) + pageInfo.getId( ) );
+			}
+			catch( Exception e )
+			{
+				AppLogService.error( e.getMessage( ), e );
+			}
+		}
+	}
+
+	/**
+	 * Returns the page full link
+	 *
+	 * @return The page full link
+	 */
+	public String getPageFullLink( )
+	{
+		return _strPageFullLink;
+	}
+
+	/**
+	 * Sets the page full link
+	 *
+	 * @param strPageFullLink
+	 *                        The page full link
+	 */
+	public void setPageFullLink( String strPageFullLink )
+	{
+		_strPageFullLink = strPageFullLink;
+	}
 
 }
