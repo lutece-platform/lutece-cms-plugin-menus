@@ -3,22 +3,33 @@
     <parent>
         <artifactId>lutece-global-pom</artifactId>
         <groupId>fr.paris.lutece.tools</groupId>
-        <version>6.0.0</version>
+        <version>7.0.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>plugin-menus</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>2.1.2-SNAPSHOT</version>
+    <version>2.2.0-SNAPSHOT</version>
     <name>Lutece menus plugin</name>
 
     <repositories>
         <repository>
             <id>lutece</id>
             <name>luteceRepository</name>
-            <url>http://dev.lutece.paris.fr/maven_repository</url>
+            <url>https://dev.lutece.paris.fr/maven_repository</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
             <layout>default</layout>
+        </repository>
+         <repository>
+            <id>luteceSnapshot</id>
+            <name>luteceSnapshot</name>
+            <url>https://dev.lutece.paris.fr/snapshot_repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -44,10 +55,10 @@
     </properties>
     
     <scm>
-        <connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</connection>
-        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</developerConnection>
-        <url>https://github.com/lutece-platform/lutece-cms-plugin-menus.git</url>
-      <tag>HEAD</tag>
+		<connection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</connection>
+		<developerConnection>scm:git:https://github.com/lutece-platform/lutece-cms-plugin-menus.git</developerConnection>
+		<url>https://github.com/lutece-platform/lutece-cms-plugin-menus.git</url>
+		<tag>HEAD</tag>
   </scm>
     
 </project>

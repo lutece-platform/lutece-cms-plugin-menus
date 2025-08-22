@@ -1,0 +1,40 @@
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{menus.manage_custom_menus.pageTitle}'>
+            <@offcanvas size='50' targetUrl='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=createCustomMenu' targetElement='#create_custom_menu' redirectForm=false id='custom-menu-create' title='#i18n{menus.manage_custom_menus.buttonCreateMenu}' position='end' btnTitle='#i18n{menus.manage_custom_menus.buttonCreateMenu}' btnIcon='plus' />
+        </@pageHeader>
+        <@alert color='warning' title='#i18n{portal.system.manage_caches.cautionTitle} ' iconTitle='exclamation-triangle'> #i18n{menus.manage_custom_menus.warning.pageCacheService}</@alert>
+        <@messages errors=errors />
+        <@messages infos=infos />
+        <@paginationAdmin paginator=paginator combo=1 />
+        <@table headBody=true>
+            <@tr>
+                <@th>#i18n{menus.manage_custom_menus.columnName}</@th>
+                <@th>#i18n{menus.manage_custom_menus.columnType}
+    				<i class="ti ti-info-circle" data-toggle="tooltip" title='#i18n{menus.manage_custom_menus.helpInfoType}'></i>
+				</@th>
+				<@th>#i18n{menus.manage_custom_menus.columnBookmark}
+                	<i class="ti ti-info-circle" data-toggle="tooltip" title='#i18n{menus.manage_custom_menus.helpInfoBookmark}'></i>
+                </@th>
+                <@th>#i18n{menus.manage_custom_menus.columnDescription}</@th>
+                <@th>#i18n{menus.manage_custom_menus.columnActions}</@th>
+            </@tr>
+            <@tableHeadBodySeparator />
+            <#if custom_menus_list??>
+            <#list custom_menus_list as menu>
+                <@tr>
+                    <@td>${menu.name}</@td>
+                    <@td>${menu.type}</@td>
+                    <@td>${menu.bookmark!''}</@td>
+                    <@td>${menu.description}</@td>
+                    <@td>
+                        <@offcanvas size='50' targetUrl='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenu&id=${menu.id}' targetElement='#modify_custom_menu' redirectForm=false id='custom-menu-modify-${menu.id}' title='#i18n{menus.manage_custom_menus.buttonModifyMenu}' position='end'  btnIcon='edit' color='primary' hideTitle=['all'] btnClass='btn-sm' />
+                        <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=removeCustomMenu&id=${menu.id}' buttonIcon='trash' color='danger' hideTitle=['all'] size='sm' />
+                    </@td>
+                </@tr>
+            </#list>
+            </#if>
+        </@table>
+        <@paginationAdmin paginator=paginator combo=1 />
+    </@pageColumn>
+</@pageContainer>

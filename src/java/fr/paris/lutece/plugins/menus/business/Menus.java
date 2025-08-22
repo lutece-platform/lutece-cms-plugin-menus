@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,123 +38,123 @@ package fr.paris.lutece.plugins.menus.business;
  */
 public class Menus
 {
-    // Variables declarations
-    private int _nIdMenu;
-    private int _nIdPageRoot;
-    private String _strMenuName;
-    private String _strMenuType;
-    private String _strMenuMarker;
+	// Variables declarations
+	private int _nIdMenu;
+	private int _nIdPageRoot;
+	private String _strMenuName;
+	private String _strMenuType;
+	private String _strMenuMarker;
 
-    /**
-     * Initialize the Menus
-     */
-    public static void init( )
-    {
-        // Nothing to do
-    }
+	/**
+	 * Initialize the Menus
+	 */
+	public static void init( )
+	{
+		// Nothing to do
+	}
 
-    /**
-     * Returns the IdMenu
-     * 
-     * @return The IdMenu
-     */
-    public int getIdMenu( )
-    {
-        return _nIdMenu;
-    }
+	/**
+	 * Returns the IdMenu
+	 * 
+	 * @return The IdMenu
+	 */
+	public int getIdMenu( )
+	{
+		return _nIdMenu;
+	}
 
-    /**
-     * Sets the IdMenu
-     * 
-     * @param nIdMenu
-     *            The IdMenu
-     */
-    public void setIdMenu( int nIdMenu )
-    {
-        _nIdMenu = nIdMenu;
-    }
+	/**
+	 * Sets the IdMenu
+	 * 
+	 * @param nIdMenu
+	 *                The IdMenu
+	 */
+	public void setIdMenu( int nIdMenu )
+	{
+		_nIdMenu = nIdMenu;
+	}
 
-    /**
-     * Returns the MenuName
-     * 
-     * @return The MenuName
-     */
-    public String getMenuName( )
-    {
-        return _strMenuName;
-    }
+	/**
+	 * Returns the MenuName
+	 * 
+	 * @return The MenuName
+	 */
+	public String getMenuName( )
+	{
+		return _strMenuName;
+	}
 
-    /**
-     * Sets the MenuName
-     * 
-     * @param strMenuName
-     *            The MenuName
-     */
-    public void setMenuName( String strMenuName )
-    {
-        _strMenuName = strMenuName;
-    }
+	/**
+	 * Sets the MenuName
+	 * 
+	 * @param strMenuName
+	 *                    The MenuName
+	 */
+	public void setMenuName( String strMenuName )
+	{
+		_strMenuName = strMenuName;
+	}
 
-    /**
-     * Returns the TypeMenu
-     * 
-     * @return The TypeMenu
-     */
-    public String getMenuType( )
-    {
-        return _strMenuType;
-    }
+	/**
+	 * Returns the TypeMenu
+	 * 
+	 * @return The TypeMenu
+	 */
+	public String getMenuType( )
+	{
+		return _strMenuType;
+	}
 
-    /**
-     * Sets the TypeMenu
-     * 
-     * @param strTypeMenu
-     *            The TypeMenu
-     */
-    public void setTypeMenu( String strTypeMenu )
-    {
-        _strMenuType = strTypeMenu;
-    }
+	/**
+	 * Sets the TypeMenu
+	 * 
+	 * @param strTypeMenu
+	 *                    The TypeMenu
+	 */
+	public void setTypeMenu( String strTypeMenu )
+	{
+		_strMenuType = strTypeMenu;
+	}
 
-    /**
-     * Returns the IdPageRoot
-     * 
-     * @return The IdPageRoot
-     */
-    public int getIdPageRoot( )
-    {
-        return _nIdPageRoot;
-    }
+	/**
+	 * Returns the IdPageRoot
+	 * 
+	 * @return The IdPageRoot
+	 */
+	public int getIdPageRoot( )
+	{
+		return _nIdPageRoot;
+	}
 
-    /**
-     * Sets the IdPageRoot
-     * 
-     * @param nIdPageRoot
-     *            The IdPageRoot
-     */
-    public void setIdPageRoot( int nIdPageRoot )
-    {
-        _nIdPageRoot = nIdPageRoot;
-    }
+	/**
+	 * Sets the IdPageRoot
+	 * 
+	 * @param nIdPageRoot
+	 *                    The IdPageRoot
+	 */
+	public void setIdPageRoot( int nIdPageRoot )
+	{
+		_nIdPageRoot = nIdPageRoot;
+	}
 
-    /**
-     * Returns the MenuMarker
-     * 
-     * @return The MenuMarker
-     */
-    public String getMenuMarker( )
-    {
-        return _strMenuMarker;
-    }
+	/**
+	 * Returns the MenuMarker
+	 * 
+	 * @return The MenuMarker
+	 */
+	public String getMenuMarker( )
+	{
+		return _strMenuMarker;
+	}
 
-    /**
-     * Sets the MenuMarker
-     * 
-     * @param strMenuMarker
-     *            The MenuMarker
-     */
-    public void setMenuMarker( String strMenuMarker )
-    {
-        _strMenuMarker = strMenuMarker;
-    }
+	/**
+	 * Sets the MenuMarker
+	 * 
+	 * @param strMenuMarker
+	 *                      The MenuMarker
+	 */
+	public void setMenuMarker( String strMenuMarker )
+	{
+		_strMenuMarker = strMenuMarker;
+	}
 }

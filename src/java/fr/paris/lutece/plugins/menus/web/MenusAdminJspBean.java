@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author lenaini
  */
-public class MenusJspBean extends PluginAdminPageJspBean
+public class MenusAdminJspBean extends PluginAdminPageJspBean
 {
     // Right
     public static final String RIGHT_MANAGE_MENUS = "MENUS_MANAGEMENT";

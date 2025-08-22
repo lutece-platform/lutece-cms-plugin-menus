@@ -1,0 +1,10 @@
+<#include "/skin/plugins/menus/macros/custom_menu_macros.html">
+<#if customMenu??>
+	<#if customMenu.listItems?? && (customMenu.listItems?size > 0)>
+		<#if navBarLutece>
+	  	  	<@renderMenuItems menu=customMenu sitePath=site_path!'' classItem='nav-item' mainNavLutece=navBarLutece/>
+		<#else>
+			<@renderMenu currentMenu=customMenu sitePath=site_path!'' maxDepth=2/>
+		</#if>
+	</#if>
+</#if>

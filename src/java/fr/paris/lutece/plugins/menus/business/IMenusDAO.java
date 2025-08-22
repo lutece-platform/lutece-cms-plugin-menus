@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,65 +42,65 @@ import java.util.Collection;
  */
 public interface IMenusDAO
 {
-    /**
-     * Insert a new record in the table.
-     * 
-     * @param menus
-     *            instance of the Menus object to inssert
-     * @param plugin
-     *            the Plugin
-     */
-    void insert( Menus menus, Plugin plugin );
+	/**
+	 * Insert a new record in the table.
+	 * 
+	 * @param menus
+	 *               instance of the Menus object to inssert
+	 * @param plugin
+	 *               the Plugin
+	 */
+	void insert( Menus menus, Plugin plugin );
 
-    /**
-     * Update the record in the table
-     * 
-     * @param menus
-     *            the reference of the Menus
-     * @param plugin
-     *            the Plugin
-     */
-    void store( Menus menus, Plugin plugin );
+	/**
+	 * Update the record in the table
+	 * 
+	 * @param menus
+	 *               the reference of the Menus
+	 * @param plugin
+	 *               the Plugin
+	 */
+	void store( Menus menus, Plugin plugin );
 
-    /**
-     * Delete a record from the table
-     * 
-     * @param nIdMenus
-     *            int identifier of the Menus to delete
-     * @param plugin
-     *            the Plugin
-     */
-    void delete( int nIdMenus, Plugin plugin );
+	/**
+	 * Delete a record from the table
+	 * 
+	 * @param nIdMenus
+	 *                 int identifier of the Menus to delete
+	 * @param plugin
+	 *                 the Plugin
+	 */
+	void delete( int nIdMenus, Plugin plugin );
 
-    // /////////////////////////////////////////////////////////////////////////
-    // Finders
+	// /////////////////////////////////////////////////////////////////////////
+	// Finders
 
-    /**
-     * Load the data from the table
-     * 
-     * @param nKey
-     *            The identifier of the menus
-     * @param plugin
-     *            the Plugin
-     * @return The instance of the menus
-     */
-    Menus load( int nKey, Plugin plugin );
+	/**
+	 * Load the data from the table
+	 * 
+	 * @param nKey
+	 *               The identifier of the menus
+	 * @param plugin
+	 *               the Plugin
+	 * @return The instance of the menus
+	 */
+	Menus load( int nKey, Plugin plugin );
 
-    /**
-     * Load the data of all the menus objects and returns them as a collection
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return The collection which contains the data of all the menus objects
-     */
-    Collection<Menus> selectAll( Plugin plugin );
+	/**
+	 * Load the data of all the menus objects and returns them as a collection
+	 * 
+	 * @param plugin
+	 *               the Plugin
+	 * @return The collection which contains the data of all the menus objects
+	 */
+	Collection < Menus > selectAll( Plugin plugin );
 
-    /**
-     * Returns the menus count
-     * 
-     * @param plugin
-     *            the Plugin
-     * @return nCount
-     */
-    int selectNbMenus( Plugin plugin );
+	/**
+	 * Returns the menus count
+	 * 
+	 * @param plugin
+	 *               the Plugin
+	 * @return nCount
+	 */
+	int selectNbMenus( Plugin plugin );
 }

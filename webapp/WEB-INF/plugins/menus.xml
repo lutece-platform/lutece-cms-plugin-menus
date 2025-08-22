@@ -41,7 +41,11 @@
             <page-include-service-id>accessibility_anchor_menu</page-include-service-id>
             <page-include-service-class>fr.paris.lutece.plugins.menus.web.AccessibilityAnchorMenuInclude</page-include-service-class>
         </page-include-service>
-    </page-include-services>	
+        <page-include-service>
+            <page-include-service-id>custom_menu</page-include-service-id>
+            <page-include-service-class>fr.paris.lutece.plugins.menus.web.CustomMenuInclude</page-include-service-class>
+        </page-include-service>
+    </page-include-services>
 	
     <!-- Administration interface parameters -->
     <admin-features>
@@ -51,6 +55,13 @@
             <feature-description>menus.adminFeature.menus_management.description</feature-description>
             <feature-level>1</feature-level>
             <feature-url>jsp/admin/plugins/menus/ManageMenus.jsp</feature-url>
+        </admin-feature>
+        <admin-feature>
+            <feature-id>CUSTOM_MENUS_MANAGEMENT</feature-id>
+            <feature-title>menus.adminFeature.custom_menus_management.name</feature-title>
+            <feature-description>menus.adminFeature.custom_menus_management.description</feature-description>
+            <feature-level>0</feature-level>
+            <feature-url>jsp/admin/plugins/menus/ManageCustomMenus.jsp</feature-url>
         </admin-feature>
     </admin-features>
  </plug-in>
