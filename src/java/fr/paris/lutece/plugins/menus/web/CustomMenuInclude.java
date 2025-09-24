@@ -63,24 +63,25 @@ public class CustomMenuInclude implements PageInclude
     // Constants
 
     // Templates
-    private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/custom_menu_list.html";
+    private static final String TEMPLATE_CUSTOM_MENU = "skin/plugins/menus/template_custom_menu.html";
+    private static final String TEMPLATE_MAIN_MENU = "skin/plugins/menus/template_main_menu.html";
+    private static final String TEMPLATE_SIDEBAR_MENU = "skin/plugins/menus/template_sidebar_menu.html";
 
     // Parameters
     private static final String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
     private static final String PARAMETER_CURRENT_MENU = "customMenu";
     private static final String PARAMETER_CUSTOM_MAIN_MENU = "customMenuMainPage";
     private static final String PARAMETER_CUSTOM_INTERNAL_MENU = "customMenuInternalPage";
-    private static final String PARAMETER_NAV_BAR_LUTECE = "navBarLutece";
-    private static final String PARAMETER_COUNTER_MENU = "counterCustomMenu";
+    private static final String PARAMETER_CUSTOM_SIDEBAR_MENU = "customMenuSideBar";
     
     private static final String TYPE_MENU = "menu";
     private static final String TYPE_MAIN_MENU = "main";
     private static final String TYPE_INTERNAL_MENU = "internal";
+    private static final String TYPE_SIDEBAR_MENU = "sidebar";
     
     private static final Integer CURRENT_DEPTH=1;
     private static final Integer MAX_DEPTH=2;
     
-
     /**
      * Substitue specific Freemarker markers in the page template.
      * 
@@ -120,20 +121,27 @@ public class CustomMenuInclude implements PageInclude
             	if( !StringUtils.isBlank( cm.getBookmark( ) ) )
             	{	
             		loadMenuItems( cm, CURRENT_DEPTH, MAX_DEPTH );
-            		rootModel.put( cm.getBookmark( ), getCustomMenuList( cm, nCurrentPageId, nMode, request, false ) );
+            		rootModel.put( cm.getBookmark( ), getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) );
             		
             		if( StringUtils.equals( cm.getType( ), TYPE_MAIN_MENU ) )
             		{
-            			rootModel.put( PARAMETER_CUSTOM_MAIN_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, true ) );
+            			rootModel.put( PARAMETER_CUSTOM_MAIN_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) );
+            			
+            			//In case no internalMenu has been created, main menu is used by default in all internal pages of the site. 
             			if( !isInternalMenu )
             			{
-            				rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, true ) );
+            				rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) );
             			}
             		}
             		
             		if( StringUtils.equals( cm.getType( ), TYPE_INTERNAL_MENU ) )
             		{
-            			rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, true ) );
+            			rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) );
+            		}
+            		
+            		if( StringUtils.equals( cm.getType( ), TYPE_SIDEBAR_MENU ) )
+            		{
+            			rootModel.put( PARAMETER_CUSTOM_SIDEBAR_MENU, getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_SIDEBAR_MENU ) );
             		}
             	}
             }
@@ -151,7 +159,7 @@ public class CustomMenuInclude implements PageInclude
      *            The HTTP request
      * @return the list of childpages
      */
-    private String getCustomMenuList( CustomMenu cm, int nCurrentPageId, int nMode, HttpServletRequest request, Boolean isNavBarLutece )
+    private String getCustomMenuList( CustomMenu cm, int nCurrentPageId, int nMode, HttpServletRequest request, String strTypeMenu )
     {
         HashMap<String, Object> modelList = new HashMap<String, Object>( );
         Locale locale = null;
@@ -163,14 +171,30 @@ public class CustomMenuInclude implements PageInclude
         // Define the site path from url, by mode
         modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
         modelList.put( PARAMETER_CURRENT_MENU, cm );
-        modelList.put( PARAMETER_NAV_BAR_LUTECE, isNavBarLutece );
         
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES, locale, modelList );
+        String strTemplate = getTemplateByType( strTypeMenu );
+        
+        HtmlTemplate templateList = AppTemplateService.getTemplate( strTemplate, locale, modelList );
 
         return templateList.getHtml( );
     }
 
-    /**
+    private String getTemplateByType( String strTypeMenu )
+	{
+    	switch (strTypeMenu) 
+    	{
+            case TYPE_MAIN_MENU:
+                return TEMPLATE_MAIN_MENU;
+            case TYPE_INTERNAL_MENU:
+                return TEMPLATE_MAIN_MENU;
+            case TYPE_SIDEBAR_MENU:
+                return TEMPLATE_SIDEBAR_MENU;
+            default:
+                return TEMPLATE_CUSTOM_MENU;
+        }
+	}
+
+	/**
      * Loads menu items recursively, setting sub-menus for menu type items
      * 
      * @param menu The menu to load items for

@@ -57,7 +57,7 @@ public class CustomMenu implements Serializable
 	@Size( max = 100, message = "#i18n{menus.validation.customMenu.bookmark.size}" )
 	@NotEmpty( message = "#i18n{menus.validation.customMenu.bookmark.notEmpty}" )
 	private String _strBookmark;
-	@Pattern( regexp = "main|internal|submenu", message = "#i18n{menus.validation.customMenu.type.pattern}" )
+	@Pattern( regexp = "main|internal|sidebar|submenu", message = "#i18n{menus.validation.customMenu.type.pattern}" )
 	private String _strType;
 	@Size( max = 255, message = "#i18n{menus.validation.customMenu.description.size}" )
 	private String _strDescription;
@@ -65,8 +65,9 @@ public class CustomMenu implements Serializable
 
 	// Type constants
 	public static final String TYPE_MAIN = "menus.constant_custom_menu.type.main";
-	public static final String TYPE_SUBMENU = "menus.constant_custom_menu.type.submenu";
+	public static final String TYPE_SUBMENU = "menus.constant_custom_menu.type.customMenu";
 	public static final String TYPE_INTERNAL = "menus.constant_custom_menu.type.internal";
+	public static final String TYPE_SIDEBAR = "menus.constant_custom_menu.type.sidebar";
 
 	/**
 	 * Constructor

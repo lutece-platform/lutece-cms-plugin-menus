@@ -49,13 +49,13 @@
 	
     <!-- Administration interface parameters -->
     <admin-features>
-        <admin-feature>
+        <!-- <admin-feature>
             <feature-id>MENUS_MANAGEMENT</feature-id>
             <feature-title>menus.adminFeature.menus_management.name</feature-title>
             <feature-description>menus.adminFeature.menus_management.description</feature-description>
             <feature-level>1</feature-level>
             <feature-url>jsp/admin/plugins/menus/ManageMenus.jsp</feature-url>
-        </admin-feature>
+        </admin-feature> -->
         <admin-feature>
             <feature-id>CUSTOM_MENUS_MANAGEMENT</feature-id>
             <feature-title>menus.adminFeature.custom_menus_management.name</feature-title>

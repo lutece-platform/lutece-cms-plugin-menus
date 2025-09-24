@@ -50,7 +50,8 @@ function toggleFormGroups() {
     const groupUrl = document.getElementById('url-group');
     const groupMenu = document.getElementById('menu-group');
 	const itemUrlInput = document.getElementById('item_url');
-	    
+	const itemLabelInput = document.getElementById('item_label');
+	
     // Vider tous les groupes sauf le type
     clearGroup(groupDynamique);
     clearGroup(groupLabel);
@@ -62,6 +63,9 @@ function toggleFormGroups() {
     hideElement(groupLabel);
     hideElement(groupUrl);
     hideElement(groupMenu);
+	
+	//Remet à enable l'input label
+	if (itemLabelInput) itemLabelInput.disabled = false;
 	  
     const selectedValue = itemTypeSelect.value;
     
@@ -149,6 +153,7 @@ function updateFormFromListItem(type, id, label)
     const itemUrlInput = document.getElementById('item_url');
     const itemTargetMenuSelect = document.getElementById('item_target_menu');
 	const groupDynamic = document.getElementById('dynamic-group');
+	const checkboxDynamic = document.getElementById('item_dynamic');
 	
     if (!itemTypeSelect) return;
     
@@ -162,9 +167,14 @@ function updateFormFromListItem(type, id, label)
     switch (type) {
         case 'page':
 			if (itemIdInput) itemIdInput.value=id;
-            if (itemLabelInput && label) itemLabelInput.value = label.split('-')[0].trim( ).substring(0, 50);
+            //if (itemLabelInput && label) itemLabelInput.value = label.split('-')[0].trim( ).substring(0, 50);
             if (itemUrlInput) itemUrlInput.value = 'page_id='+id;
+			
+			//Checkbox is automatically checked, labelInput is disabled by default.
 			showElement(groupDynamic);
+			checkboxDynamic.checked = true;
+			disableElement(itemLabelInput);
+			
             break;
             
         case 'xpage':
@@ -275,9 +285,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			}
 		}
 	});
-	
-	// Debug : Récupère tous les boutons avec la classe "addCanvas" pour tracer les événements
-	const buttonsCanvas = document.querySelectorAll('.btnAddCanvas');
 	 
     // Initialiser les listeners pour les éléments de liste
     initListItemListeners();

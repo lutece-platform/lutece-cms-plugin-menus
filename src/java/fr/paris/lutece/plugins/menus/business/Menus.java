@@ -44,6 +44,7 @@ public class Menus
 	private String _strMenuName;
 	private String _strMenuType;
 	private String _strMenuMarker;
+	private Boolean isActive;
 
 	/**
 	 * Initialize the Menus
@@ -156,5 +157,17 @@ public class Menus
 	public void setMenuMarker( String strMenuMarker )
 	{
 		_strMenuMarker = strMenuMarker;
+	}
+
+	public Boolean getIsActive( )
+	{
+		return isActive;
+		
+	}
+
+	public void setIsActive( Boolean isActive )
+	{
+		this.isActive = isActive;
+		
 	}
 }

@@ -29,7 +29,11 @@
                 </@formGroup>
                 
                 <@formGroup id='label-group_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemLabel}' labelFor='item_label_modif' mandatory=true  >
-                    <@input type='text' name='label' id='item_label_modif' maxlength=50 value=custom_menu_item.label!''/>
+                    <#if custom_menu_item.isLabelDynamic( )?? && custom_menu_item.isLabelDynamic( )>
+                    <@input type='text' name='label' id='item_label_modif' maxlength=50 value='' disabled=true/>
+                    <#else>
+                    <@input type='text' name='label' id='item_label_modif' maxlength=50 value=custom_menu_item.label!''  />
+                    </#if>
                     <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemLabel}</@formHelp>
                 </@formGroup>
                                             

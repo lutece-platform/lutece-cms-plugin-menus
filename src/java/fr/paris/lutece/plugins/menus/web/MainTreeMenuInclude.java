@@ -66,11 +66,13 @@ public class MainTreeMenuInclude implements PageInclude
 
     // Markers
     private static final String MARK_MENU = "menu";
+    private static final String MARK_MENU_NAME = "menu_name";
     private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
     private static final String MARK_ROOT_PAGE_ID = "root_page_id";
     private static final String MARK_PAGE_MENU_MAIN = "page_tree_menu_main";
     private static final String MARK_PAGE_MENU_TREE = "page_tree_menu_tree";
-
+    
+	
     /**
      * Substitue specific Freemarker markers in the page template.
      * 

@@ -38,9 +38,12 @@ import fr.paris.lutece.plugins.menus.business.CustomMenuHome;
 import fr.paris.lutece.plugins.menus.business.CustomMenuItem;
 import fr.paris.lutece.plugins.menus.business.CustomMenuItemHome;
 import fr.paris.lutece.plugins.menus.service.CustomMenuService;
+import fr.paris.lutece.plugins.menus.service.MainTreeMenuService;
+import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.web.validator.ValidatorCustomItemForm;
 import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
@@ -90,6 +93,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String ACTION_REMOVE_CUSTOM_MENU_ITEM = "removeCustomMenuItem";
 	private static final String ACTION_SEARCH_ITEMS = "searchItems";
 	private static final String ACTION_CHANGE_ITEMS_ORDER = "changeMenuItemsOrder";
+	private static final String ACTION_MODIFY_NATIVE_MENU_SETTINGS = "doModifyNativeMenuSettings";
 
 	// Marks
 	private static final String MARK_ID_CUSTOM_MENU = "id_current_custom_menu";
@@ -105,6 +109,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MARK_CREATE_CUSTOM_MENU_ITEM_ERROR = "create_items_errors_list";
 	private static final String MARK_MODIFY_CUSTOM_MENU_ITEM_ERROR = "modify_items_errors_list";
 	private static final String MARK_SEARCH_CRITERIA = "search_criteria";
+	private static final String MARK_DEPTH_MENU_MAIN = "depth_menu_main";
+	private static final String MARK_DEPTH_MENU_TREE = "depth_menu_tree";
+	private static final String MARK_DEPTH_MENU_TREE_ALL_PAGES = "depth_menu_tree_all_pages";
+	private static final String MARK_OPTION_DEPTH_MAIN = "depth_options_main";
+	private static final String MARK_OPTION_DEPTH_TREE = "depth_options_tree";
 
 	// Parameters
 	private static final String PARAMETER_ID = "id";
@@ -113,6 +122,8 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String PARAMETER_ACTION_MODIFY_CUSTOM_MENU_BUTTON = "actionModifyCustomMenuButton";
 	private static final String PARAMETER_ACTION_SEARCH_ITEMS_BUTTON = "searchItemsButton";
 	private static final String PARAMETER_ORDER_ID = "order_id";
+	private static final String PARAMETER_MENU_TYPE = "menu_type";
+	private static final String PARAMETER_DEPTH_VALUE = "depth_value";
 
 	// Button action value
 	private static final String VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON = "create_custom_menu_with_items";
@@ -127,13 +138,15 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String TEMPLATE_MODIFY_CUSTOM_MENU_ITEM = "/admin/plugins/menus/modify_custom_menu_item.html";
 	private static final String TEMPLATE_MODIFY_CUSTOM_MENU_WITH_ITEMS = "/admin/plugins/menus/modify_custom_menu_with_items.html";
 
-	
 	// Properties for page titles
 	private static final String PROPERTY_PAGE_TITLE_MANAGE_CUSTOM_MENUS = "menus.manage_custom_menus.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_CREATE_CUSTOM_MENU = "menus.create_custom_menu.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_CREATE_CUSTOM_MENU_WITH_ITEMS = "menus.create_custom_menu_with_items.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU = "menus.modify_custom_menu.pageTitle";
 	private static final String PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU_WITH_ITEMS = "menus.modify_custom_menu_with_items.pageTitle";
+	private static final String PROPERTY_MENU_MAIN = "menus.mainTreeMenu.depth.main";
+	private static final String PROPERTY_MENU_TREE = "menus.mainTreeMenu.depth.tree";
+	private static final String PROPERTY_MENU_TREE_ALL_PAGES = "menus.mainTreeMenu.depth.tree.allpages";
 
 	// Jsp paths
 	private static final String JSP_MANAGE_MENUS = "jsp/admin/plugins/menus/ManageCustomMenus.jsp";
@@ -150,6 +163,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MESSAGE_CONFIRM_REMOVE_MENU = "menus.manage_custom_menus.confirmRemove";
 	private static final String MESSAGE_CONFIRM_REMOVE_MENU_ITEM = "menus.manage_custom_menu_items.confirmRemove";
 	private static final String MESSAGE_BOOKMARK_NOT_UNIQUE = "menus.manage_custom_menu.bookmark.notUnique";
+	private static final String MESSAGE_NATIVE_MENU_SETTINGS_UPDATE = "menus.info.native_menu_settings.updated";
+	private static final String MESSAGE_ERROR_UNAUTHORIZED_PROPERTY = "menus.error.unauthorized_property";
+	private static final String MESSAGE_ERROR_INVALID_DEPTH = "menus.error.invalid_depth_value";
+	private static final String MESSAGE_ERROR_INVALID_NUMBER_FORMAT = "menus.error.invalid_number_format";
+	private static final String MESSAGE_ERROR_MISSING_PARAMETER = "menus.error.missing_parameters";
 
 	// Validation
 	private static final String VALIDATION_ATTRIBUTES_PREFIX = "menus.model.entity.custom_menu";
@@ -157,14 +175,19 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	// Constants
 	private static final String MENU_TYPE_MAIN = "main";
 	private static final String MENU_TYPE_SUBMENU = "submenu";
+	private static final String MENU_TYPE_MENU_MAIN = "menuMain";
+	private static final String MENU_TYPE_MENU_TREE = "menuTree";
+	private static final String MENU_TYPE_MENU_TREE_ALL_PAGES = "menuTreeAllPages";
 	private static final String MENU_TYPE_INTERNAL = "internal";
+	private static final String MENU_TYPE_SIDEBAR = "sidebar";
 	private static final String MENU_ITEM_TYPE_EMPTY = "";
 	private static final String MENU_ITEM_TYPE_XPAGE = "xpage";
 	private static final String MENU_ITEM_TYPE_PAGE = "page";
 	private static final String MENU_ITEM_TYPE_EXTERNAL_URL = "external_url";
 	private static final String MENU_ITEM_TYPE_MENU = "menu";
 	private static final Integer ID_CACHE_PAGE_SERVICE_CACHE = 2;
-	
+	private static final String DEFAULT_MAX_DEPTH = "1";
+
 	// Instance variable for custom menu
 	private CustomMenu _currentCustomMenu;
 	private CustomMenuItem _currentCustomMenuItem;
@@ -199,6 +222,13 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				listCustomMenusIds,
 				JSP_MANAGE_MENUS );
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
+
+		model.put( MARK_OPTION_DEPTH_MAIN, getDepthOptions( 1 ) );
+		model.put( MARK_OPTION_DEPTH_TREE, getDepthOptions( 2 ) );
+		model.put( MARK_DEPTH_MENU_MAIN, getDepthPropertyValue( PROPERTY_MENU_MAIN, DEFAULT_MAX_DEPTH ) );
+		model.put( MARK_DEPTH_MENU_TREE, getDepthPropertyValue( PROPERTY_MENU_TREE, DEFAULT_MAX_DEPTH ) );
+		model.put( MARK_DEPTH_MENU_TREE_ALL_PAGES,
+				getDepthPropertyValue( PROPERTY_MENU_TREE_ALL_PAGES, DEFAULT_MAX_DEPTH ) );
 
 		return getPage( PROPERTY_PAGE_TITLE_MANAGE_CUSTOM_MENUS, TEMPLATE_MANAGE_CUSTOM_MENUS, model );
 	}
@@ -235,9 +265,9 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		populate( _currentCustomMenu, request, getLocale( ) );
 		Boolean bIsUniqueBookmark = CustomMenuHome.isUniqueBookmark( _currentCustomMenu, true );
 
-		if( ! validateBean( _currentCustomMenu, VALIDATION_ATTRIBUTES_PREFIX ) || !bIsUniqueBookmark )
+		if( ! validateBean( _currentCustomMenu, VALIDATION_ATTRIBUTES_PREFIX ) || ! bIsUniqueBookmark )
 		{
-			if( !bIsUniqueBookmark )
+			if( ! bIsUniqueBookmark )
 			{
 				addError( I18nService.getLocalizedString( MESSAGE_BOOKMARK_NOT_UNIQUE, getLocale( ) ) );
 			}
@@ -247,7 +277,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		CustomMenuHome.create( _currentCustomMenu );
 		addInfo( INFO_CUSTOM_MENU_CREATED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		String action = request.getParameter( PARAMETER_ACTION_CREATE_CUSTOM_MENU_BUTTON );
 
 		if( StringUtils.equals( VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON, action ) )
@@ -272,10 +302,10 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	public String getModifyCustomMenu( HttpServletRequest request )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
-		
+
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
 		_currentCustomMenu = CustomMenuHome.findByPrimaryKey( nId );
-		 
+
 		Map < String, Object > model = getModel( );
 		model.put( MARK_CUSTOM_MENU, _currentCustomMenu );
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
@@ -292,24 +322,24 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	@Action( ACTION_MODIFY_CUSTOM_MENU )
 	public String doModifyCustomMenu( HttpServletRequest request )
 	{
-		
+
 		_currentCustomMenu = new CustomMenu( );
 		populate( _currentCustomMenu, request, getLocale( ) );
 		Boolean bIsUniqueBookmark = CustomMenuHome.isUniqueBookmark( _currentCustomMenu, false );
-		
-		if( ! validateBean( _currentCustomMenu, VALIDATION_ATTRIBUTES_PREFIX ) || !bIsUniqueBookmark )
+
+		if( ! validateBean( _currentCustomMenu, VALIDATION_ATTRIBUTES_PREFIX ) || ! bIsUniqueBookmark )
 		{
-			if( !bIsUniqueBookmark )
+			if( ! bIsUniqueBookmark )
 			{
 				addError( I18nService.getLocalizedString( MESSAGE_BOOKMARK_NOT_UNIQUE, getLocale( ) ) );
 			}
 			return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 		}
-		
+
 		CustomMenuHome.update( _currentCustomMenu );
 		addInfo( INFO_CUSTOM_MENU_UPDATED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		String action = request.getParameter( PARAMETER_ACTION_MODIFY_CUSTOM_MENU_BUTTON );
 
 		if( StringUtils.equals( VALUE_ACTION_MODIFY_CUSTOM_MENU_BUTTON, action ) )
@@ -331,34 +361,39 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	@View( VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS )
 	public String getModifyCustomMenuWithItems( HttpServletRequest request )
 	{
-		
+
 		if( _currentCustomMenu == null )
 		{
 			return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 		}
-		
+
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
-	
-		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
-		
+
+		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome
+				.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
+
 		Map < String, Object > model = getPaginatedListModelForCustomMenuItem( request, MARK_CUSTOM_MENU_ITEMS_LIST,
-		listCustomMenuItemsIds, JSP_CREATE_ITEM );
+				listCustomMenuItemsIds, JSP_CREATE_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST, CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_XPAGES_LIST, CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( ).getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_XPAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
+				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
-		
+
 		if( _itemValidator != null )
 		{
-		model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
-		_itemValidator = null;
+			model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
+			_itemValidator = null;
 		}
-		
-		return getPage( PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_MODIFY_CUSTOM_MENU_WITH_ITEMS,model );
+
+		return getPage( PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_MODIFY_CUSTOM_MENU_WITH_ITEMS,
+				model );
 	}
-	
+
 	// /////////////REMOVE_CUSTOM_MENU/////////////////
 
 	/**
@@ -394,7 +429,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		CustomMenuHome.remove( nId );
 		addInfo( INFO_CUSTOM_MENU_REMOVED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 	}
 
@@ -427,9 +462,12 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				listCustomMenuItemsIds, JSP_CREATE_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST, CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_XPAGES_LIST, CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( ).getAvailableMenusReferenceList(  _currentCustomMenu ,_strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_XPAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
+				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
 
 		if( _itemValidator != null )
@@ -465,7 +503,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		CustomMenuItemHome.create( _currentCustomMenuItem );
 		addInfo( INFO_CUSTOM_MENU_ITEM_CREATED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		_currentCustomMenuItem = null;
 		return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 	}
@@ -501,9 +539,12 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_CUSTOM_MENU_ITEM, _currentCustomMenuItem );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST, CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_XPAGES_LIST, CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( ).getAvailableMenusReferenceList(  _currentCustomMenu ,_strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_XPAGES_LIST,
+				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
+				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 
 		if( _itemValidator != null )
 		{
@@ -537,7 +578,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		CustomMenuItemHome.update( _currentCustomMenuItem );
 		addInfo( INFO_CUSTOM_MENU_ITEM_UPDATED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		_currentCustomMenuItem = null;
 		return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 	}
@@ -612,7 +653,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		addInfo( INFO_CUSTOM_MENU_ITEM_REMOVED, getLocale( ) );
 		resetPagesCache( );
-		
+
 		return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 	}
 
@@ -736,6 +777,8 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		_listMenuTypes.addItem( MENU_TYPE_MAIN, I18nService.getLocalizedString( CustomMenu.TYPE_MAIN, getLocale( ) ) );
 		_listMenuTypes.addItem( MENU_TYPE_INTERNAL,
 				I18nService.getLocalizedString( CustomMenu.TYPE_INTERNAL, getLocale( ) ) );
+		_listMenuTypes.addItem( MENU_TYPE_SIDEBAR,
+				I18nService.getLocalizedString( CustomMenu.TYPE_SIDEBAR, getLocale( ) ) );
 		_listMenuTypes.addItem( MENU_TYPE_SUBMENU,
 				I18nService.getLocalizedString( CustomMenu.TYPE_SUBMENU, getLocale( ) ) );
 	}
@@ -820,19 +863,206 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				.sorted( Comparator.comparingInt( item -> listIds.indexOf( item.getId( ) ) ) )
 				.collect( Collectors.toList( ) );
 	}
-	
-	
+
 	/**
 	 * Reset Cache of Page Service Cache
 	 * 
-	 */	
+	 */
 	private void resetPagesCache( )
 	{
-        CacheableService cs = CacheService.getCacheableServicesList( ).get( ID_CACHE_PAGE_SERVICE_CACHE );
-        
-        if( cs != null )
-        {
-        	cs.resetCache( );
-        }
+		CacheableService cs = CacheService.getCacheableServicesList( ).get( ID_CACHE_PAGE_SERVICE_CACHE );
+
+		if( cs != null )
+		{
+			cs.resetCache( );
+		}
+	}
+
+	// ////////////////////////////////////////////////////////////////////////////////////
+	// Methods for native menu depth management
+	// ////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Action to modify native menu depth settings
+	 *
+	 * @param request The Http request
+	 * @return The URL to go after performing the action
+	 */
+	@Action( ACTION_MODIFY_NATIVE_MENU_SETTINGS )
+	public String doModifyNativeMenuSettings( HttpServletRequest request )
+	{
+		String menuType = request.getParameter( PARAMETER_MENU_TYPE );
+		String propertyKey = getMenuProperty( menuType );
+		String depthValue = request.getParameter( PARAMETER_DEPTH_VALUE );
+
+		if( StringUtils.isNotBlank( propertyKey ) && StringUtils.isNotBlank( depthValue ) )
+		{
+			try
+			{
+				int depth = Integer.parseInt( depthValue );
+				int maxDepth = getMaxDepthForProperty( propertyKey );
+
+				if( depth >= 0 && depth <= maxDepth )
+				{
+					if( isAuthorizedPropertyKey( propertyKey ) )
+					{
+						DatastoreService.setDataValue( propertyKey, depthValue );
+						clearMenuCache( menuType );
+						resetPagesCache( );
+
+						addInfo( I18nService.getLocalizedString( MESSAGE_NATIVE_MENU_SETTINGS_UPDATE, getLocale( ) ) );
+					}
+					else
+					{
+						addError( I18nService.getLocalizedString( MESSAGE_ERROR_UNAUTHORIZED_PROPERTY, getLocale( ) ) );
+					}
+				}
+				else
+				{
+					addError( I18nService.getLocalizedString( MESSAGE_ERROR_INVALID_DEPTH, getLocale( ) ) + " (0-"
+							+ maxDepth + ")" );
+				}
+			}
+			catch( NumberFormatException e )
+			{
+				addError( I18nService.getLocalizedString( MESSAGE_ERROR_INVALID_NUMBER_FORMAT, getLocale( ) ) );
+			}
+		}
+		else
+		{
+			addError( I18nService.getLocalizedString( MESSAGE_ERROR_MISSING_PARAMETER, getLocale( ) ) );
+		}
+
+		return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
+	}
+
+	/**
+	 * Get depth options for select elements
+	 * 
+	 * @param maxDepth maximum depth allowed
+	 * @return ReferenceList with depth options
+	 */
+	private ReferenceList getDepthOptions( int maxDepth )
+	{
+		ReferenceList depthOptions = new ReferenceList( );
+		depthOptions.addItem( "0",
+				I18nService.getLocalizedString( "menus.manage_custom_menus.depth.empty", getLocale( ) ) );
+
+		for( int i = 1 ; i <= maxDepth ; i ++ )
+		{
+			depthOptions.addItem( String.valueOf( i ),
+					I18nService.getLocalizedString( "menus.manage_custom_menus.depth", getLocale( ) ) + ' ' + i );
+		}
+
+		return depthOptions;
+	}
+
+	/**
+	 * Get current depth property value from datastore
+	 * 
+	 * @param propertyKey  the property key
+	 * @param defaultValue the default value if property doesn't exist
+	 * @return the property value
+	 */
+	private String getDepthPropertyValue( String propertyKey, String defaultValue )
+	{
+		String strDepth = DatastoreService.getDataValue( propertyKey, defaultValue );
+
+		// The depth must be between 0 and 1 for the main menu, and between 0 and 2 for
+		// the other menus
+		try
+		{
+			int nDepth = Integer.parseInt( strDepth );
+
+			if( nDepth < 0 )
+			{
+				DatastoreService.setDataValue( propertyKey, "0" );
+			}
+
+			if( nDepth > 2 )
+			{
+				DatastoreService.setDataValue( propertyKey, defaultValue );
+			}
+		}
+		catch( Exception e )
+		{
+			strDepth = defaultValue;
+		}
+
+		return strDepth;
+
+	}
+
+	/**
+	 * Get property name associated to a menuType
+	 * 
+	 * @param menuType
+	 * @return the name property
+	 */
+	private String getMenuProperty( String menuType )
+	{
+		if( MENU_TYPE_MENU_MAIN.equals( menuType ) )
+			return PROPERTY_MENU_MAIN;
+		if( MENU_TYPE_MENU_TREE.equals( menuType ) )
+			return PROPERTY_MENU_TREE;
+		if( MENU_TYPE_MENU_TREE_ALL_PAGES.equals( menuType ) )
+			return PROPERTY_MENU_TREE_ALL_PAGES;
+
+		return "";
+	}
+
+	/**
+	 * Check if property key is authorized for modification
+	 * 
+	 * @param propertyKey the property key to check
+	 * @return true if authorized, false otherwise
+	 */
+	private boolean isAuthorizedPropertyKey( String propertyKey )
+	{
+		return PROPERTY_MENU_MAIN.equals( propertyKey ) ||
+				PROPERTY_MENU_TREE.equals( propertyKey ) ||
+				PROPERTY_MENU_TREE_ALL_PAGES.equals( propertyKey );
+	}
+
+	/**
+	 * Get maximum depth allowed for a specific property
+	 * 
+	 * @param propertyKey the property key
+	 * @return maximum depth allowed (1 for main menu, 2 for others)
+	 */
+	private int getMaxDepthForProperty( String propertyKey )
+	{
+		if( PROPERTY_MENU_MAIN.equals( propertyKey ) )
+		{
+			return 1;
+		}
+		else if( PROPERTY_MENU_TREE.equals( propertyKey ) ||
+				PROPERTY_MENU_TREE_ALL_PAGES.equals( propertyKey ) )
+		{
+			return 2;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Clear menu cache based on menu type
+	 * 
+	 * @param menuType the menu type
+	 */
+	private void clearMenuCache( String menuType )
+	{
+		if( MENU_TYPE_MENU_MAIN.equals( menuType ) )
+		{
+			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+		}
+		else if( MENU_TYPE_MENU_TREE.equals( menuType ) )
+		{
+			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+		}
+		else if( MENU_TYPE_MENU_TREE_ALL_PAGES.equals( menuType ) )
+		{
+			MainTreeMenuAllPagesService.getInstance( ).getCacheService( ).resetCache( );
+		}
 	}
 }
