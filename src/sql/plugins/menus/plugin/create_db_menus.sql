@@ -1,3 +1,6 @@
+-- liquibase formatted sql
+-- changeset menus:create_db_menus.sql
+-- preconditions onFail:MARK_RAN onError:WARN
 --
 -- Structure for table menus
 --
