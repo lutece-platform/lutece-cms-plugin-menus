@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.service.cache.MainTreeMenuAllPagesCacheService;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -74,8 +75,9 @@ public class MainTreeMenuAllPagesService
      */
     public MenuItem getMainMenuItems( )
     {
-        // Define the level of tree
-        int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, 0 );
+        // Define the level of tree - utilise DatastoreService avec fallback sur AppPropertiesService
+        int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, 
+                    AppPropertiesService.getProperty( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, "0" ) ) );
 
         String strCacheKey = _cacheService.getMainMenuCacheKey( );
         MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
@@ -107,8 +109,9 @@ public class MainTreeMenuAllPagesService
         {
             root = new MenuItem( );
 
-            // Define the level of tree
-            int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, 3 );
+            // Define the level of tree - utilise DatastoreService avec fallback sur AppPropertiesService
+            int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, 
+                        AppPropertiesService.getProperty( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, "3" ) ) );
 
             buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
             _cacheService.putInCache( strCacheKey, root );

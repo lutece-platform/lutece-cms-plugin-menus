@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.service.cache.MainTreeMenuCacheService;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
+import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -74,9 +75,10 @@ public class MainTreeMenuService
      */
     public MenuItem getMainMenuItems( )
     {
-        // Define the level of tree
-        int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_MAIN_LEVEL, 1 );
-
+        // Define the level of tree - Use DatastoreService with fallback on AppPropertiesService
+        int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_MAIN_LEVEL, 
+                    AppPropertiesService.getProperty( PROPERTY_DEPTH_MAIN_LEVEL, "1" ) ) );
+        
         String strCacheKey = _cacheService.getMainMenuCacheKey( );
         MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
 
@@ -84,6 +86,7 @@ public class MainTreeMenuService
         {
             root = new MenuItem( );
 
+            // Use the new method to build menu at specific level
             buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
             _cacheService.putInCache( strCacheKey, root );
         }
@@ -97,10 +100,10 @@ public class MainTreeMenuService
      * @param nCurrentPageId
      *            The current page id
      * @param nRootParentTree
-     *            The root page id
+     *            The parent page of the current page
      * @return the TreeMenuItems from root MenuItem
      */
-    public MenuItem getTreeMenuItems( int nCurrentPageId, int nRootParentTree )
+    public MenuItem getTreeMenuItems( int nCurrentPageId, int nParentCurrentPageId )
     {
         String strCacheKey = _cacheService.getMenuTreeCacheKey( nCurrentPageId );
         MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
@@ -109,27 +112,45 @@ public class MainTreeMenuService
         {
             root = new MenuItem( );
 
-            // Define the level of tree
-            int nDepth = AppPropertiesService.getPropertyInt( PROPERTY_DEPTH_TREE_LEVEL, 0 );
+            // Define the level of tree - utilise DatastoreService avec fallback sur AppPropertiesService
+            int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_TREE_LEVEL, 
+                        AppPropertiesService.getProperty( PROPERTY_DEPTH_TREE_LEVEL, "0" ) ) );
 
-            // if the current page isn't root (1) and isn't 0, we need two levels of childpages, other 0
-            if ( nCurrentPageId != PortalService.getRootPageId( ) && nCurrentPageId != 0 )
+            if ( nDepth > 2 )
             {
                 nDepth = 2;
             }
-
-            // If the root tree isn't site root tree (1), search the list of childpages from this nRootTree, the number of levels defined by nDepth
-            if ( nRootParentTree != PortalService.getRootPageId( ) )
+            
+            
+            int nRootId = PortalService.getRootPageId( );
+            
+            //If page_id=0, then use root site page as root of the generated tree menu. The page id=0 doesn't exist physically as a page. But, in frontend,
+            // you can access to Homepage with the url <site_path>?page_id=0. 
+            if( nCurrentPageId==0 || nCurrentPageId==nRootId ) 
             {
-                buildMenuTree( root, nRootParentTree, nDepth );
+            	//Add only child pages of the root. THe page root doesn't appear in tree menu
+            	buildMenuTree( root, nRootId, nDepth );
             }
-
-            // If the root tree is the site root tree (1), search the list of childpages from the current page, the number of levels defined by nDepth
+            //Cas d'une page fille de la racine du site. On ne peut pas prendre comme point d'entrée pour la fonction buildMenuTree, la page parent de la page courrante
+            //car cela retournerait toutes les pages filles de la racine. On ajoute donc la page courrante puis ses enfants sans passer par la page parent.
+            else if( nParentCurrentPageId == PortalService.getRootPageId( ) )
+            {
+            	//Add currentPage in menu
+	    		MenuItem menuItem = new MenuItem( );
+	            menuItem.setPage( PageHome.findByPrimaryKey( nCurrentPageId ) );
+	            root.addChild( menuItem );
+            	
+	            //Add its child pages
+	            MenuItem childRoot = root.getChilds( ).get( 0 );
+                buildMenuTree( childRoot, nCurrentPageId, nDepth );
+            }
+            //Cas pour toutes les pages qui ne sont ni la racine du site ni une des pages filles de la racine du site
             else
             {
-                buildMenuTree( root, nCurrentPageId, nDepth );
+            	//La valeur 1 est rajoutée à la pronfondeur pour avoir à la fois la pageCourante affichée dans le menu ainsi que ses enfants.
+            	 buildMenuTree( root, nParentCurrentPageId, nDepth + 1 );
             }
-
+            
             _cacheService.putInCache( strCacheKey, root );
         }
 

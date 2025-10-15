@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,102 +58,104 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class AccessibilityAnchorMenuInclude implements PageInclude
 {
-    // ///////////////////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final String TEMPLATE_MENU_ACCESSIBILITY_ANCHOR = "skin/plugins/menus/accessibility_anchor_page.html";
-    private static final String MARK_PAGE_PARAMETER = "page_parameter";
-    private static final String MARK_PAGE_PARAMETER_VALUE = "page_parameter_value";
-    private static final String MENU_MARKER = "accessibility_anchor_menu";
-    private static final String PARAMETER_XPAGE_NAME = "page";
-    private static final String PARAMETER_PAGE_ID = "page_id";
-    private static final String PARAMETER_PAGE_OPERATOR = "=";
+	// ///////////////////////////////////////////////////////////////////////////////////////////
+	// Constants
+	private static final String TEMPLATE_MENU_ACCESSIBILITY_ANCHOR = "skin/plugins/menus/accessibility_anchor_page.html";
+	private static final String MARK_PAGE_PARAMETER = "page_parameter";
+	private static final String MARK_PAGE_PARAMETER_VALUE = "page_parameter_value";
+	private static final String MENU_MARKER = "accessibility_anchor_menu";
+	private static final String PARAMETER_XPAGE_NAME = "page";
+	private static final String PARAMETER_PAGE_ID = "page_id";
+	private static final String PARAMETER_PAGE_OPERATOR = "=";
 
-    /**
-     * Substitue specific Freemarker markers in the page template.
-     * 
-     * @param rootModel
-     *            the HashMap containing markers to substitute
-     * @param data
-     *            A PageData object containing applications data
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     */
-    public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
-    {
-        if ( request != null )
-        {
-            Plugin plugin = PluginService.getPlugin( MenusPlugin.PLUGIN_NAME );
+	/**
+	 * Substitue specific Freemarker markers in the page template.
+	 * 
+	 * @param rootModel
+	 *                  the HashMap containing markers to substitute
+	 * @param data
+	 *                  A PageData object containing applications data
+	 * @param nMode
+	 *                  The current mode
+	 * @param request
+	 *                  The HTTP request
+	 */
+	public void fillTemplate( Map < String, Object > rootModel, PageData data, int nMode, HttpServletRequest request )
+	{
+		if( request != null )
+		{
+			Plugin plugin = PluginService.getPlugin( MenusPlugin.PLUGIN_NAME );
 
-            for ( Menus menus : MenusHome.findAll( plugin ) )
-            {
-                if ( menus.getMenuType( ).equals( MENU_MARKER ) )
-                {
-                    String strMarkerMenuXPage = menus.getMenuMarker( );
-                    rootModel.put( strMarkerMenuXPage, getAccessibilityTemplate( nMode, request ) );
-                }
-            }
-        }
-    }
+			for( Menus menus : MenusHome.findAll( plugin ) )
+			{
+				if( menus.getMenuType( ).equals( MENU_MARKER ) )
+				{
+					String strMarkerMenuXPage = menus.getMenuMarker( );
+					rootModel.put( strMarkerMenuXPage, getAccessibilityTemplate( nMode, request ) );
+				}
+			}
+		}
+	}
 
-    /**
-     * Display the accessibility anchor app
-     * 
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     * @return the page
-     */
-    public String getAccessibilityTemplate( int nMode, HttpServletRequest request )
-    {
-        HashMap<String, Object> modelList = new HashMap<String, Object>( );
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
+	/**
+	 * Display the accessibility anchor app
+	 * 
+	 * @param nMode
+	 *                The current mode
+	 * @param request
+	 *                The HTTP request
+	 * @return the page
+	 */
+	public String getAccessibilityTemplate( int nMode, HttpServletRequest request )
+	{
+		HashMap < String, Object > modelList = new HashMap < String, Object >( );
+		Locale locale = null;
+		if( request != null )
+		{
+			locale = request.getLocale( );
+		}
 
-        String strXPageParameter = request.getParameter( PARAMETER_XPAGE_NAME );
-        String strPageParameter = PARAMETER_XPAGE_NAME + PARAMETER_PAGE_OPERATOR;
-        String strPageParameterValue = strXPageParameter;
+		String strXPageParameter = request.getParameter( PARAMETER_XPAGE_NAME );
+		String strPageParameter = PARAMETER_XPAGE_NAME + PARAMETER_PAGE_OPERATOR;
+		String strPageParameterValue = strXPageParameter;
 
-        if ( strXPageParameter == null )
-        {
-            strPageParameter = "";
-            strPageParameterValue = "";
-        }
+		if( strXPageParameter == null )
+		{
+			strPageParameter = "";
+			strPageParameterValue = "";
+		}
 
-        int nCurrentPageId;
+		int nCurrentPageId;
 
-        try
-        {
-            nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0 : Integer.parseInt( request.getParameter( Parameters.PAGE_ID ) );
-        }
-        catch( NumberFormatException nfe )
-        {
-            AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
-            nCurrentPageId = 0;
-        }
+		try
+		{
+			nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ? 0
+					: Integer.parseInt( request.getParameter( Parameters.PAGE_ID ) );
+		}
+		catch( NumberFormatException nfe )
+		{
+			AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
+			nCurrentPageId = 0;
+		}
 
-        String strCurrentPageId = Integer.toString( nCurrentPageId );
+		String strCurrentPageId = Integer.toString( nCurrentPageId );
 
-        if ( ( strCurrentPageId != null ) && ( !strCurrentPageId.equals( "0" ) ) )
-        {
-            strPageParameter = PARAMETER_PAGE_ID + PARAMETER_PAGE_OPERATOR;
-            strPageParameterValue = strCurrentPageId;
-        }
+		if( ( strCurrentPageId != null ) && ( ! strCurrentPageId.equals( "0" ) ) )
+		{
+			strPageParameter = PARAMETER_PAGE_ID + PARAMETER_PAGE_OPERATOR;
+			strPageParameterValue = strCurrentPageId;
+		}
 
-        // Insert the rows in the list
-        modelList.put( MARK_PAGE_PARAMETER, strPageParameter );
-        modelList.put( MARK_PAGE_PARAMETER_VALUE, strPageParameterValue );
+		// Insert the rows in the list
+		modelList.put( MARK_PAGE_PARAMETER, strPageParameter );
+		modelList.put( MARK_PAGE_PARAMETER_VALUE, strPageParameterValue );
 
-        // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		// Define the site path from url, by mode
+		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_ACCESSIBILITY_ANCHOR, locale, modelList );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_ACCESSIBILITY_ANCHOR, locale,
+				modelList );
 
-        return templateList.getHtml( );
-    }
+		return templateList.getHtml( );
+	}
 }
