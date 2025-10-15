@@ -1,0 +1,74 @@
+<@pageContainer>
+    <@pageColumn>
+        <@pageHeader title='#i18n{menus.modify_custom_menu_item.pageTitle}' />
+			<@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp' id='modify-item-form' name='modify-item-form'>
+
+            	<@messages errors=modify_items_errors_list/>
+            	<@input type='hidden' name='action' value='modifyCustomMenuItem' />
+            	<@input type='hidden' name='parent_menu_id' value=id_current_custom_menu!'' />
+            	<@input type='hidden' id='id_item' name='id' value=custom_menu_item.id!'' />
+            	<@input type='hidden' id='source_id_item_modif' name='source_item_id' value=custom_menu_item.sourceItemId!'' />
+            	<@input type='hidden' name='order' id='item_order_modif' value=custom_menu_item.order!'0'/>
+
+                <@formGroup id='type-group_modif' labelKey='#i18n{menus.modify_custom_menu_item.formTitle}' labelFor='item_type_modif' mandatory=true params="hidden=true">
+                    <@select name='type' id='item_type_modif' items=item_types_list default_value=custom_menu_item.type!''/>
+                </@formGroup>
+                
+                <#if custom_menu_item?? && custom_menu_item.type?? && custom_menu_item.type='page' && custom_menu_item.sourceItemId?? && custom_menu_item.sourceItemId!='' >
+                <#assign paramsForm =""/>
+                <#else>
+                <#assign paramsForm ="hidden=true"/>                
+                </#if>                  
+                <@formGroup id='dynamic-group_modif' params=paramsForm>
+                	<#if custom_menu_item.isLabelDynamic( )?? && custom_menu_item.isLabelDynamic( )>
+                     <@checkBox name='is_label_dynamic' id='item_dynamic_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemIsLabelDynamic}' checked=true value='1' />
+                    <#else>
+                     <@checkBox name='is_label_dynamic' id='item_dynamic_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemIsLabelDynamic}' value='1' />
+                    </#if>
+                    <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemIsLabelDynamic}</@formHelp>
+                </@formGroup>
+                
+                 <#if custom_menu_item?? && custom_menu_item.type?? && custom_menu_item.type='external_url' >
+                <#assign paramsForm =""/>
+                <#else>
+                <#assign paramsForm ="hidden=true"/>                
+                </#if>                  
+                <@formGroup id='blank-group_modif' params=paramsForm>
+                	<#if custom_menu_item.isBlank( )?? && custom_menu_item.isBlank( )>
+                     <@checkBox name='is_blank' id='item_blank_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemIsBlank}' checked=true value='1' />
+                    <#else>
+                     <@checkBox name='is_blank' id='item_blank_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemIsBlank}' value='1' />
+                    </#if>
+                    <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemIsBlank}</@formHelp>
+                </@formGroup>
+                
+                <@formGroup id='label-group_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemLabel}' labelFor='item_label_modif' mandatory=true  >
+                    <#if custom_menu_item.isLabelDynamic( )?? && custom_menu_item.isLabelDynamic( )>
+                    <@input type='text' name='label' id='item_label_modif' maxlength=50 value='' disabled=true/>
+                    <#else>
+                    <@input type='text' name='label' id='item_label_modif' maxlength=50 value=custom_menu_item.label!''  />
+                    </#if>
+                    <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemLabel}</@formHelp>
+                </@formGroup>
+                                            
+                <@formGroup id='url-group_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemUrl}' labelFor='item_url_modif' mandatory=true >
+                    <@input type='text' name='url' id='item_url_modif' value=custom_menu_item.url!''/>
+                    <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemUrlPage}</@formHelp>
+                </@formGroup>
+                
+                <#if custom_menu_item?? && custom_menu_item.type?? && custom_menu_item.type='menu'>
+                <#assign paramsForm ="">
+                <#else>
+                <#assign paramsForm ="hidden=true" />                
+                </#if>  
+                <@formGroup id='menu-group_modif' labelKey='#i18n{menus.modify_custom_menu_item.labelItemSubMenu} *' labelFor='item_target_menu_modif' params=paramsForm >
+                    <@select name="select_menu" id='item_target_menu_modif' items=available_menus_list default_value=custom_menu_item.sourceItemId!'' />
+                    <@formHelp>#i18n{menus.modify_custom_menu_item.helpItemSubMenu}</@formHelp>
+                </@formGroup>
+                
+                <@formGroup>
+                    <@button type='submit' buttonIcon='pencil' title='#i18n{menus.modify_custom_menu_item.buttonModifyItem}' color='primary' />
+                </@formGroup>
+                </@tform>
+ 	  </@pageColumn>
+</@pageContainer>

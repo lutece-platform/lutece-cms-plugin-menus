@@ -1,0 +1,6 @@
+<#include "/skin/plugins/menus/macros/custom_menu_macros.html">
+<#if customMenu??>
+	<#if customMenu.listItems?? && (customMenu.listItems?size > 0)>
+		<@renderMenu currentMenu=customMenu sitePath=site_path!'' maxDepth=2/>
+	</#if>
+</#if>

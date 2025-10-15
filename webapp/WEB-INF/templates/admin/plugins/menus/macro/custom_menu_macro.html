@@ -1,0 +1,21 @@
+<#--
+Macro: comboOrders
+
+Description: Generate a select of integer
+
+Parameters:
+- name (String): name of the select
+- default_value (Integer, optional): value to selected by default
+- max (Integer, optional): value max
+-->
+<#macro comboOrders name default_value max >
+<@select name=name>	
+<#list 1..max as i>		
+<#if "${default_value}" == "${i}">
+	<option selected="selected" value="${i}" >${i}</option>		
+<#else>
+	<option value="${i}" >${i}</option>		
+</#if>	
+</#list>
+</@select>
+</#macro>

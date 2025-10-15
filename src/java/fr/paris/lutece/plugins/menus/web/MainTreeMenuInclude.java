@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,130 +54,137 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class MainTreeMenuInclude implements PageInclude
 {
-    // ///////////////////////////////////////////////////////////////////////////////////////////
-    // Constants
+	// ///////////////////////////////////////////////////////////////////////////////////////////
+	// Constants
 
-    // Templates
-    private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/main_tree_pages_list.html";
-    private static final String TEMPLATE_MENU_PAGES_TREE = "skin/plugins/menus/main_tree_pages_list_tree.html";
+	// Templates
+	private static final String TEMPLATE_MENU_PAGES = "skin/plugins/menus/main_tree_pages_list.html";
+	private static final String TEMPLATE_MENU_PAGES_TREE = "skin/plugins/menus/main_tree_pages_list_tree.html";
 
-    // Parameters
-    private static final String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
+	// Parameters
+	private static final String PARAMETER_CURRENT_PAGE_ID = "current_page_id";
 
-    // Markers
-    private static final String MARK_MENU = "menu";
-    private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
-    private static final String MARK_ROOT_PAGE_ID = "root_page_id";
-    private static final String MARK_PAGE_MENU_MAIN = "page_tree_menu_main";
-    private static final String MARK_PAGE_MENU_TREE = "page_tree_menu_tree";
+	// Markers
+	private static final String MARK_MENU = "menu";
+	private static final String MARK_MENU_NAME = "menu_name";
+	private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
+	private static final String MARK_ROOT_PAGE_ID = "root_page_id";
+	private static final String MARK_PAGE_MENU_MAIN = "page_tree_menu_main";
+	private static final String MARK_PAGE_MENU_TREE = "page_tree_menu_tree";
 
-    /**
-     * Substitue specific Freemarker markers in the page template.
-     * 
-     * @param rootModel
-     *            the HashMap containing markers to substitute
-     * @param data
-     *            A PageData object containing applications data
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     */
-    public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
-    {
-        if ( request != null )
-        {
-            int nCurrentPageId;
+	/**
+	 * Substitue specific Freemarker markers in the page template.
+	 * 
+	 * @param rootModel
+	 *                  the HashMap containing markers to substitute
+	 * @param data
+	 *                  A PageData object containing applications data
+	 * @param nMode
+	 *                  The current mode
+	 * @param request
+	 *                  The HTTP request
+	 */
+	public void fillTemplate( Map < String, Object > rootModel, PageData data, int nMode, HttpServletRequest request )
+	{
+		if( request != null )
+		{
+			int nCurrentPageId;
 
-            /* test parameter name: page_id parameter for a PageContentService, current_page_id for a DocumentContentService */
-            String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null ) ? Parameters.PAGE_ID : PARAMETER_CURRENT_PAGE_ID;
+			/*
+			 * test parameter name: page_id parameter for a PageContentService,
+			 * current_page_id for a DocumentContentService
+			 */
+			String strParameterPageId = ( request.getParameter( PARAMETER_CURRENT_PAGE_ID ) == null )
+					? Parameters.PAGE_ID
+					: PARAMETER_CURRENT_PAGE_ID;
 
-            try
-            {
-                nCurrentPageId = ( request.getParameter( strParameterPageId ) == null ) ? 0 : Integer.parseInt( request.getParameter( strParameterPageId ) );
-            }
-            catch( NumberFormatException nfe )
-            {
-                AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
-                nCurrentPageId = 0;
-            }
+			try
+			{
+				nCurrentPageId = ( request.getParameter( strParameterPageId ) == null ) ? 0
+						: Integer.parseInt( request.getParameter( strParameterPageId ) );
+			}
+			catch( NumberFormatException nfe )
+			{
+				AppLogService.info( "MainMenuInclude.fillTemplate() : " + nfe.getLocalizedMessage( ) );
+				nCurrentPageId = 0;
+			}
 
-            rootModel.put( MARK_PAGE_MENU_MAIN, getMainPageList( nCurrentPageId, nMode, request ) );
-            rootModel.put( MARK_PAGE_MENU_TREE, getTreePageList( nCurrentPageId, nMode, request ) );
-        }
-    }
+			rootModel.put( MARK_PAGE_MENU_MAIN, getMainPageList( nCurrentPageId, nMode, request ) );
+			rootModel.put( MARK_PAGE_MENU_TREE, getTreePageList( nCurrentPageId, nMode, request ) );
+		}
+	}
 
-    /**
-     * Display the list of childpages pages for first level of childpages
-     * 
-     * @param nCurrentPageId
-     *            The current page id
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     * @return the list of childpages
-     */
-    private String getMainPageList( int nCurrentPageId, int nMode, HttpServletRequest request )
-    {
-        HashMap<String, Object> modelList = new HashMap<String, Object>( );
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
+	/**
+	 * Display the list of childpages pages for first level of childpages
+	 * 
+	 * @param nCurrentPageId
+	 *                       The current page id
+	 * @param nMode
+	 *                       The current mode
+	 * @param request
+	 *                       The HTTP request
+	 * @return the list of childpages
+	 */
+	private String getMainPageList( int nCurrentPageId, int nMode, HttpServletRequest request )
+	{
+		HashMap < String, Object > modelList = new HashMap < String, Object >( );
+		Locale locale = null;
+		if( request != null )
+		{
+			locale = request.getLocale( );
+		}
 
-        // Define the root tree for each childpages of root page
-        int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
+		// Define the root tree for each childpages of root page
+		int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
 
-        MenuItem root = MainTreeMenuService.getInstance( ).getMainMenuItems( );
+		MenuItem root = MainTreeMenuService.getInstance( ).getMainMenuItems( );
 
-        modelList.put( MARK_MENU, root );
-        modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
-        modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
+		modelList.put( MARK_MENU, root );
+		modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
+		modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
-        // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		// Define the site path from url, by mode
+		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES, locale, modelList );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES, locale, modelList );
 
-        return templateList.getHtml( );
-    }
+		return templateList.getHtml( );
+	}
 
-    /**
-     * Display the list of childpages pages for other levels
-     * 
-     * @param nCurrentPageId
-     *            The current page id
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     * @return the list of chilpages
-     */
-    private String getTreePageList( int nCurrentPageId, int nMode, HttpServletRequest request )
-    {
-        HashMap<String, Object> modelList = new HashMap<String, Object>( );
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
+	/**
+	 * Display the list of childpages pages for other levels
+	 * 
+	 * @param nCurrentPageId
+	 *                       The current page id
+	 * @param nMode
+	 *                       The current mode
+	 * @param request
+	 *                       The HTTP request
+	 * @return the list of chilpages
+	 */
+	private String getTreePageList( int nCurrentPageId, int nMode, HttpServletRequest request )
+	{
+		HashMap < String, Object > modelList = new HashMap < String, Object >( );
+		Locale locale = null;
+		if( request != null )
+		{
+			locale = request.getLocale( );
+		}
 
-        // Define the root tree for each childpages of root page
-        int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
+		// Define the root tree for each childpages of root page
+		int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
 
-        MenuItem root = MainTreeMenuService.getInstance( ).getTreeMenuItems( nCurrentPageId, nRootParentTree );
+		MenuItem root = MainTreeMenuService.getInstance( ).getTreeMenuItems( nCurrentPageId, nRootParentTree );
 
-        modelList.put( MARK_MENU, root );
-        modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
-        modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
+		modelList.put( MARK_MENU, root );
+		modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
+		modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
-        // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		// Define the site path from url, by mode
+		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES_TREE, locale, modelList );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES_TREE, locale, modelList );
 
-        return templateList.getHtml( );
-    }
+		return templateList.getHtml( );
+	}
 }

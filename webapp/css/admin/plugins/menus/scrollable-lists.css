@@ -1,0 +1,98 @@
+/* Effet hover pour les éléments des listes dans les menus */
+.scrollable-list .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.scrollable-list .list-group-item:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #495057;
+}
+
+.scrollable-list .list-group-item:active {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Classe spécifique pour les éléments cliquables */
+.list-group-item.hoverable-item {
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.list-group-item.hoverable-item:hover {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+    color: #495057 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.list-group-item.hoverable-item:active {
+    background-color: #e9ecef !important;
+    border-color: #dee2e6 !important;
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Pour les thèmes sombres (si applicable) */
+@media (prefers-color-scheme: dark) {
+    .scrollable-list .list-group-item:hover {
+        background-color: #343a40;
+        border-color: #495057;
+        color: #f8f9fa;
+    }
+    
+    .scrollable-list .list-group-item:active {
+        background-color: #23272b;
+        border-color: #495057;
+    }
+    
+    .list-group-item.hoverable-item:hover {
+        background-color: #343a40 !important;
+        border-color: #495057 !important;
+        color: #f8f9fa !important;
+    }
+    
+    .list-group-item.hoverable-item:active {
+        background-color: #23272b !important;
+        border-color: #495057 !important;
+    }
+}
+
+/* Styles pour les tableaux scrollables */
+.scrollable-table {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.scrollable-table table {
+    margin-bottom: 0;
+}
+
+.scrollable-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.scrollable-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Pour les thèmes sombres */
+@media (prefers-color-scheme: dark) {
+    .scrollable-table thead {
+        background-color: #343a40;
+        border-bottom-color: #495057;
+    }
+    
+    .scrollable-table tbody tr:hover {
+        background-color: #343a40;
+    }
+}

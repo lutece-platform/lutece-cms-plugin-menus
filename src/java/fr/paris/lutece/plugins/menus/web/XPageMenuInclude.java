@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,82 +59,82 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class XPageMenuInclude implements PageInclude
 {
-    // ///////////////////////////////////////////////////////////////////////////////////////////
-    // Constants
-    private static final String TEMPLATE_MENU_XPAGES = "skin/plugins/menus/xpages_list.html";
-    private static final String MARK_XPAGES_LIST = "xpages_list";
-    private static final String MENU_MARKER = "xpage_menu";
+	// ///////////////////////////////////////////////////////////////////////////////////////////
+	// Constants
+	private static final String TEMPLATE_MENU_XPAGES = "skin/plugins/menus/xpages_list.html";
+	private static final String MARK_XPAGES_LIST = "xpages_list";
+	private static final String MENU_MARKER = "xpage_menu";
 
-    /**
-     * Substitue specific Freemarker markers in the page template.
-     * 
-     * @param rootModel
-     *            the HashMap containing markers to substitute
-     * @param data
-     *            A PageData object containing applications data
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     */
-    public void fillTemplate( Map<String, Object> rootModel, PageData data, int nMode, HttpServletRequest request )
-    {
-        if ( request != null )
-        {
-            Plugin plugin = PluginService.getPlugin( MenusPlugin.PLUGIN_NAME );
+	/**
+	 * Substitue specific Freemarker markers in the page template.
+	 * 
+	 * @param rootModel
+	 *                  the HashMap containing markers to substitute
+	 * @param data
+	 *                  A PageData object containing applications data
+	 * @param nMode
+	 *                  The current mode
+	 * @param request
+	 *                  The HTTP request
+	 */
+	public void fillTemplate( Map < String, Object > rootModel, PageData data, int nMode, HttpServletRequest request )
+	{
+		if( request != null )
+		{
+			Plugin plugin = PluginService.getPlugin( MenusPlugin.PLUGIN_NAME );
 
-            for ( Menus menus : MenusHome.findAll( plugin ) )
-            {
-                if ( menus.getMenuType( ).equals( MENU_MARKER ) )
-                {
-                    String strMarkerMenuXPage = menus.getMenuMarker( );
-                    rootModel.put( strMarkerMenuXPage, getXPageList( nMode, request ) );
-                }
-            }
-        }
-    }
+			for( Menus menus : MenusHome.findAll( plugin ) )
+			{
+				if( menus.getMenuType( ).equals( MENU_MARKER ) )
+				{
+					String strMarkerMenuXPage = menus.getMenuMarker( );
+					rootModel.put( strMarkerMenuXPage, getXPageList( nMode, request ) );
+				}
+			}
+		}
+	}
 
-    /**
-     * Display the list of plugins app installed on the instance of lutece
-     *
-     * @param nMode
-     *            The current mode
-     * @param request
-     *            The HTTP request
-     * @return the list
-     */
-    private String getXPageList( int nMode, HttpServletRequest request )
-    {
-        HashMap<String, Object> modelList = new HashMap<String, Object>( );
-        Collection<Plugin> pluginList = new ArrayList<Plugin>( );
-        Locale locale = null;
-        if ( request != null )
-        {
-            locale = request.getLocale( );
-        }
+	/**
+	 * Display the list of plugins app installed on the instance of lutece
+	 *
+	 * @param nMode
+	 *                The current mode
+	 * @param request
+	 *                The HTTP request
+	 * @return the list
+	 */
+	private String getXPageList( int nMode, HttpServletRequest request )
+	{
+		HashMap < String, Object > modelList = new HashMap < String, Object >( );
+		Collection < Plugin > pluginList = new ArrayList < Plugin >( );
+		Locale locale = null;
+		if( request != null )
+		{
+			locale = request.getLocale( );
+		}
 
-        // Scan of the list
-        for ( XPageApplicationEntry entry : XPageAppService.getXPageApplicationsList( ) )
-        {
-            if ( entry.isEnable( ) )
-            {
-                Plugin plugin = entry.getPlugin( );
+		// Scan of the list
+		for( XPageApplicationEntry entry : XPageAppService.getXPageApplicationsList( ) )
+		{
+			if( entry.isEnable( ) )
+			{
+				Plugin plugin = entry.getPlugin( );
 
-                if ( plugin != null )
-                {
-                    pluginList.add( plugin );
-                }
-            }
-        }
+				if( plugin != null )
+				{
+					pluginList.add( plugin );
+				}
+			}
+		}
 
-        // Define the site path from url, by mode
-        modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		// Define the site path from url, by mode
+		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
 
-        // Insert the rows in the list
-        modelList.put( MARK_XPAGES_LIST, pluginList );
+		// Insert the rows in the list
+		modelList.put( MARK_XPAGES_LIST, pluginList );
 
-        HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_XPAGES, locale, modelList );
+		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_XPAGES, locale, modelList );
 
-        return templateList.getHtml( );
-    }
+		return templateList.getHtml( );
+	}
 }

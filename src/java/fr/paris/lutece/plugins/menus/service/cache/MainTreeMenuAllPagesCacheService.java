@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2017, Mairie de Paris
+ * Copyright (c) 2002-2025, City of Paris
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,60 +40,60 @@ import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
  */
 public final class MainTreeMenuAllPagesCacheService extends AbstractCacheableService
 {
-    // Properties
-    private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu All Pages Cache";
-    private static final String CACHE_KEY_MAIN_ALL_PAGES = "menus.main.allpages";
-    private static final String CACHE_KEY_TREE_ALL_PAGES = "menus.tree.allpages";
+	// Properties
+	private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu All Pages Cache";
+	private static final String CACHE_KEY_MAIN_ALL_PAGES = "menus.main.allpages";
+	private static final String CACHE_KEY_TREE_ALL_PAGES = "menus.tree.allpages";
 
-    private static MainTreeMenuAllPagesCacheService _instance = new MainTreeMenuAllPagesCacheService( );
+	private static MainTreeMenuAllPagesCacheService _instance = new MainTreeMenuAllPagesCacheService( );
 
-    /**
-     * Private constructor
-     */
-    private MainTreeMenuAllPagesCacheService( )
-    {
-        super( );
-        initCache( );
-    }
+	/**
+	 * Private constructor
+	 */
+	private MainTreeMenuAllPagesCacheService( )
+	{
+		super( );
+		initCache( );
+	}
 
-    /**
-     * Get the instance of the cache service
-     * 
-     * @return The instance of the service
-     */
-    public static MainTreeMenuAllPagesCacheService getInstance( )
-    {
-        return _instance;
-    }
+	/**
+	 * Get the instance of the cache service
+	 * 
+	 * @return The instance of the service
+	 */
+	public static MainTreeMenuAllPagesCacheService getInstance( )
+	{
+		return _instance;
+	}
 
-    /**
-     * Get the cache key for a given main menu
-     * 
-     * @return The cache key for the main
-     */
-    public String getMainMenuCacheKey( )
-    {
-        return CACHE_KEY_MAIN_ALL_PAGES;
-    }
+	/**
+	 * Get the cache key for a given main menu
+	 * 
+	 * @return The cache key for the main
+	 */
+	public String getMainMenuCacheKey( )
+	{
+		return CACHE_KEY_MAIN_ALL_PAGES;
+	}
 
-    /**
-     * Get the cache key for a given menu tree with all pages
-     * 
-     * @param nCurrentPageId
-     *            The id of the menu tree with all pages
-     * @return The cache key for the menu tree with all pages
-     */
-    public String getMenuTreeCacheKey( int nCurrentPageId )
-    {
-        return CACHE_KEY_TREE_ALL_PAGES + nCurrentPageId;
-    }
+	/**
+	 * Get the cache key for a given menu tree with all pages
+	 * 
+	 * @param nCurrentPageId
+	 *                       The id of the menu tree with all pages
+	 * @return The cache key for the menu tree with all pages
+	 */
+	public String getMenuTreeCacheKey( int nCurrentPageId )
+	{
+		return CACHE_KEY_TREE_ALL_PAGES + nCurrentPageId;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName( )
-    {
-        return CACHE_NAME;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getName( )
+	{
+		return CACHE_NAME;
+	}
 }

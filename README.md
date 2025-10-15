@@ -1,38 +1,72 @@
+![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=cms-plugin-menus-deploy)
+[![Alerte](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-menus&metric=alert_status)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-menus)
+[![Line of code](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-menus&metric=ncloc)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-menus)
+[![Coverage](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-menus&metric=coverage)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-menus)
 
-#Plugin menus
+# Plugin menus
 
-##Introduction
+## Introduction
 
-This plugin allows to display the menu of the pages of the site
+This plugin allows you to create and display insertable menus in the frontend of your Lutece sites. Its purpose is to facilitate the creation and manipulation of menus within Lutece sites.
 
-It is possible to display :
-* a main menu to access to the pages of one specific level. The first level of menu is displayed by default as main menu
-* a full menu in tree form to access to the pages of the site whatever the level
+As a reminder, a Lutece site is composed of
+ 
+* **pages**, which are managed (created, modified, deleted) in the back office. These pages correspond to the site's editable content and are organized in the form of a multi-level tree structure. The home page corresponds to the root. Child pages (depth 1) can also have child pages (depth 2), and so on.
+* **xpages**, which correspond to pages associated with plugin features. When adding a plugin (for example, the forms plugin) to the site's POM, the pages intended for site users (e.g., forms), attached to the plugin, are called xpages. To appear on the site, the associated plugin must be activated. Xpages are independent of the main site tree.
+
+
+The menus plugin allows you to manage two types of menus:
+ 
+* Non-customizable menus (NCM)
+* Customizable menus (Custom Menu CM)
+
+## I.Non-customizable menus (NCM)
+Non-customizable menus (NCM). This menus allowed to display only pages of a site (not xpage or external url). They cannot be modified. Three NCM are available :
+ 
+* a **main menu** to access to the pages of one specific level. The first level of menu is displayed by default as main menu
+* a **full menu** in tree form to access to the pages of the site whatever the level
+
 
 It is possible to display these different menus in the pages of the site by adding specific markers in the page template `page_frameset.html` 
 
 These markers are the following :
+ 
 *  `${page_tree_menu_main}` : allow to display the menu of pages of one specific level. By default the first level is displayed
 *  `${page_tree_menu_tree}` : allow to display the menu of child pages of the current page
 *  `${page_tree_menu_tree_all_pages}` : allow to display the full menu in tree form
 
+## II.Customizable menus (CM)
+In the same way, you can display CM by custom marker (called bookmarks in back office) that you need to set in the back office. Customizable menus can be edited (create, modify, delete) from the site's back office. They can contain links to pages, xpages, external URLs, and submenus (1 or 2 deep).
+Three types of CM exist :
+ 
+* **Home page custom menu** : This type of menu can be displayed automatically in default lutece navBar of home page. Home menu has a max depth of 1. They can displayed too with they bookmark
+* **Internal pages custom menu** : This type of menu can be displayed automatically in default lutece navBar of all internal pages. Internal menu has a max depth of 1. They can displayed too with they bookmark. In case of any internal menu exists, home page menu is used by default for all the pages.
+* **SideBar custom menu** : This type of menu can be displayed automatically in default lutece sideBar of home page. Side menu has a max depth of 1. They can displayed too with they bookmark
+* **Custom menu** : This type of menus can be displayed everywhere in the page frameset, by calling of bookmark in html template. e.g.: subMenu1 with bookmark subMenuExample can be displayed in page_frameset with marker `${subMenu1}` . Custom menu has a max depth of 2.
+
+
+Warning, when you change page_frameset, you have to reset page service cache.
+
+## III. Rest feature
 This plugin provides a REST service allowing to get the full menu of the site in tree form in JSON format. In the response, each menu item contain page informations with especially the URL to access to the page
 
-##Configuration
+## Configuration
 
 The menus display is configurable from parameters of the plugin file properties
 
 The main parameters are the following :
+ 
 *  `menus.mainTreeMenu.depth.main` : defines the level of pages displayed through the marker `${page_tree_menu_main}` 
 *  `menus.mainTreeMenu.depth.tree` : defines the level of the current page to display the menu of child pages through the marker `${page_tree_menu_tre}` 
 *  `menus.mainTreeMenu.depth.tree.allpages` : defines the number of level to display when displaying the full menu through the marker `${page_tree_menu_tree_all_pages}` 
 
-##Usage
+
+## Usage
 
 URL to access to the REST service allowing to get the full menu in JSON format : `${base_url}/rest/menus/tree_menu_pages` 
 
 
-[Maven documentation and reports](http://dev.lutece.paris.fr/plugins/plugin-menus/)
+[Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-menus/)
 
 
 

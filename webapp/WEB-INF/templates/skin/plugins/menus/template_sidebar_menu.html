@@ -1,0 +1,58 @@
+<#include "/skin/plugins/menus/macros/custom_menu_macros.html">
+<!-- Bouton toggle pour mobile/tablet -->
+<div class="d-xl-none mb-3">
+    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+    </button>
+</div>
+
+ <!-- Offcanvas sidebar -->
+ <div class="col-xl-3">
+     <div class="offcanvas-xl offcanvas-start border-end" tabindex="-1" id="sidebarOffcanvas">
+         <div class="offcanvas-header">
+             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas"></button>
+         </div>
+         <div class="offcanvas-body p-xl-0">
+             <div class=" rounded">
+                 <nav class="nav flex-column">
+                 	<ul class="navbar-nav">
+                 	<li class="nav-item">
+                 	<a class="nav-link active" href="${site_path!'#'}">#i18n{portal.site.page_home.label}</a>
+					</li>
+					<#list customMenu.listItems as item>
+						<#assign itemUrl = buildItemUrl(item, sitePath) />
+    					<#if item.type!="menu">
+    						<li class="nav-item">
+	       			 		<a class="nav-link" href="${itemUrl}">${item.label!}</a>
+	       			 		</li>
+	       			 	<#else>
+	       			 		<li class="nav-item">
+				                <a class="nav-link" data-bs-toggle="collapse" href="#submenuSidebar${item.label!}" role="button" aria-expanded="false">
+				                    <span class="nav-text">${item.label!}</span>
+				                    <i class="ti ti-chevron-down"></i>
+				                </a>
+				                <div class="collapse submenu" id="submenuSidebar${item.label!}">
+				                    <ul class="sidebar-nav">
+				                    	<#list item.subMenu.listItems as subItem>
+				                        <li class="nav-item">
+				                        	<#assign subItemUrl = buildItemUrl(subItem, sitePath) />
+				       			 			<a class="nav-link" href="${subItemUrl}">${subItem.label!}</a>
+				       			 		</li>
+				       			 		</#list>
+				                    </ul>
+				                </div>
+				            </li>
+	    				</#if>
+					</#list>
+					</ul>
+                 </nav>
+             </div>
+         </div>
+     </div>
+ </div>
+ 
+<script src='js/plugins/menus/menus-sidebar.js'></script>
+
+ 
