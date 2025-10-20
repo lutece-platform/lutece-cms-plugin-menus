@@ -43,6 +43,7 @@ import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.web.validator.ValidatorCustomItemForm;
 import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
+import fr.paris.lutece.portal.service.cache.ManageCacheService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
@@ -59,13 +60,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Custom Menus JSP Bean using MVC annotations
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageCustomMenus.jsp", controllerPath = "jsp/admin/plugins/menus/", right = "CUSTOM_MENUS_MANAGEMENT" )
 public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 {
@@ -185,7 +191,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MENU_ITEM_TYPE_PAGE = "page";
 	private static final String MENU_ITEM_TYPE_EXTERNAL_URL = "external_url";
 	private static final String MENU_ITEM_TYPE_MENU = "menu";
-	private static final Integer ID_CACHE_PAGE_SERVICE_CACHE = 2;
+	private static final String NAME_PAGE_SERVICE_CACHE = "PageCacheService";
 	private static final String DEFAULT_MAX_DEPTH = "1";
 
 	// Instance variable for custom menu
@@ -195,6 +201,18 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private ReferenceList _listMenuItemTypes;
 	private ValidatorCustomItemForm _itemValidator;
 	private String _strFilterCriteria;
+
+	@Inject
+	private CustomMenuService _customMenuService;
+
+	@Inject
+	private MainTreeMenuService _mainTreeMenuService;
+
+	@Inject
+	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService;
+
+	@Inject
+	ManageCacheService _manageCacheService;
 
 	// /////////////////////////////////////////////////
 	// ////////////////CUSTOM_MENUS/////////////////////
@@ -376,12 +394,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				listCustomMenuItemsIds, JSP_CREATE_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST, _customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
 
 		if( _itemValidator != null )
@@ -462,12 +479,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				listCustomMenuItemsIds, JSP_CREATE_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST, _customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
 
 		if( _itemValidator != null )
@@ -539,12 +555,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_CUSTOM_MENU_ITEM, _currentCustomMenuItem );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
-		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_PAGES_LIST, _customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 
 		if( _itemValidator != null )
 		{
@@ -870,7 +885,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 */
 	private void resetPagesCache( )
 	{
-		CacheableService cs = CacheService.getCacheableServicesList( ).get( ID_CACHE_PAGE_SERVICE_CACHE );
+		CacheableService cs = _manageCacheService.getCache( NAME_PAGE_SERVICE_CACHE );
 
 		if( cs != null )
 		{
@@ -1054,15 +1069,15 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	{
 		if( MENU_TYPE_MENU_MAIN.equals( menuType ) )
 		{
-			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+			_mainTreeMenuService.getCacheService( ).resetCache( );
 		}
 		else if( MENU_TYPE_MENU_TREE.equals( menuType ) )
 		{
-			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+			_mainTreeMenuService.getCacheService( ).resetCache( );
 		}
 		else if( MENU_TYPE_MENU_TREE_ALL_PAGES.equals( menuType ) )
 		{
-			MainTreeMenuAllPagesService.getInstance( ).getCacheService( ).resetCache( );
+			_mainTreeMenuAllPagesService.getCacheService( ).resetCache( );
 		}
 	}
 }

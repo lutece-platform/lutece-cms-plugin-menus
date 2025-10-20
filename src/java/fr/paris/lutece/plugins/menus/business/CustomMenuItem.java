@@ -35,12 +35,16 @@ package fr.paris.lutece.plugins.menus.business;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.Size;
-import javax.validation.constraints.Pattern;
+import jakarta.inject.Inject;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.menus.service.CustomMenuService;
+import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 
 /**
  * This is the business class for the object CustomMenuItem
@@ -69,6 +73,8 @@ public class CustomMenuItem implements Serializable
 	public static final String TYPE_PAGE = "menus.constant_custom_menu_item.type.page";
 	public static final String TYPE_EXTERNAL_URL = "menus.constant_custom_menu_item.type.externalUrl";
 	public static final String TYPE_MENU = "menus.constant_custom_menu_item.type.submenu";
+
+	private CustomMenuService _customMenuService = CDI.current( ).select( CustomMenuService.class ).get( );
 
 	/**
 	 * Returns the Id
@@ -206,7 +212,8 @@ public class CustomMenuItem implements Serializable
 		// If an item is a page referenced and option labelDynamic is at true
 		if( this._bIsLabelDynamic && ! StringUtils.isBlank( this._strSourceItemId ) )
 		{
-			String strLabel = CustomMenuService.getInstance( ).getLabelPageById( this._strSourceItemId );
+
+			String strLabel = _customMenuService.getLabelPageById( this._strSourceItemId );
 
 			if( strLabel != null )
 			{

@@ -52,7 +52,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides the list of the xpage on a Html Menu
@@ -64,6 +67,8 @@ public class XPageMenuInclude implements PageInclude
 	private static final String TEMPLATE_MENU_XPAGES = "skin/plugins/menus/xpages_list.html";
 	private static final String MARK_XPAGES_LIST = "xpages_list";
 	private static final String MENU_MARKER = "xpage_menu";
+
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
 
 	/**
 	 * Substitue specific Freemarker markers in the page template.
@@ -128,7 +133,7 @@ public class XPageMenuInclude implements PageInclude
 		}
 
 		// Define the site path from url, by mode
-		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		modelList.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
 
 		// Insert the rows in the list
 		modelList.put( MARK_XPAGES_LIST, pluginList );
