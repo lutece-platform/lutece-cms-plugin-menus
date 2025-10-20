@@ -42,150 +42,262 @@ import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
 /**
  * MainTreeMenuAllPagesService
  */
+@ApplicationScoped
 public class MainTreeMenuAllPagesService
 {
-    // ///////////////////////////////////////////////////////////////////////////////////////////
-    // Constants
+	// ///////////////////////////////////////////////////////////////////////////////////////////
+	// Constants
 
-    // Properties
-    public static final String PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.main.allpages";
-    public static final String PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.tree.allpages";
+	// Properties
+	public static final String PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.main.allpages";
+	public static final String PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES = "menus.mainTreeMenu.depth.tree.allpages";
 
-    private static MainTreeMenuAllPagesCacheService _cacheService = MainTreeMenuAllPagesCacheService.getInstance( );
-    private static MainTreeMenuAllPagesService _instance = new MainTreeMenuAllPagesService( );
+	@Inject
+	private MainTreeMenuAllPagesCacheService _cacheService;
 
-    /**
-     * Get the instance of the service
-     * 
-     * @return The instance of the service
-     */
-    public static MainTreeMenuAllPagesService getInstance( )
-    {
-        return _instance;
-    }
+	/**
+	 * Returns the unique instance of the {@link MainTreeMenuAllPagesService}
+	 * service.
+	 * 
+	 * <p>
+	 * This method is deprecated and is provided for backward compatibility only.
+	 * For new code, use dependency injection with {@code @Inject} to obtain the
+	 * {@link MainTreeMenuAllPagesService} instance instead.
+	 * </p>
+	 * 
+	 * @return The unique instance of {@link MainTreeMenuAllPagesService}.
+	 * 
+	 * @deprecated Use {@code @Inject} to obtain the
+	 *             {@link MainTreeMenuAllPagesService}
+	 *             instance. This method will be removed in future versions.
+	 */
+	@Deprecated( since = "8.0", forRemoval = true )
+	public static MainTreeMenuAllPagesService getInstance( )
+	{
+		return CDI.current( ).select( MainTreeMenuAllPagesService.class ).get( );
+	}
 
-    /**
-     * Return the root MenuItem
-     * 
-     * @return the root MenuItem
-     */
-    public MenuItem getMainMenuItems( )
-    {
-        // Define the level of tree - utilise DatastoreService avec fallback sur AppPropertiesService
-        int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, 
-                    AppPropertiesService.getProperty( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, "0" ) ) );
+	/**
+	 * Return the root MenuItem
+	 * 
+	 * @return the root MenuItem
+	 */
+	public MenuItem getMainMenuItems( )
+	{
+		// Define the level of tree - utilise DatastoreService avec fallback sur
+		// AppPropertiesService
+		int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES,
+				AppPropertiesService.getProperty( PROPERTY_DEPTH_MAIN_LEVEL_ALLPAGES, "0" ) ) );
+		MenuItem root;
 
-        String strCacheKey = _cacheService.getMainMenuCacheKey( );
-        MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
+		if( _cacheService != null && _cacheService.isCacheEnable( ) )
+		{
+			String strCacheKey = _cacheService.getMainMenuCacheKey( );
+			root = ( MenuItem ) _cacheService.get( strCacheKey );
 
-        if ( root == null )
-        {
-            root = new MenuItem( );
+			if( root == null )
+			{
+				root = new MenuItem( );
 
-            buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
-            _cacheService.putInCache( strCacheKey, root );
-        }
+				buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
+				_cacheService.put( strCacheKey, root );
+			}
+		}
+		else
+		{
+			root = new MenuItem( );
+			buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
+		}
 
-        return root;
-    }
+		return root;
+	}
 
-    /**
-     * Return the TreeMenuItems from root MenuItem
-     * 
-     * @param nCurrentPageId
-     *            The current page id
-     * @return the TreeMenuItems from root MenuItem
-     */
-    public MenuItem getTreeMenuItems( int nCurrentPageId )
-    {
-        String strCacheKey = _cacheService.getMenuTreeCacheKey( nCurrentPageId );
-        MenuItem root = (MenuItem) _cacheService.getFromCache( strCacheKey );
+	/**
+	 * Return the TreeMenuItems from root MenuItem
+	 * 
+	 * @param nCurrentPageId
+	 *                       The current page id
+	 * @return the TreeMenuItems from root MenuItem
+	 */
+	public MenuItem getTreeMenuItems( int nCurrentPageId )
+	{
 
-        if ( root == null )
-        {
-            root = new MenuItem( );
+		MenuItem root;
+		String strCacheKey = "";
 
-            // Define the level of tree - utilise DatastoreService avec fallback sur AppPropertiesService
-            int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, 
-                        AppPropertiesService.getProperty( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, "3" ) ) );
+		if( _cacheService != null && _cacheService.isCacheEnable( ) )
+		{
+			strCacheKey = _cacheService.getMenuTreeCacheKey( nCurrentPageId );
+			root = ( MenuItem ) _cacheService.get( strCacheKey );
 
-            buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
-            _cacheService.putInCache( strCacheKey, root );
-        }
+			if( root == null )
+			{
+				root = new MenuItem( );
 
-        return root;
-    }
+				// Define the level of tree
+				int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES,
+						AppPropertiesService.getProperty( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, "3" ) ) );
 
-    /**
-     * Define the root tree id of a page
-     * 
-     * @param nPageId
-     *            The page identifier
-     * @return The parent page identifier or root tree
-     */
-    public int getRootParentTree( int nPageId )
-    {
-        Page page = PageHome.getPage( nPageId );
-        int nParentPageId = page.getParentPageId( );
+				buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
+				_cacheService.put( strCacheKey, root );
+			}
+		}
+		else
+		{
+			root = new MenuItem( );
 
-        if ( nParentPageId == 0 )
-        {
-            return nPageId;
-        }
+			// Define the level of tree
+			int nDepth = Integer.parseInt( DatastoreService.getDataValue( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES,
+					AppPropertiesService.getProperty( PROPERTY_DEPTH_TREE_LEVEL_ALLPAGES, "3" ) ) );
 
-        int nParentTree = nParentPageId;
+			buildMenuTree( root, PortalService.getRootPageId( ), nDepth );
+		}
 
-        int nPageRootId = PortalService.getRootPageId( );
+		return root;
+	}
 
-        while ( nParentPageId != nPageRootId )
-        {
-            nParentTree = nParentPageId;
+	/**
+	 * Define the root tree id of a page
+	 * 
+	 * @param nPageId
+	 *                The page identifier
+	 * @return The parent page identifier or root tree
+	 */
+	public int getRootParentTree( int nPageId )
+	{
+		Page page = PageHome.getPage( nPageId );
+		int nParentPageId = page.getParentPageId( );
 
-            Page parentPage = PageHome.getPage( nParentPageId );
-            nParentPageId = parentPage.getParentPageId( );
-        }
+		if( nParentPageId == 0 )
+		{
+			return nPageId;
+		}
 
-        return nParentTree;
-    }
+		int nParentTree = nParentPageId;
 
-    /**
-     * Build the menu tree from nPageId, the number of levels defined by nDepth
-     * 
-     * @param item
-     *            The MenunItem object
-     * @param nPageId
-     *            The page identifier
-     * @param nDepth
-     *            The page level
-     */
-    private void buildMenuTree( MenuItem item, int nPageId, int nDepth )
-    {
-        if ( nDepth > 0 )
-        {
-            Collection<Page> listPages = PageHome.getChildPages( nPageId );
+		int nPageRootId = PortalService.getRootPageId( );
 
-            for ( Page page : listPages )
-            {
-                MenuItem menuItem = new MenuItem( );
-                menuItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
-                item.addChild( menuItem );
-                buildMenuTree( menuItem, page.getId( ), nDepth - 1 );
-            }
-        }
-    }
+		while( nParentPageId != nPageRootId )
+		{
+			nParentTree = nParentPageId;
 
-    /**
-     * Get the cacheService
-     * 
-     * @return the MainTreeMenuAllPagesCacheService
-     */
-    public MainTreeMenuAllPagesCacheService getCacheService( )
-    {
-        return _cacheService;
-    }
+			Page parentPage = PageHome.getPage( nParentPageId );
+			nParentPageId = parentPage.getParentPageId( );
+		}
+
+		return nParentTree;
+	}
+
+	/**
+	 * Build the menu tree from nPageId, the number of levels defined by nDepth
+	 * 
+	 * @param item
+	 *                The MenunItem object
+	 * @param nPageId
+	 *                The page identifier
+	 * @param nDepth
+	 *                The page level
+	 */
+	private void buildMenuTree( MenuItem item, int nPageId, int nDepth )
+	{
+		if( nDepth > 0 )
+		{
+			Collection < Page > listPages = PageHome.getChildPages( nPageId );
+
+			for( Page page : listPages )
+			{
+				MenuItem menuItem = new MenuItem( );
+				menuItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+				item.addChild( menuItem );
+				buildMenuTree( menuItem, page.getId( ), nDepth - 1 );
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @return MenuItem root of tree
+	 */
+	public MenuItem getFullTreeMenuItems( )
+	{
+		int nRootId = PortalService.getRootPageId( );
+		MenuItem root = new MenuItem( );
+		root.setPage( PageHome.findByPrimaryKey( nRootId ) );
+		buildFullMenuTreeRecursive( root, nRootId );
+		return root;
+	}
+
+	/**
+	 *
+	 * @param item    MenuItem item
+	 * @param nPageId id of the currentPage
+	 */
+	private void buildFullMenuTreeRecursive( MenuItem item, int nPageId )
+	{
+		Collection < Page > listPages = PageHome.getChildPages( nPageId );
+		if( listPages == null || listPages.isEmpty( ) )
+		{
+			// No more child
+			return;
+		}
+		for( Page page : listPages )
+		{
+			MenuItem childItem = new MenuItem( );
+			childItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+			item.addChild( childItem );
+			buildFullMenuTreeRecursive( childItem, page.getId( ) );
+		}
+	}
+
+	/**
+	 * Get the cacheService
+	 * 
+	 * @return the MainTreeMenuAllPagesCacheService
+	 */
+	public MainTreeMenuAllPagesCacheService getCacheService( )
+	{
+		return _cacheService;
+	}
+
+	/**
+	 * Return if cacheService is instancied and enable
+	 * 
+	 * @return true if cacheService is instancied and enable, false otherwise
+	 */
+	public Boolean isMainTreeCacheServiceEnable( )
+	{
+		return _cacheService != null && _cacheService.isCacheEnable( );
+	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
 
 }

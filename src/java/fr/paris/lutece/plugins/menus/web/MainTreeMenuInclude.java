@@ -47,7 +47,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * MainTreeMenuInclude
@@ -71,6 +72,10 @@ public class MainTreeMenuInclude implements PageInclude
 	private static final String MARK_ROOT_PAGE_ID = "root_page_id";
 	private static final String MARK_PAGE_MENU_MAIN = "page_tree_menu_main";
 	private static final String MARK_PAGE_MENU_TREE = "page_tree_menu_tree";
+
+	private MainTreeMenuService _mainTreeMenuService = CDI.current( ).select( MainTreeMenuService.class ).get( );
+
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
 
 	/**
 	 * Substitue specific Freemarker markers in the page template.
@@ -127,6 +132,7 @@ public class MainTreeMenuInclude implements PageInclude
 	 */
 	private String getMainPageList( int nCurrentPageId, int nMode, HttpServletRequest request )
 	{
+
 		HashMap < String, Object > modelList = new HashMap < String, Object >( );
 		Locale locale = null;
 		if( request != null )
@@ -135,16 +141,16 @@ public class MainTreeMenuInclude implements PageInclude
 		}
 
 		// Define the root tree for each childpages of root page
-		int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
+		int nRootParentTree = _mainTreeMenuService.getRootParentTree( nCurrentPageId );
 
-		MenuItem root = MainTreeMenuService.getInstance( ).getMainMenuItems( );
+		MenuItem root = _mainTreeMenuService.getMainMenuItems( );
 
 		modelList.put( MARK_MENU, root );
 		modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
 		modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
 		// Define the site path from url, by mode
-		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		modelList.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
 
 		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES, locale, modelList );
 
@@ -172,16 +178,16 @@ public class MainTreeMenuInclude implements PageInclude
 		}
 
 		// Define the root tree for each childpages of root page
-		int nRootParentTree = MainTreeMenuService.getInstance( ).getRootParentTree( nCurrentPageId );
+		int nRootParentTree = _mainTreeMenuService.getRootParentTree( nCurrentPageId );
 
-		MenuItem root = MainTreeMenuService.getInstance( ).getTreeMenuItems( nCurrentPageId, nRootParentTree );
+		MenuItem root = _mainTreeMenuService.getTreeMenuItems( nCurrentPageId, nRootParentTree );
 
 		modelList.put( MARK_MENU, root );
 		modelList.put( MARK_ROOT_PAGE_ID, nRootParentTree );
 		modelList.put( MARK_CURRENT_PAGE_ID, Integer.toString( nCurrentPageId ) );
 
 		// Define the site path from url, by mode
-		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		modelList.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
 
 		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_PAGES_TREE, locale, modelList );
 

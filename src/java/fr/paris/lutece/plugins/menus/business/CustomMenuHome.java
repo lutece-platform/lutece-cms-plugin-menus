@@ -35,7 +35,8 @@ package fr.paris.lutece.plugins.menus.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
+
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 
@@ -48,8 +49,8 @@ import org.apache.commons.lang3.StringUtils;
 public final class CustomMenuHome
 {
 	// Static variable pointed at the DAO instance
-	private static ICustomMenuDAO _dao = SpringContextService.getBean( "menus.customMenuDAO" );
-	private static ICustomMenuItemDAO _daoItem = SpringContextService.getBean( "menus.customMenuItemDAO" );
+	private static ICustomMenuDAO _dao = CDI.current( ).select( ICustomMenuDAO.class ).get( );
+	private static ICustomMenuItemDAO _daoItem = CDI.current( ).select( ICustomMenuItemDAO.class ).get( );
 	private static Plugin _plugin = PluginService.getPlugin( "menus" );
 
 	/**

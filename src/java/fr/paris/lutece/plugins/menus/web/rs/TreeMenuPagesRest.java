@@ -36,13 +36,16 @@ package fr.paris.lutece.plugins.menus.web.rs;
 import java.util.Collection;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -83,6 +86,10 @@ public class TreeMenuPagesRest
 	private static final String STATUS_OK = "OK";
 	private static final String STATUS_KO = "KO";
 
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
+	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService = CDI.current( )
+			.select( MainTreeMenuAllPagesService.class ).get( );
+
 	private String _strPageFullLink;
 
 	/**
@@ -101,11 +108,11 @@ public class TreeMenuPagesRest
 		String strTreeOfMenuPages = StringUtils.EMPTY;
 
 		setPageFullLink(
-				AppPathService.getBaseUrl( request ) + MenusService.getInstance( ).getSitePath( 0 ) + "?page_id=" );
+				AppPathService.getBaseUrl( request ) + _menusService.getSitePath( 0 ) + "?page_id=" );
 
 		try
 		{
-			MenuItem rootMenuItem = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
+			MenuItem rootMenuItem = _mainTreeMenuAllPagesService.getTreeMenuItems( 0 );
 			if( rootMenuItem != null )
 			{
 				strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem );

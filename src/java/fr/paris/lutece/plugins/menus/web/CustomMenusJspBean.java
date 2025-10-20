@@ -43,31 +43,46 @@ import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.web.validator.ValidatorCustomItemForm;
 import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
+import fr.paris.lutece.portal.service.cache.ManageCacheService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.i18n.I18nService;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
+import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
+import fr.paris.lutece.portal.web.cdi.mvc.Models;
+import fr.paris.lutece.portal.web.util.IPager;
+import fr.paris.lutece.portal.web.util.Pager;
+import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Custom Menus JSP Bean using MVC annotations
  */
+@SessionScoped
+@Named
 @Controller( controllerJsp = "ManageCustomMenus.jsp", controllerPath = "jsp/admin/plugins/menus/", right = "CUSTOM_MENUS_MANAGEMENT" )
-public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
+public class CustomMenusJspBean extends MVCAdminJspBean
 {
 
 	private static final long serialVersionUID = 2L;
@@ -109,6 +124,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MARK_CREATE_CUSTOM_MENU_ITEM_ERROR = "create_items_errors_list";
 	private static final String MARK_MODIFY_CUSTOM_MENU_ITEM_ERROR = "modify_items_errors_list";
 	private static final String MARK_SEARCH_CRITERIA = "search_criteria";
+	private static final String MARK_MAX_ORDER_SIZE = "max_order_size";
 	private static final String MARK_DEPTH_MENU_MAIN = "depth_menu_main";
 	private static final String MARK_DEPTH_MENU_TREE = "depth_menu_tree";
 	private static final String MARK_DEPTH_MENU_TREE_ALL_PAGES = "depth_menu_tree_all_pages";
@@ -151,6 +167,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	// Jsp paths
 	private static final String JSP_MANAGE_MENUS = "jsp/admin/plugins/menus/ManageCustomMenus.jsp";
 	private static final String JSP_CREATE_ITEM = "jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=createCustomMenuWithItems";
+	private static final String JSP_MODIFY_ITEM = "jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenuWithItems";
 
 	// Info messages
 	private static final String INFO_CUSTOM_MENU_CREATED = "menus.info.custom_menu.created";
@@ -185,7 +202,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MENU_ITEM_TYPE_PAGE = "page";
 	private static final String MENU_ITEM_TYPE_EXTERNAL_URL = "external_url";
 	private static final String MENU_ITEM_TYPE_MENU = "menu";
-	private static final Integer ID_CACHE_PAGE_SERVICE_CACHE = 2;
+	private static final String NAME_PAGE_SERVICE_CACHE = "PageCacheService";
 	private static final String DEFAULT_MAX_DEPTH = "1";
 
 	// Instance variable for custom menu
@@ -195,6 +212,26 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private ReferenceList _listMenuItemTypes;
 	private ValidatorCustomItemForm _itemValidator;
 	private String _strFilterCriteria;
+
+	@Inject
+	private CustomMenuService _customMenuService;
+
+	@Inject
+	private MainTreeMenuService _mainTreeMenuService;
+
+	@Inject
+	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService;
+
+	@Inject
+	private ManageCacheService _manageCacheService;
+
+	@Inject
+	@Pager( name = "pagerItem", listBookmark = MARK_CUSTOM_MENU_ITEMS_LIST )
+	private IPager < CustomMenuItem, Void > _pagerItem;
+
+	@Inject
+	@Pager( name = "pagerMenu", listBookmark = MARK_CUSTOM_MENUS_LIST )
+	private IPager < CustomMenu, Void > _pagerMenu;
 
 	// /////////////////////////////////////////////////
 	// ////////////////CUSTOM_MENUS/////////////////////
@@ -209,20 +246,22 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( value = VIEW_MANAGE_CUSTOM_MENUS, defaultView = true )
-	public String getManageCustomMenus( HttpServletRequest request )
+	public String getManageCustomMenus( HttpServletRequest request, Models model )
 	{
 		_currentCustomMenu = null;
 		_currentCustomMenuItem = null;
 
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
+		List < CustomMenu > listCustomMenus = getFormatedCustomMenusList( );
 
-		List < Integer > listCustomMenusIds = CustomMenuHome.getIdMenusList( );
+		UrlItem url = new UrlItem( JSP_MANAGE_MENUS );
+		String strUrl = url.getUrl( );
+		
+		_pagerMenu.withBaseUrl( strUrl )
+				.withListItem( listCustomMenus )
+				.populateModels( request, model, getLocale( ) );
 
-		Map < String, Object > model = getPaginatedListModelForCustomMenu( request, MARK_CUSTOM_MENUS_LIST,
-				listCustomMenusIds,
-				JSP_MANAGE_MENUS );
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
-
 		model.put( MARK_OPTION_DEPTH_MAIN, getDepthOptions( 1 ) );
 		model.put( MARK_OPTION_DEPTH_TREE, getDepthOptions( 2 ) );
 		model.put( MARK_DEPTH_MENU_MAIN, getDepthPropertyValue( PROPERTY_MENU_MAIN, DEFAULT_MAX_DEPTH ) );
@@ -230,7 +269,26 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		model.put( MARK_DEPTH_MENU_TREE_ALL_PAGES,
 				getDepthPropertyValue( PROPERTY_MENU_TREE_ALL_PAGES, DEFAULT_MAX_DEPTH ) );
 
+		putFillCommonsInModel( model );
+			
 		return getPage( PROPERTY_PAGE_TITLE_MANAGE_CUSTOM_MENUS, TEMPLATE_MANAGE_CUSTOM_MENUS, model );
+	}
+
+	/**
+	 * set fillCommons in model
+	 *
+	 * @param model model
+	 */
+	private void putFillCommonsInModel( Models model )
+	{
+		Map < String, Object > modelTmp = new HashMap<>( );
+		fillCommons( modelTmp );
+		
+	    for( Map.Entry<String, Object> entry : modelTmp.entrySet( ) )
+	    {
+	        model.put( entry.getKey( ), entry.getValue( ) );
+	    }
+		
 	}
 
 	// /////////////CREATE_CUSTOM_MENU/////////////////
@@ -242,11 +300,10 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_CREATE_CUSTOM_MENU )
-	public String getCreateCustomMenu( HttpServletRequest request )
+	public String getCreateCustomMenu( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
 
-		Map < String, Object > model = getModel( );
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
 
 		return getPage( PROPERTY_PAGE_TITLE_CREATE_CUSTOM_MENU, TEMPLATE_CREATE_CUSTOM_MENU, model );
@@ -269,7 +326,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		{
 			if( ! bIsUniqueBookmark )
 			{
-				addError( I18nService.getLocalizedString( MESSAGE_BOOKMARK_NOT_UNIQUE, getLocale( ) ) );
+				addError( MESSAGE_BOOKMARK_NOT_UNIQUE, getLocale( ) );
 			}
 			return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 		}
@@ -299,14 +356,13 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_MODIFY_CUSTOM_MENU )
-	public String getModifyCustomMenu( HttpServletRequest request )
+	public String getModifyCustomMenu( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
 
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
 		_currentCustomMenu = CustomMenuHome.findByPrimaryKey( nId );
 
-		Map < String, Object > model = getModel( );
 		model.put( MARK_CUSTOM_MENU, _currentCustomMenu );
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
 
@@ -359,7 +415,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS )
-	public String getModifyCustomMenuWithItems( HttpServletRequest request )
+	public String getModifyCustomMenuWithItems( HttpServletRequest request, Models model )
 	{
 
 		if( _currentCustomMenu == null )
@@ -369,26 +425,34 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
 
-		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome
-				.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
+		UrlItem url = new UrlItem( JSP_MODIFY_ITEM );
+		String strUrl = url.getUrl( );
 
-		Map < String, Object > model = getPaginatedListModelForCustomMenuItem( request, MARK_CUSTOM_MENU_ITEMS_LIST,
-				listCustomMenuItemsIds, JSP_CREATE_ITEM );
+		List < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
+				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
+
+		_pagerItem.withBaseUrl( strUrl )
+				.withListItem( listCustomMenuItems )
+				.populateModels( request, model, getLocale( ) );
+
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
 		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+				_customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
+		model.put( MARK_MAX_ORDER_SIZE, listCustomMenuItems.size( ) );
 
 		if( _itemValidator != null )
 		{
 			model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
 			_itemValidator = null;
 		}
+		
+		putFillCommonsInModel( model );
 
 		return getPage( PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_MODIFY_CUSTOM_MENU_WITH_ITEMS,
 				model );
@@ -404,7 +468,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the html code to confirm
 	 */
 	@View( VIEW_CONFIRM_REMOVE_CUSTOM_MENU )
-	public String getConfirmRemoveCustomMenu( HttpServletRequest request )
+	public String getConfirmRemoveCustomMenu( HttpServletRequest request, Models model )
 	{
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
 		UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_CUSTOM_MENU ) );
@@ -446,7 +510,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS )
-	public String getCreateCustomMenuWithItems( HttpServletRequest request )
+	public String getCreateCustomMenuWithItems( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
 
@@ -455,26 +519,34 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 			return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 		}
 
-		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome
-				.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
+		UrlItem url = new UrlItem( JSP_CREATE_ITEM );
+		String strUrl = url.getUrl( );
 
-		Map < String, Object > model = getPaginatedListModelForCustomMenuItem( request, MARK_CUSTOM_MENU_ITEMS_LIST,
-				listCustomMenuItemsIds, JSP_CREATE_ITEM );
+		List < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
+				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
+
+		_pagerItem.withBaseUrl( strUrl )
+				.withListItem( listCustomMenuItems )
+				.populateModels( request, model, getLocale( ) );
+
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
 		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+				_customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
+		model.put( MARK_MAX_ORDER_SIZE, listCustomMenuItems.size( ) );
 
 		if( _itemValidator != null )
 		{
 			model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
 			_itemValidator = null;
 		}
+		
+		putFillCommonsInModel( model );
 
 		return getPage( PROPERTY_PAGE_TITLE_CREATE_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_CREATE_CUSTOM_MENU_WITH_ITEMS,
 				model );
@@ -517,7 +589,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_MODIFY_CUSTOM_MENU_ITEM )
-	public String getModifyCustomMenuItem( HttpServletRequest request )
+	public String getModifyCustomMenuItem( HttpServletRequest request, Models model )
 	{
 		if( _currentCustomMenu == null )
 		{
@@ -535,16 +607,15 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 			return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 		}
 
-		Map < String, Object > model = getModel( );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_CUSTOM_MENU_ITEM, _currentCustomMenuItem );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
 		model.put( MARK_AVAILABLE_PAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailablePagesReferenceList( _strFilterCriteria ) );
+				_customMenuService.getAvailablePagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_XPAGES_LIST,
-				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
-		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
-				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
+				_customMenuService.getAvailableXpagesReferenceList( _strFilterCriteria ) );
+		model.put( MARK_AVAILABLE_MENUS_LIST,
+				_customMenuService.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 
 		if( _itemValidator != null )
 		{
@@ -592,7 +663,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 * @return the View
 	 */
 	@View( VIEW_CONFIRM_REMOVE_CUSTOM_MENU_ITEM )
-	public String getConfirmRemoveCustomMenuItem( HttpServletRequest request )
+	public String getConfirmRemoveCustomMenuItem( HttpServletRequest request, Models model )
 	{
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
 		UrlItem url = new UrlItem( getActionUrl( ACTION_REMOVE_CUSTOM_MENU_ITEM ) );
@@ -809,19 +880,6 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 	// /////////PAGINATOR FOR CUSTOM MENU//////////
 
-	@Override
-	List < Object > getItemsFromIds( List < Integer > listIds, String strBookmark )
-	{
-		if( StringUtils.equals( strBookmark, MARK_CUSTOM_MENU_ITEMS_LIST ) )
-		{
-			return getMenuItemsListFromIds( listIds );
-		}
-		else
-		{
-			return getMenusListFromIds( listIds );
-		}
-	}
-
 	/**
 	 * Get MenuList from a list ids of menu
 	 * 
@@ -829,10 +887,10 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 *                list of Ids
 	 * @return menu list
 	 */
-	private List < Object > getMenusListFromIds( List < Integer > listIds )
+	private List < CustomMenu > getFormatedCustomMenusList( )
 	{
 
-		List < CustomMenu > listCustomMenus = CustomMenuHome.getMenusListByIds( listIds );
+		List < CustomMenu > listCustomMenus = CustomMenuHome.getCustomMenusList( );
 		Map < String, String > mapMenuType = _listMenuTypes.toMap( );
 
 		// Set Type values according to message ressource file.
@@ -842,40 +900,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		}
 
 		// keep original order
-		return listCustomMenus.stream( ).sorted( Comparator.comparingInt( menu -> listIds.indexOf( menu.getId( ) ) ) )
-				.collect( Collectors.toList( ) );
-	}
-
-	/**
-	 * Get ItemList from a list ids of items
-	 * 
-	 * @param listIds
-	 *                list of Ids
-	 * @return item list
-	 */
-	private List < Object > getMenuItemsListFromIds( List < Integer > listIds )
-	{
-		Collection < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
-				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
-
-		// keep original order
-		return listCustomMenuItems.stream( )
-				.sorted( Comparator.comparingInt( item -> listIds.indexOf( item.getId( ) ) ) )
-				.collect( Collectors.toList( ) );
-	}
-
-	/**
-	 * Reset Cache of Page Service Cache
-	 * 
-	 */
-	private void resetPagesCache( )
-	{
-		CacheableService cs = CacheService.getCacheableServicesList( ).get( ID_CACHE_PAGE_SERVICE_CACHE );
-
-		if( cs != null )
-		{
-			cs.resetCache( );
-		}
+		return listCustomMenus;
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////
@@ -1052,17 +1077,41 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	 */
 	private void clearMenuCache( String menuType )
 	{
-		if( MENU_TYPE_MENU_MAIN.equals( menuType ) )
+		if( StringUtils.equals( MENU_TYPE_MENU_MAIN, menuType ) )
 		{
-			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
+			{
+				_mainTreeMenuService.getCacheService( ).resetCache( );
+			}
 		}
-		else if( MENU_TYPE_MENU_TREE.equals( menuType ) )
+		else if( StringUtils.equals( MENU_TYPE_MENU_TREE, menuType ) )
 		{
-			MainTreeMenuService.getInstance( ).getCacheService( ).resetCache( );
+			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
+			{
+				_mainTreeMenuService.getCacheService( ).resetCache( );
+			}
 		}
-		else if( MENU_TYPE_MENU_TREE_ALL_PAGES.equals( menuType ) )
+		else if( StringUtils.equals( MENU_TYPE_MENU_TREE_ALL_PAGES, menuType ) )
 		{
-			MainTreeMenuAllPagesService.getInstance( ).getCacheService( ).resetCache( );
+			if( _mainTreeMenuAllPagesService.isMainTreeCacheServiceEnable( ) )
+			{
+				_mainTreeMenuAllPagesService.getCacheService( ).resetCache( );
+			}
 		}
 	}
+
+	/**
+	 * Reset Cache of Page Service Cache
+	 * 
+	 */
+	private void resetPagesCache( )
+	{
+		CacheableService cs = _manageCacheService.getCache( NAME_PAGE_SERVICE_CACHE );
+
+		if( cs != null )
+		{
+			cs.resetCache( );
+		}
+	}
+
 }

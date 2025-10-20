@@ -33,8 +33,6 @@
  */
 package fr.paris.lutece.plugins.menus.service;
 
-import org.apache.commons.lang3.StringUtils;
-
 import fr.paris.lutece.plugins.menus.business.CustomMenu;
 import fr.paris.lutece.plugins.menus.business.CustomMenuHome;
 import fr.paris.lutece.plugins.menus.business.MenuItem;
@@ -44,45 +42,44 @@ import fr.paris.lutece.portal.web.xpages.XPageApplicationEntry;
 import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
+import org.apache.commons.lang3.StringUtils;
+
+@ApplicationScoped
 public class CustomMenuService
 {
-    public static final int MODE_SITE = 0;
-    public static final int MODE_ADMIN = 1;
-    public static final String MARKER_SITE_PATH = "site_path";
+	public static final int MODE_SITE = 0;
+	public static final int MODE_ADMIN = 1;
+	public static final String MARKER_SITE_PATH = "site_path";
 
-    private static CustomMenuService _singleton = new CustomMenuService( );
+	@Inject
+	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService;
 
+	/**
+	 * Define the site path : Portal Url when mode isn't admin mode, otherwise
+	 * AdminPortalUrl
+	 * 
+	 * @param nMode
+	 *              the mode define by the request
+	 * @return site path depending on the mode
+	 */
+	public String getSitePath( int nMode )
+	{
+		String strSitePath = AppPathService.getAdminPortalUrl( );
 
-    /**
-     * Returns the instance of the singleton
-     *
-     * @return The instance of the singleton
-     */
-    public static CustomMenuService getInstance( )
-    {
-        return _singleton;
-    }
+		if( nMode != MODE_ADMIN )
+		{
+			strSitePath = AppPathService.getPortalUrl( );
+		}
 
-    /**
-     * Define the site path : Portal Url when mode isn't admin mode, otherwise AdminPortalUrl
-     * 
-     * @param nMode
-     *            the mode define by the request
-     * @return site path depending on the mode
-     */
-    public String getSitePath( int nMode )
-    {
-        String strSitePath = AppPathService.getAdminPortalUrl( );
+		return strSitePath;
+	}
 
-        if ( nMode != MODE_ADMIN )
-        {
-            strSitePath = AppPathService.getPortalUrl( );
-        }
-
-        return strSitePath;
-    }
-    
 	/**
 	 * Check if an item match with filter criteria
 	 * 
@@ -108,12 +105,11 @@ public class CustomMenuService
 
 		return isValid;
 	}
-	
+
 	// ////////////////////////////////////////////
 	// ///////////GETTERS REFERENCE LISTS//////////
 	// ////////////////////////////////////////////
-	
- 	
+
 	/**
 	 * Get the available menus reference list
 	 * 
@@ -156,23 +152,23 @@ public class CustomMenuService
 
 		return referenceList;
 	}
-	
-	 /**
+
+	/**
 	 * Get the available menus reference list
 	 * 
 	 * @return the reference list
 	 */
 	public ReferenceList getAvailablePagesReferenceList( String strFilterCriteria )
 	{
-		MenuItem root = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
-	
+		MenuItem root = _mainTreeMenuAllPagesService.getFullTreeMenuItems( );
+
 		ReferenceList referenceList = new ReferenceList( );
-	
+
 		if( root != null )
 		{
 			traverseItem( root, referenceList, strFilterCriteria );
 		}
-	
+
 		return referenceList;
 	}
 
@@ -210,17 +206,39 @@ public class CustomMenuService
 
 	public String getLabelPageById( String strSourceItemId )
 	{
-			
-			ReferenceList listPages = getAvailablePagesReferenceList( "" ) ;
-			
-			for( ReferenceItem page : listPages)
+
+		ReferenceList listPages = getAvailablePagesReferenceList( "" );
+
+		for( ReferenceItem page : listPages )
+		{
+			if( StringUtils.equals( strSourceItemId, page.getCode( ) ) )
 			{
-				if( StringUtils.equals( strSourceItemId, page.getCode( ) ) )
-				{
-					return page.getName( );
-				}
+				return page.getName( );
 			}
-			
-			return "";
+		}
+
+		return "";
 	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
+
 }

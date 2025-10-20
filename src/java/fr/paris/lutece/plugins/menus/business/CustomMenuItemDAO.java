@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.menus.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.sql.DAOUtil;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import java.util.List;
 /**
  * This class provides Data Access methods for CustomMenuItem objects
  */
+@ApplicationScoped
 public final class CustomMenuItemDAO implements ICustomMenuItemDAO
 {
 	// Constants

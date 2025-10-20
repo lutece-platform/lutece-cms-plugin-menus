@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.menus.service;
 
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
+import jakarta.inject.Inject;
 
 /**
  * The Menus Plugin
@@ -42,14 +43,17 @@ import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
  */
 public class MenusPlugin extends PluginDefaultImplementation
 {
-    // Constants
-    public static final String PLUGIN_NAME = "menus";
+	// Constants
+	public static final String PLUGIN_NAME = "menus";
 
-    /**
-     * Initialize the plugin Menus
-     */
-    public void init( )
-    {
-        MenusService.getInstance( ).init( );
-    }
+	@Inject
+	private MenusService _menusService;
+
+	/**
+	 * Initialize the plugin Menus
+	 */
+	public void init( )
+	{
+		_menusService.init( );
+	}
 }
