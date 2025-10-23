@@ -164,7 +164,7 @@ public class CustomMenuService
 	 */
 	public ReferenceList getAvailablePagesReferenceList( String strFilterCriteria )
 	{
-		MenuItem root = MainTreeMenuAllPagesService.getInstance( ).getTreeMenuItems( 0 );
+		MenuItem root = MainTreeMenuAllPagesService.getInstance( ).getFullTreeMenuItems( );
 	
 		ReferenceList referenceList = new ReferenceList( );
 	

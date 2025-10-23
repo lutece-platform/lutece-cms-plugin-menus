@@ -2,7 +2,7 @@
 	<div id="content">
 		<ul>
 			<#list menu.childs as submenu >
-				<a href="${site_path}?page_id=${submenu.page.id}" target="_top">${submenu.page.name}<#if submenu.page.description?has_content> - ${submenu.page.description}</#if></a></li>
+				<li><a href="${site_path}?page_id=${submenu.page.id}" target="_top">${submenu.page.name}<#if submenu.page.description?has_content> - ${submenu.page.description}</#if></a></li>
 					<#if submenu.childs?has_content>
 						<ul>
 							<#list submenu.childs as subsubmenu >
