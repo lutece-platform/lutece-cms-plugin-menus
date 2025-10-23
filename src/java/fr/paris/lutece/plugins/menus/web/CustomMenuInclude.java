@@ -50,7 +50,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -84,6 +88,8 @@ public class CustomMenuInclude implements PageInclude
 
 	private static final Integer CURRENT_DEPTH = 1;
 	private static final Integer MAX_DEPTH = 2;
+
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
 
 	/**
 	 * Substitue specific Freemarker markers in the page template.
@@ -131,6 +137,7 @@ public class CustomMenuInclude implements PageInclude
 				if( ! StringUtils.isBlank( cm.getBookmark( ) ) )
 				{
 					loadMenuItems( cm, CURRENT_DEPTH, MAX_DEPTH );
+
 					rootModel.put( cm.getBookmark( ),
 							getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) );
 
@@ -161,6 +168,7 @@ public class CustomMenuInclude implements PageInclude
 																												// (core
 																												// <
 																												// 7.0.1)
+
 						}
 					}
 
@@ -202,7 +210,7 @@ public class CustomMenuInclude implements PageInclude
 		}
 
 		// Define the site path from url, by mode
-		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		modelList.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
 		modelList.put( PARAMETER_CURRENT_MENU, cm );
 
 		String strTemplate = getTemplateByType( strTypeMenu );
