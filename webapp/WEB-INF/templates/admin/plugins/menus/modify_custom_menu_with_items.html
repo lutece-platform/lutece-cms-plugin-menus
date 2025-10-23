@@ -153,7 +153,6 @@
                         <h4>#i18n{menus.modify_custom_menu_with_items.previewMenuTitle}</h4>
                     </@boxHeader>
                     <@boxBody>
-                    	<@paginationAdmin paginator=paginator combo=1 />
                         <@table>
                             <@tr>
                                 <@th>#i18n{menus.modify_custom_menu_with_items.labelColumnItemType}</@th>
@@ -164,7 +163,11 @@
                                 <@th>#i18n{menus.modify_custom_menu_with_items.labelColumnItemActions}</@th>
                             </@tr>
                             <#if custom_menu_items_list?? && custom_menu_items_list?size &gt; 0>
-                                <#assign size_list = custom_menu_items_list?size />
+                                <#if max_order_size??>
+                                	<#assign size_list = max_order_size />
+                                <#else>
+                                    <#assign size_list = custom_menu_items_list?size />
+                                </#if>
                                 <#list custom_menu_items_list as item>
                                     <@tr>
                                         <@td>${item.type!''}</@td>
@@ -232,6 +235,7 @@
                                 </@tr>
                             </#if>
                         </@table>
+                        <@paginationAdmin paginator=paginator combo=1 />
                     </@boxBody>
                 </@box>
             </@columns>
@@ -240,16 +244,10 @@
         <!-- Bouton retour en bas de page -->
         <@row class='mt-4'>
             <@columns md=12 class='text-center'>
-                <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp' buttonIcon='arrow-left' title='#i18n{menus.modify_custom_menu_with_items.buttonBackToList}' color='secondary' size='lg' />
+                <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='secondary' />
             </@columns>
         </@row>
-        
-        <!-- Zone de debug pour les event listeners -->
-        <@row class='mt-2'>
-            <@columns md=12>
-                <div id="res" class="alert alert-info" style="display:none;"></div>
-            </@columns>
-        </@row>
+
     </@pageColumn>
 </@pageContainer>
 
