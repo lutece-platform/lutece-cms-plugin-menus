@@ -64,7 +64,7 @@ public class ValidatorCustomItemForm
 	private final String MESSAGE_LABEL_NOT_EMPTY = "menus.validation.customMenuItem.label.notEmpty";
 	private final String MESSAGE_DYNAMIC_PAGE_LABEL_NOT_EMPTY = "menus.validation.customMenuItem.pageLabel.notEmpty";
 
-	private List < ErrorMessage > _listErrors = new ArrayList <>( );
+	private List < ErrorMessage > _listErrorsValidator = new ArrayList <>( );
 
 	/**
 	 * Add an error message
@@ -74,9 +74,9 @@ public class ValidatorCustomItemForm
 	 * @param locale
 	 *                      The locale
 	 */
-	protected void addError( String strMessageKey, Locale locale )
+	private void addErrorToListErrors( String strMessageKey, Locale locale )
 	{
-		_listErrors.add( new MVCMessage( I18nService.getLocalizedString( strMessageKey, locale ) ) );
+		_listErrorsValidator.add( new MVCMessage( I18nService.getLocalizedString( strMessageKey, locale ) ) );
 	}
 
 	/**
@@ -90,12 +90,12 @@ public class ValidatorCustomItemForm
 	public boolean isValid( CustomMenuItem menuItems, Locale locale )
 	{
 
-		_listErrors.clear( );
+		_listErrorsValidator.clear( );
 		String strType = menuItems.getType( );
 
 		if( ! isValidMenuParent( menuItems ) )
 		{
-			addError( MESSAGE_PARENT_MENU_NOT_VALID, locale );
+			addErrorToListErrors( MESSAGE_PARENT_MENU_NOT_VALID, locale );
 			return false;
 		}
 
@@ -113,43 +113,43 @@ public class ValidatorCustomItemForm
 						if( StringUtils.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE )
 								&& ! menuItems.isLabelDynamic( ) )
 						{
-							addError( MESSAGE_DYNAMIC_PAGE_LABEL_NOT_EMPTY, locale );
+							addErrorToListErrors( MESSAGE_DYNAMIC_PAGE_LABEL_NOT_EMPTY, locale );
 						}
 						else
 						{
-							addError( MESSAGE_LABEL_NOT_EMPTY, locale );
+							addErrorToListErrors( MESSAGE_LABEL_NOT_EMPTY, locale );
 						}
 					}
 					if( ! isValidUrl( menuItems, locale ) )
 					{
-						addError( MESSAGE_URL_NOT_EMPTY, locale );
+						addErrorToListErrors( MESSAGE_URL_NOT_EMPTY, locale );
 					}
 
 					return isValidLabel( menuItems, locale ) && isValidUrl( menuItems, locale );
 				case MENU_ITEM_TYPE_MENU :
 					if( ! isValidMenu( menuItems, locale ) )
 					{
-						addError( MESSAGE_SUBMENU_NOT_EMPTY, locale );
+						addErrorToListErrors( MESSAGE_SUBMENU_NOT_EMPTY, locale );
 					}
 					if( ! isValidLabel( menuItems, locale ) )
 					{
-						addError( MESSAGE_LABEL_NOT_EMPTY, locale );
+						addErrorToListErrors( MESSAGE_LABEL_NOT_EMPTY, locale );
 					}
 					if( ! isValidUrl( menuItems, locale ) )
 					{
-						addError( MESSAGE_URL_NOT_EMPTY, locale );
+						addErrorToListErrors( MESSAGE_URL_NOT_EMPTY, locale );
 					}
 
 					return isValidLabel( menuItems, locale ) && isValidUrl( menuItems, locale )
 							&& isValidMenu( menuItems, locale );
 				default :
-					addError( MESSAGE_TYPE_NOT_VALID, locale );
+					addErrorToListErrors( MESSAGE_TYPE_NOT_VALID, locale );
 					return false;
 			}
 
 		}
 
-		addError( MESSAGE_TYPE_NOT_EMPTY, locale );
+		addErrorToListErrors( MESSAGE_TYPE_NOT_EMPTY, locale );
 		return true;
 	}
 
@@ -185,6 +185,6 @@ public class ValidatorCustomItemForm
 
 	public List < ErrorMessage > getListErrors( )
 	{
-		return _listErrors;
+		return _listErrorsValidator;
 	}
 }
