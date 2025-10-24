@@ -1,9 +1,9 @@
-<jsp:useBean id="manageCustomMenus" scope="session" class="fr.paris.lutece.plugins.menus.web.CustomMenusJspBean" />
-<% String strContent = manageCustomMenus.processController ( request , response ); %>
-
 <%@ page errorPage="../../ErrorPage.jsp" %>
+
+${ pageContext.setAttribute( 'strContent', customMenusJspBean.processController( pageContext.request , pageContext.response ) ) }
+
 <jsp:include page="../../AdminHeader.jsp" />
 
-<%= strContent %>
+${ pageContext.getAttribute( 'strContent' ) }
 
 <%@ include file="../../AdminFooter.jsp" %>

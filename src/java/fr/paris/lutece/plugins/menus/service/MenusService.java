@@ -35,55 +35,92 @@ package fr.paris.lutece.plugins.menus.service;
 
 import fr.paris.lutece.plugins.menus.business.Menus;
 import fr.paris.lutece.portal.service.util.AppPathService;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.ServletContext;
 
 /**
- * This Service manages contactListt actions (create, delete, modify ...) and notify listeners.
+ * This Service manages contactListt actions (create, delete, modify ...) and
+ * notify listeners.
  * 
  * @author lenaini
  */
+@ApplicationScoped
 public class MenusService
 {
-    public static final int MODE_SITE = 0;
-    public static final int MODE_ADMIN = 1;
-    public static final String MARKER_SITE_PATH = "site_path";
+	public static final int MODE_SITE = 0;
+	public static final int MODE_ADMIN = 1;
+	public static final String MARKER_SITE_PATH = "site_path";
 
-    private static MenusService _singleton = new MenusService( );
-
-    /**
-     * Initializes the Menus service
-     *
+	/**
+	 * Initializes the Menus service
+	 * This method is called automatically after CDI instantiation
+	 */
+	@PostConstruct
+	public void init( )
+	{
+		Menus.init( );
+	}
+	
+	  /**
+     * Returns the unique instance of the {@link MenusService} service.
+     * 
+     * <p>This method is deprecated and is provided for backward compatibility only. 
+     * For new code, use dependency injection with {@code @Inject} to obtain the 
+     * {@link MenusService} instance instead.</p>
+     * 
+     * @return The unique instance of {@link MenusService}.
+     * 
+     * @deprecated Use {@code @Inject} to obtain the {@link MenusService} 
+     * instance. This method will be removed in future versions.
      */
-    public void init( )
-    {
-        Menus.init( );
-    }
-
-    /**
-     * Returns the instance of the singleton
-     *
-     * @return The instance of the singleton
-     */
+    @Deprecated( since = "8.0", forRemoval = true )
     public static MenusService getInstance( )
     {
-        return _singleton;
+        return CDI.current( ).select( MenusService.class ).get( );
     }
 
-    /**
-     * Define the site path : Portal Url when mode isn't admin mode, otherwise AdminPortalUrl
-     * 
-     * @param nMode
-     *            the mode define by the request
-     * @return site path depending on the mode
-     */
-    public String getSitePath( int nMode )
-    {
-        String strSitePath = AppPathService.getAdminPortalUrl( );
+	/**
+	 * Define the site path : Portal Url when mode isn't admin mode, otherwise
+	 * AdminPortalUrl
+	 * 
+	 * @param nMode
+	 *              the mode define by the request
+	 * @return site path depending on the mode
+	 */
+	public String getSitePath( int nMode )
+	{
+		String strSitePath = AppPathService.getAdminPortalUrl( );
 
-        if ( nMode != MODE_ADMIN )
-        {
-            strSitePath = AppPathService.getPortalUrl( );
-        }
+		if( nMode != MODE_ADMIN )
+		{
+			strSitePath = AppPathService.getPortalUrl( );
+		}
 
-        return strSitePath;
-    }   
+		return strSitePath;
+	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
 }

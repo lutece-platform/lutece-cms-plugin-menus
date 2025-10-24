@@ -50,7 +50,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -67,6 +70,8 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 	private static final String PARAMETER_XPAGE_NAME = "page";
 	private static final String PARAMETER_PAGE_ID = "page_id";
 	private static final String PARAMETER_PAGE_OPERATOR = "=";
+
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
 
 	/**
 	 * Substitue specific Freemarker markers in the page template.
@@ -151,7 +156,7 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 		modelList.put( MARK_PAGE_PARAMETER_VALUE, strPageParameterValue );
 
 		// Define the site path from url, by mode
-		modelList.put( MenusService.MARKER_SITE_PATH, MenusService.getInstance( ).getSitePath( nMode ) );
+		modelList.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
 
 		HtmlTemplate templateList = AppTemplateService.getTemplate( TEMPLATE_MENU_ACCESSIBILITY_ANCHOR, locale,
 				modelList );

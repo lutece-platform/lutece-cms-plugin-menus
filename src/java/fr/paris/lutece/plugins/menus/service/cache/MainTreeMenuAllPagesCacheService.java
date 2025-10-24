@@ -33,37 +33,29 @@
  */
 package fr.paris.lutece.plugins.menus.service.cache;
 
+import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
+import jakarta.servlet.ServletContext;
 
 /**
  * Get the instance of the cache service
  */
-public final class MainTreeMenuAllPagesCacheService extends AbstractCacheableService
+@ApplicationScoped
+public class MainTreeMenuAllPagesCacheService extends AbstractCacheableService < String, MenuItem >
 {
 	// Properties
 	private static final String CACHE_NAME = "Plugin Menus - Main Tree Menu All Pages Cache";
 	private static final String CACHE_KEY_MAIN_ALL_PAGES = "menus.main.allpages";
 	private static final String CACHE_KEY_TREE_ALL_PAGES = "menus.tree.allpages";
 
-	private static MainTreeMenuAllPagesCacheService _instance = new MainTreeMenuAllPagesCacheService( );
-
-	/**
-	 * Private constructor
-	 */
-	private MainTreeMenuAllPagesCacheService( )
+	@PostConstruct
+	public void init( )
 	{
-		super( );
-		initCache( );
-	}
-
-	/**
-	 * Get the instance of the cache service
-	 * 
-	 * @return The instance of the service
-	 */
-	public static MainTreeMenuAllPagesCacheService getInstance( )
-	{
-		return _instance;
+		initCache( CACHE_NAME, String.class, MenuItem.class );
 	}
 
 	/**
@@ -95,5 +87,26 @@ public final class MainTreeMenuAllPagesCacheService extends AbstractCacheableSer
 	public String getName( )
 	{
 		return CACHE_NAME;
+	}
+
+	/**
+	 * This method observes the initialization of the {@link ApplicationScoped}
+	 * context.
+	 * It ensures that this CDI beans are instantiated at the application startup.
+	 *
+	 * <p>
+	 * This method is triggered automatically by CDI when the
+	 * {@link ApplicationScoped} context is initialized,
+	 * which typically occurs during the startup of the application server.
+	 * </p>
+	 *
+	 * @param context the {@link ServletContext} that is initialized. This parameter
+	 *                is observed
+	 *                and injected automatically by CDI when the
+	 *                {@link ApplicationScoped} context is initialized.
+	 */
+	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
+	{
+		// This method is intentionally left empty to trigger CDI bean instantiation
 	}
 }
