@@ -47,13 +47,13 @@ import java.util.Collection;
 public final class MenusDAO implements IMenusDAO
 {
 	// Constants
-	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_menu ) FROM menus";
-	private static final String SQL_QUERY_SELECT = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus WHERE id_menu = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO menus ( id_menu, menu_name, type_menu, id_page_root, menu_marker ) VALUES ( ?, ?, ?, ?, ? ) ";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM menus WHERE id_menu = ? ";
-	private static final String SQL_QUERY_UPDATE = "UPDATE menus SET id_menu = ?, menu_name = ?, type_menu = ?, id_page_root = ?, menu_marker = ? WHERE id_menu = ?";
-	private static final String SQL_QUERY_SELECTALL = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus";
-	private static final String SQL_QUERY_SELECT_NB_MENUS = " SELECT count(*) FROM menus";
+	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_menu ) FROM menus_menus";
+	private static final String SQL_QUERY_SELECT = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus_menus WHERE id_menu = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO menus_menus ( id_menu, menu_name, type_menu, id_page_root, menu_marker ) VALUES ( ?, ?, ?, ?, ? ) ";
+	private static final String SQL_QUERY_DELETE = "DELETE FROM menus_menus WHERE id_menu = ? ";
+	private static final String SQL_QUERY_UPDATE = "UPDATE menus_menus SET id_menu = ?, menu_name = ?, type_menu = ?, id_page_root = ?, menu_marker = ? WHERE id_menu = ?";
+	private static final String SQL_QUERY_SELECTALL = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus_menus";
+	private static final String SQL_QUERY_SELECT_NB_MENUS = " SELECT count(*) FROM menus_menus";
 
 	/**
 	 * Generates a new primary key
