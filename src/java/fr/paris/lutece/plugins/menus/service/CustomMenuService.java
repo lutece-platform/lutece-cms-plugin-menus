@@ -34,6 +34,7 @@
 package fr.paris.lutece.plugins.menus.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 import fr.paris.lutece.plugins.menus.business.CustomMenu;
 import fr.paris.lutece.plugins.menus.business.CustomMenuHome;
@@ -99,11 +100,11 @@ public class CustomMenuService
 		}
 
 		String strCleanCriteria = strFilterCriteria.trim( );
-		Boolean isValid = StringUtils.equals( strCleanCriteria, strItemToTest );
+		Boolean isValid = Strings.CS.equals( strCleanCriteria, strItemToTest );
 
 		for( String criteria : strCleanCriteria.split( " " ) )
 		{
-			isValid |= StringUtils.contains( strItemToTest, criteria );
+			isValid |=  Strings.CS.contains( strItemToTest, criteria );
 		}
 
 		return isValid;
@@ -215,7 +216,7 @@ public class CustomMenuService
 			
 			for( ReferenceItem page : listPages)
 			{
-				if( StringUtils.equals( strSourceItemId, page.getCode( ) ) )
+				if(  Strings.CS.equals( strSourceItemId, page.getCode( ) ) )
 				{
 					return page.getName( );
 				}
