@@ -53,6 +53,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * MainTreeMenuInclude
@@ -97,6 +98,7 @@ public class CustomMenuInclude implements PageInclude
 	 * @param request
 	 *                  The HTTP request
 	 */
+	@Override
 	public void fillTemplate( Map < String, Object > rootModel, PageData data, int nMode, HttpServletRequest request )
 	{
 		if( request != null )
@@ -124,7 +126,7 @@ public class CustomMenuInclude implements PageInclude
 
 			List < CustomMenu > listCostumMenu = CustomMenuHome.getCustomMenusList( );
 			Boolean isInternalMenu = listCostumMenu.stream( )
-					.anyMatch( menu -> StringUtils.equals( menu.getType( ), TYPE_INTERNAL_MENU ) );
+					.anyMatch( menu -> Strings.CS.equals( menu.getType( ), TYPE_INTERNAL_MENU ) );
 
 			for( CustomMenu cm : listCostumMenu )
 			{
@@ -134,7 +136,7 @@ public class CustomMenuInclude implements PageInclude
 					rootModel.put( cm.getBookmark( ),
 							getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) );
 
-					if( StringUtils.equals( cm.getType( ), TYPE_MAIN_MENU ) )
+					if( Strings.CS.equals( cm.getType( ), TYPE_MAIN_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_MAIN_MENU,
 								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) );
@@ -164,13 +166,13 @@ public class CustomMenuInclude implements PageInclude
 						}
 					}
 
-					if( StringUtils.equals( cm.getType( ), TYPE_INTERNAL_MENU ) )
+					if( Strings.CS.equals( cm.getType( ), TYPE_INTERNAL_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU,
 								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) );
 					}
 
-					if( StringUtils.equals( cm.getType( ), TYPE_SIDEBAR_MENU ) )
+					if( Strings.CS.equals( cm.getType( ), TYPE_SIDEBAR_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_SIDEBAR_MENU,
 								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_SIDEBAR_MENU ) );
@@ -244,7 +246,7 @@ public class CustomMenuInclude implements PageInclude
 
 		for( CustomMenuItem item : listItems )
 		{
-			if( StringUtils.equals( item.getType( ), TYPE_MENU ) && ! StringUtils.isBlank( item.getSourceItemId( ) ) )
+			if( Strings.CS.equals( item.getType( ), TYPE_MENU ) && ! StringUtils.isBlank( item.getSourceItemId( ) ) )
 			{
 				try
 				{
