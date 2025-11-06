@@ -177,6 +177,41 @@ public class MainTreeMenuAllPagesService
             }
         }
     }
+    
+	/**
+	 * 
+	 * @return MenuItem root of tree
+	 */
+	public MenuItem getFullTreeMenuItems( )
+	{
+		int nRootId = PortalService.getRootPageId( );
+		MenuItem root = new MenuItem( );
+		root.setPage( PageHome.findByPrimaryKey( nRootId ) );
+		buildFullMenuTreeRecursive( root, nRootId );
+		return root;
+	}
+
+	/**
+	 *
+	 * @param item    MenuItem item
+	 * @param nPageId id of the currentPage
+	 */
+	private void buildFullMenuTreeRecursive( MenuItem item, int nPageId )
+	{
+		Collection < Page > listPages = PageHome.getChildPages( nPageId );
+		if( listPages == null || listPages.isEmpty( ) )
+		{
+			// No more child
+			return;
+		}
+		for( Page page : listPages )
+		{
+			MenuItem childItem = new MenuItem( );
+			childItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+			item.addChild( childItem );
+			buildFullMenuTreeRecursive( childItem, page.getId( ) );
+		}
+	}
 
     /**
      * Get the cacheService
