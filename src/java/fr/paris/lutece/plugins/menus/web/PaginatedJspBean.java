@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.menus.web;
 
+import fr.paris.lutece.plugins.menus.business.CustomMenuItem;
 import fr.paris.lutece.plugins.menus.service.MenusPlugin;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
@@ -106,7 +107,7 @@ public abstract class PaginatedJspBean < S, T > extends MVCAdminJspBean
 		model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPageForCustomMenu ) );
 		model.put( MARK_PAGINATOR, paginator );
 
-		model.put( strBookmark, getItemsFromIds( paginator.getPageItems( ), strBookmark ) );
+		model.put( strBookmark, getItemsFromIds( paginator.getPageItems( ) ) );
 
 		return model;
 	}
@@ -125,7 +126,7 @@ public abstract class PaginatedJspBean < S, T > extends MVCAdminJspBean
 	 * @return The model
 	 */
 	protected Map < String, Object > getPaginatedListModelForCustomMenuItem( HttpServletRequest request,
-			String strBookmark, List < S > list, String strManageJsp )
+			String strBookmark, List < CustomMenuItem > list, String strManageJsp )
 	{
 
 		final int nDefaultItemsPerPage = AppPropertiesService
@@ -140,7 +141,7 @@ public abstract class PaginatedJspBean < S, T > extends MVCAdminJspBean
 		final String strUrl = url.getUrl( );
 
 		// PAGINATOR
-		final LocalizedPaginator < S > paginator = new LocalizedPaginator <>( list, _nItemsPerPageForCustomMenuItem,
+		final LocalizedPaginator < CustomMenuItem > paginator = new LocalizedPaginator <>( list, _nItemsPerPageForCustomMenuItem,
 				strUrl, PARAMETER_PAGE_INDEX, _strCurrentPageIndexForCustomMenuItem,
 				getLocale( ) );
 
@@ -149,7 +150,7 @@ public abstract class PaginatedJspBean < S, T > extends MVCAdminJspBean
 		model.put( MARK_NB_ITEMS_PER_PAGE, String.valueOf( _nItemsPerPageForCustomMenuItem ) );
 		model.put( MARK_PAGINATOR, paginator );
 
-		model.put( strBookmark, getItemsFromIds( paginator.getPageItems( ), strBookmark ) );
+		model.put( strBookmark, paginator.getPageItems( ) );
 
 		return model;
 	}
@@ -160,5 +161,7 @@ public abstract class PaginatedJspBean < S, T > extends MVCAdminJspBean
 	 * @param listIds
 	 * @return the populated list of items corresponding to the id List
 	 */
-	abstract List < T > getItemsFromIds( List < S > listIds, String strBookmark );
+	abstract List < T > getItemsFromIds( List < S > listIds );
+	
+	
 }

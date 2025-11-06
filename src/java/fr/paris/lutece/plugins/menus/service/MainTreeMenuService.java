@@ -51,7 +51,7 @@ public class MainTreeMenuService
     // ///////////////////////////////////////////////////////////////////////////////////////////
     // Constants
 
-    // Properties
+	   // Properties
     private static final String PROPERTY_DEPTH_MAIN_LEVEL = "menus.mainTreeMenu.depth.main";
     private static final String PROPERTY_DEPTH_TREE_LEVEL = "menus.mainTreeMenu.depth.tree";
 
@@ -131,24 +131,16 @@ public class MainTreeMenuService
             	//Add only child pages of the root. THe page root doesn't appear in tree menu
             	buildMenuTree( root, nRootId, nDepth );
             }
-            //Cas d'une page fille de la racine du site. On ne peut pas prendre comme point d'entrée pour la fonction buildMenuTree, la page parent de la page courrante
-            //car cela retournerait toutes les pages filles de la racine. On ajoute donc la page courrante puis ses enfants sans passer par la page parent.
-            else if( nParentCurrentPageId == PortalService.getRootPageId( ) )
-            {
-            	//Add currentPage in menu
-	    		MenuItem menuItem = new MenuItem( );
-	            menuItem.setPage( PageHome.findByPrimaryKey( nCurrentPageId ) );
-	            root.addChild( menuItem );
-            	
-	            //Add its child pages
-	            MenuItem childRoot = root.getChilds( ).get( 0 );
-                buildMenuTree( childRoot, nCurrentPageId, nDepth );
-            }
-            //Cas pour toutes les pages qui ne sont ni la racine du site ni une des pages filles de la racine du site
             else
             {
-            	//La valeur 1 est rajoutée à la pronfondeur pour avoir à la fois la pageCourante affichée dans le menu ainsi que ses enfants.
-            	 buildMenuTree( root, nParentCurrentPageId, nDepth + 1 );
+            	//Add currentPage in menu
+        		MenuItem menuItem = new MenuItem( );
+                menuItem.setPage( PageHome.findByPrimaryKey( nCurrentPageId ) );
+                root.addChild( menuItem );
+            	
+                //Add its child pages
+                MenuItem childRoot = root.getChilds( ).get( 0 );
+            	buildMenuTree( childRoot, nCurrentPageId, nDepth );
             }
             
             _cacheService.putInCache( strCacheKey, root );

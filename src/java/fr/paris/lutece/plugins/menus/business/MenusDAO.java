@@ -45,13 +45,13 @@ import java.util.Collection;
 public final class MenusDAO implements IMenusDAO
 {
 	// Constants
-	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_menu ) FROM menus";
-	private static final String SQL_QUERY_SELECT = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus WHERE id_menu = ?";
-	private static final String SQL_QUERY_INSERT = "INSERT INTO menus ( id_menu, menu_name, type_menu, id_page_root, menu_marker ) VALUES ( ?, ?, ?, ?, ? ) ";
-	private static final String SQL_QUERY_DELETE = "DELETE FROM menus WHERE id_menu = ? ";
-	private static final String SQL_QUERY_UPDATE = "UPDATE menus SET id_menu = ?, menu_name = ?, type_menu = ?, id_page_root = ?, menu_marker = ? WHERE id_menu = ?";
-	private static final String SQL_QUERY_SELECTALL = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus";
-	private static final String SQL_QUERY_SELECT_NB_MENUS = " SELECT count(*) FROM menus";
+	private static final String SQL_QUERY_NEW_PK = "SELECT max( id_menu ) FROM menus_menus";
+	private static final String SQL_QUERY_SELECT = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus_menus WHERE id_menu = ?";
+	private static final String SQL_QUERY_INSERT = "INSERT INTO menus_menus ( id_menu, menu_name, type_menu, id_page_root, menu_marker ) VALUES ( ?, ?, ?, ?, ? ) ";
+	private static final String SQL_QUERY_DELETE = "DELETE FROM menus_menus WHERE id_menu = ? ";
+	private static final String SQL_QUERY_UPDATE = "UPDATE menus_menus SET id_menu = ?, menu_name = ?, type_menu = ?, id_page_root = ?, menu_marker = ? WHERE id_menu = ?";
+	private static final String SQL_QUERY_SELECTALL = "SELECT id_menu, menu_name, type_menu, id_page_root, menu_marker FROM menus_menus";
+	private static final String SQL_QUERY_SELECT_NB_MENUS = " SELECT count(*) FROM menus_menus";
 
 	/**
 	 * Generates a new primary key
@@ -87,6 +87,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *               The plugin
 	 */
+	@Override
 	public void insert( Menus menus, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
@@ -112,6 +113,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return the instance of the Menus
 	 */
+	@Override
 	public Menus load( int nId, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
@@ -144,6 +146,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *                 The plugin
 	 */
+	@Override
 	public void delete( int nMenusId, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
@@ -160,6 +163,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *               The plugin
 	 */
+	@Override
 	public void store( Menus menus, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -182,6 +186,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return The Collection which contains the data of all the menuss
 	 */
+	@Override
 	public Collection < Menus > selectAll( Plugin plugin )
 	{
 		Collection < Menus > menusList = new ArrayList < Menus >( );
@@ -213,6 +218,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return nCount
 	 */
+	@Override
 	public int selectNbMenus( Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_NB_MENUS, plugin );

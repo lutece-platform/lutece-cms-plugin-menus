@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Custom Item Form Validation
@@ -110,7 +111,7 @@ public class ValidatorCustomItemForm
 				case MENU_ITEM_TYPE_EXTERNAL_URL :
 					if( ! isValidLabel( menuItems, locale ) )
 					{
-						if( StringUtils.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE )
+						if( Strings.CS.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE )
 								&& ! menuItems.isLabelDynamic( ) )
 						{
 							addError( MESSAGE_DYNAMIC_PAGE_LABEL_NOT_EMPTY, locale );
@@ -172,9 +173,9 @@ public class ValidatorCustomItemForm
 	{
 
 		if( ( StringUtils.isBlank( menuItems.getLabel( ) )
-				&& ! StringUtils.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE ) )
+				&& ! Strings.CS.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE ) )
 				|| ( StringUtils.isBlank( menuItems.getLabel( ) )
-						&& StringUtils.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE )
+						&& Strings.CS.equals( menuItems.getType( ), MENU_ITEM_TYPE_PAGE )
 						&& ! menuItems.isLabelDynamic( ) ) )
 		{
 			return false;
