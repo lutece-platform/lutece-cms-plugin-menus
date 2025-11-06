@@ -1,9 +1,13 @@
+-- liquibase formatted sql
+-- changeset menus:create_db_menus.sql
+-- preconditions onFail:MARK_RAN onError:WARN
+
 --
 -- Structure for table menus
 --
 
-DROP TABLE IF EXISTS menus;
-CREATE TABLE menus (
+DROP TABLE IF EXISTS menus_menus;
+CREATE TABLE menus_menus (
   id_menu INT DEFAULT 0 NOT NULL,
   menu_name varchar(255) DEFAULT '' NOT NULL,
   type_menu varchar(255) DEFAULT '' NOT NULL,
@@ -16,8 +20,8 @@ CREATE TABLE menus (
 -- Structure for table custom_menus
 --
 
-DROP TABLE IF EXISTS custom_menu_items;
-DROP TABLE IF EXISTS custom_menus;
+DROP TABLE IF EXISTS menus_custom_menu_items;
+DROP TABLE IF EXISTS menus_custom_menu;
 
 CREATE TABLE menus_custom_menu (
   id_menu INT AUTO_INCREMENT,
