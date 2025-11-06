@@ -53,7 +53,6 @@ import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +61,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Custom Menus JSP Bean using MVC annotations
@@ -109,6 +109,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final String MARK_CREATE_CUSTOM_MENU_ITEM_ERROR = "create_items_errors_list";
 	private static final String MARK_MODIFY_CUSTOM_MENU_ITEM_ERROR = "modify_items_errors_list";
 	private static final String MARK_SEARCH_CRITERIA = "search_criteria";
+	private static final String MARK_MAX_ORDER_SIZE = "max_order_size";
 	private static final String MARK_DEPTH_MENU_MAIN = "depth_menu_main";
 	private static final String MARK_DEPTH_MENU_TREE = "depth_menu_tree";
 	private static final String MARK_DEPTH_MENU_TREE_ALL_PAGES = "depth_menu_tree_all_pages";
@@ -151,6 +152,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	// Jsp paths
 	private static final String JSP_MANAGE_MENUS = "jsp/admin/plugins/menus/ManageCustomMenus.jsp";
 	private static final String JSP_CREATE_ITEM = "jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=createCustomMenuWithItems";
+	private static final String JSP_MODIFY_ITEM = "jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenuWithItems";
 
 	// Info messages
 	private static final String INFO_CUSTOM_MENU_CREATED = "menus.info.custom_menu.created";
@@ -188,7 +190,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private static final Integer ID_CACHE_PAGE_SERVICE_CACHE = 2;
 	private static final String DEFAULT_MAX_DEPTH_MAIN_MENU= "1";
 	private static final String DEFAULT_MAX_DEPTH_TREE_MENU="2";
-
+	
 	// Instance variable for custom menu
 	private CustomMenu _currentCustomMenu;
 	private CustomMenuItem _currentCustomMenuItem;
@@ -281,7 +283,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		String action = request.getParameter( PARAMETER_ACTION_CREATE_CUSTOM_MENU_BUTTON );
 
-		if( StringUtils.equals( VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON, action ) )
+		if( Strings.CS.equals( VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON, action ) )
 		{
 			return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 		}
@@ -343,7 +345,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		String action = request.getParameter( PARAMETER_ACTION_MODIFY_CUSTOM_MENU_BUTTON );
 
-		if( StringUtils.equals( VALUE_ACTION_MODIFY_CUSTOM_MENU_BUTTON, action ) )
+		if( Strings.CS.equals( VALUE_ACTION_MODIFY_CUSTOM_MENU_BUTTON, action ) )
 		{
 			return redirectView( request, VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS );
 		}
@@ -370,11 +372,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
 
-		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome
-				.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
+		List < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
+				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
 
 		Map < String, Object > model = getPaginatedListModelForCustomMenuItem( request, MARK_CUSTOM_MENU_ITEMS_LIST,
-				listCustomMenuItemsIds, JSP_CREATE_ITEM );
+				listCustomMenuItems, JSP_MODIFY_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
 		model.put( MARK_AVAILABLE_PAGES_LIST,
@@ -384,7 +386,8 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
 				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
-
+		model.put( MARK_MAX_ORDER_SIZE, listCustomMenuItems.size( ) );
+		
 		if( _itemValidator != null )
 		{
 			model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
@@ -456,11 +459,11 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 			return redirectView( request, VIEW_MANAGE_CUSTOM_MENUS );
 		}
 
-		List < Integer > listCustomMenuItemsIds = CustomMenuItemHome
-				.getCustomMenuItemsIdsListByMenuId( _currentCustomMenu.getId( ) );
+		List < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
+				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
 
 		Map < String, Object > model = getPaginatedListModelForCustomMenuItem( request, MARK_CUSTOM_MENU_ITEMS_LIST,
-				listCustomMenuItemsIds, JSP_CREATE_ITEM );
+				listCustomMenuItems, JSP_CREATE_ITEM );
 		model.put( MARK_ID_CUSTOM_MENU, _currentCustomMenu.getId( ) );
 		model.put( MARK_ITEM_TYPES_LIST, _listMenuItemTypes );
 		model.put( MARK_AVAILABLE_PAGES_LIST,
@@ -470,6 +473,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
 				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
 		model.put( MARK_SEARCH_CRITERIA, _strFilterCriteria );
+		model.put( MARK_MAX_ORDER_SIZE, listCustomMenuItems.size( ) );
 
 		if( _itemValidator != null )
 		{
@@ -546,7 +550,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 				CustomMenuService.getInstance( ).getAvailableXpagesReferenceList( _strFilterCriteria ) );
 		model.put( MARK_AVAILABLE_MENUS_LIST, CustomMenuService.getInstance( )
 				.getAvailableMenusReferenceList( _currentCustomMenu, _strFilterCriteria ) );
-
+		
 		if( _itemValidator != null )
 		{
 			model.put( MARK_MODIFY_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
@@ -673,7 +677,7 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	{
 		String strButtonValue = request.getParameter( PARAMETER_ACTION_SEARCH_ITEMS_BUTTON );
 
-		if( StringUtils.equals( strButtonValue, VALUE_CLEAN_BUTTON ) )
+		if( Strings.CS.equals( strButtonValue, VALUE_CLEAN_BUTTON ) )
 		{
 			_strFilterCriteria = null;
 		}
@@ -811,16 +815,9 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	// /////////PAGINATOR FOR CUSTOM MENU//////////
 
 	@Override
-	List < Object > getItemsFromIds( List < Integer > listIds, String strBookmark )
+	List < Object > getItemsFromIds( List < Integer > listIds )
 	{
-		if( StringUtils.equals( strBookmark, MARK_CUSTOM_MENU_ITEMS_LIST ) )
-		{
-			return getMenuItemsListFromIds( listIds );
-		}
-		else
-		{
 			return getMenusListFromIds( listIds );
-		}
 	}
 
 	/**
@@ -844,24 +841,6 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 
 		// keep original order
 		return listCustomMenus.stream( ).sorted( Comparator.comparingInt( menu -> listIds.indexOf( menu.getId( ) ) ) )
-				.collect( Collectors.toList( ) );
-	}
-
-	/**
-	 * Get ItemList from a list ids of items
-	 * 
-	 * @param listIds
-	 *                list of Ids
-	 * @return item list
-	 */
-	private List < Object > getMenuItemsListFromIds( List < Integer > listIds )
-	{
-		Collection < CustomMenuItem > listCustomMenuItems = CustomMenuItemHome
-				.getCustomMenuItemsListByMenuId( _currentCustomMenu.getId( ) );
-
-		// keep original order
-		return listCustomMenuItems.stream( )
-				.sorted( Comparator.comparingInt( item -> listIds.indexOf( item.getId( ) ) ) )
 				.collect( Collectors.toList( ) );
 	}
 
@@ -968,23 +947,25 @@ public class CustomMenusJspBean extends PaginatedJspBean < Integer, Object >
 	private String getDepthPropertyValue( String propertyKey, String defaultValue )
 	{
 		String strDepth = DatastoreService.getDataValue( propertyKey, defaultValue );
+
 		// The depth must be between 0 and 1 for the main menu, and between 0 and 2 for
 		// the other menus
 		try
 		{
 			int nDepth = Integer.parseInt( strDepth );
 			int nDefaultValue = Integer.parseInt( defaultValue );
+			
 
 			if( nDepth < 0 )
 			{
 				DatastoreService.setDataValue( propertyKey, "0" );
-				strDepth="0";
+				strDepth = "0";
 			}
 
 			if( nDepth > nDefaultValue )
 			{
 				DatastoreService.setDataValue( propertyKey, defaultValue );
-				strDepth=defaultValue;
+				strDepth = defaultValue;
 			}
 		}
 		catch( Exception e )
