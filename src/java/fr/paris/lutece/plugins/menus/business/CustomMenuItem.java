@@ -35,16 +35,13 @@ package fr.paris.lutece.plugins.menus.business;
 
 import java.io.Serializable;
 
-import jakarta.inject.Inject;
 import jakarta.enterprise.inject.spi.CDI;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
 import fr.paris.lutece.plugins.menus.service.CustomMenuService;
-import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 
 /**
  * This is the business class for the object CustomMenuItem

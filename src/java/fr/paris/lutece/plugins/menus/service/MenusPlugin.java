@@ -52,6 +52,7 @@ public class MenusPlugin extends PluginDefaultImplementation
 	/**
 	 * Initialize the plugin Menus
 	 */
+	@Override
 	public void init( )
 	{
 		_menusService.init( );

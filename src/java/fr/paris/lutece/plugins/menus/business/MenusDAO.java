@@ -89,6 +89,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *               The plugin
 	 */
+	@Override
 	public void insert( Menus menus, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, plugin );
@@ -114,6 +115,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return the instance of the Menus
 	 */
+	@Override
 	public Menus load( int nId, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT, plugin );
@@ -146,6 +148,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *                 The plugin
 	 */
+	@Override
 	public void delete( int nMenusId, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE, plugin );
@@ -162,6 +165,7 @@ public final class MenusDAO implements IMenusDAO
 	 * @param plugin
 	 *               The plugin
 	 */
+	@Override
 	public void store( Menus menus, Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin );
@@ -184,6 +188,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return The Collection which contains the data of all the menuss
 	 */
+	@Override
 	public Collection < Menus > selectAll( Plugin plugin )
 	{
 		Collection < Menus > menusList = new ArrayList < Menus >( );
@@ -215,6 +220,7 @@ public final class MenusDAO implements IMenusDAO
 	 *               The plugin
 	 * @return nCount
 	 */
+	@Override
 	public int selectNbMenus( Plugin plugin )
 	{
 		DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_NB_MENUS, plugin );
