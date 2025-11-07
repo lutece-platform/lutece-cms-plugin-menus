@@ -78,7 +78,7 @@ import org.apache.commons.lang3.Strings;
 public class CustomMenusJspBean extends MVCAdminJspBean
 {
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 
 	public static final String RIGHT_MANAGE_CUSTOM_MENUS = "CUSTOM_MENUS_MANAGEMENT";
 
@@ -196,7 +196,8 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	private static final String MENU_ITEM_TYPE_EXTERNAL_URL = "external_url";
 	private static final String MENU_ITEM_TYPE_MENU = "menu";
 	private static final String NAME_PAGE_SERVICE_CACHE = "PageCacheService";
-	private static final String DEFAULT_MAX_DEPTH = "1";
+	private static final String DEFAULT_MAX_DEPTH_MAIN_MENU= "1";
+	private static final String DEFAULT_MAX_DEPTH_TREE_MENU="2";
 
 	// Instance variable for custom menu
 	private CustomMenu _currentCustomMenu;
@@ -257,10 +258,10 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 		model.put( MARK_MENU_TYPES_LIST, _listMenuTypes );
 		model.put( MARK_OPTION_DEPTH_MAIN, getDepthOptions( 1 ) );
 		model.put( MARK_OPTION_DEPTH_TREE, getDepthOptions( 2 ) );
-		model.put( MARK_DEPTH_MENU_MAIN, getDepthPropertyValue( PROPERTY_MENU_MAIN, DEFAULT_MAX_DEPTH ) );
-		model.put( MARK_DEPTH_MENU_TREE, getDepthPropertyValue( PROPERTY_MENU_TREE, DEFAULT_MAX_DEPTH ) );
+		model.put( MARK_DEPTH_MENU_MAIN, getDepthPropertyValue( PROPERTY_MENU_MAIN, DEFAULT_MAX_DEPTH_MAIN_MENU ) );
+		model.put( MARK_DEPTH_MENU_TREE, getDepthPropertyValue( PROPERTY_MENU_TREE, DEFAULT_MAX_DEPTH_TREE_MENU ) );
 		model.put( MARK_DEPTH_MENU_TREE_ALL_PAGES,
-				getDepthPropertyValue( PROPERTY_MENU_TREE_ALL_PAGES, DEFAULT_MAX_DEPTH ) );
+				getDepthPropertyValue( PROPERTY_MENU_TREE_ALL_PAGES, DEFAULT_MAX_DEPTH_TREE_MENU ) );
 
 		putFillCommonsInModel( model );
 			
@@ -978,33 +979,36 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	/**
 	 * Get current depth property value from datastore
 	 * 
-	 * @param propertyKey  the property key
-	 * @param defaultValue the default value if property doesn't exist
+	 * @param strPropertyKey  the property key
+	 * @param strDefaultValue the default value if property doesn't exist (equals to max value)
 	 * @return the property value
 	 */
-	private String getDepthPropertyValue( String propertyKey, String defaultValue )
+	private String getDepthPropertyValue( String strPropertyKey, String strDefaultValue )
 	{
-		String strDepth = DatastoreService.getDataValue( propertyKey, defaultValue );
+		String strDepth = DatastoreService.getDataValue( strPropertyKey, strDefaultValue );
 
 		// The depth must be between 0 and 1 for the main menu, and between 0 and 2 for
 		// the other menus
 		try
 		{
 			int nDepth = Integer.parseInt( strDepth );
+			int nDefaultValue = Integer.parseInt( strDefaultValue );
 
 			if( nDepth < 0 )
 			{
-				DatastoreService.setDataValue( propertyKey, "0" );
+				DatastoreService.setDataValue( strPropertyKey, "0" );
+				strDepth = "0";
 			}
 
-			if( nDepth > 2 )
+			if( nDepth > nDefaultValue )
 			{
-				DatastoreService.setDataValue( propertyKey, defaultValue );
+				DatastoreService.setDataValue( strPropertyKey, strDefaultValue );
+				strDepth = strDefaultValue;
 			}
 		}
 		catch( Exception e )
 		{
-			strDepth = defaultValue;
+			strDepth = strDefaultValue;
 		}
 
 		return strDepth;
