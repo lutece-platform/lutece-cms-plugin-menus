@@ -33,12 +33,7 @@
  */
 package fr.paris.lutece.plugins.menus.web.rs;
 
-import java.util.Collection;
-import java.util.List;
-
 import jakarta.enterprise.inject.spi.CDI;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

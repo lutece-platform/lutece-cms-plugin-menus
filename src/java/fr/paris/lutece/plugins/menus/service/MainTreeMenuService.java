@@ -39,10 +39,7 @@ import fr.paris.lutece.portal.business.page.PageHome;
 import java.util.Collection;
 
 import fr.paris.lutece.plugins.menus.business.MenuItem;
-import fr.paris.lutece.plugins.menus.business.PageInfo;
 import fr.paris.lutece.plugins.menus.service.cache.MainTreeMenuCacheService;
-import fr.paris.lutece.portal.business.page.Page;
-import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
 import fr.paris.lutece.portal.service.portal.PortalService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;

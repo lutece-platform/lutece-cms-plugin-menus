@@ -41,7 +41,6 @@ import fr.paris.lutece.plugins.menus.service.CustomMenuService;
 import fr.paris.lutece.plugins.menus.service.MainTreeMenuService;
 import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.web.validator.ValidatorCustomItemForm;
-import fr.paris.lutece.portal.service.cache.CacheService;
 import fr.paris.lutece.portal.service.cache.CacheableService;
 import fr.paris.lutece.portal.service.cache.ManageCacheService;
 import fr.paris.lutece.portal.service.datastore.DatastoreService;
@@ -52,29 +51,23 @@ import fr.paris.lutece.portal.util.mvc.admin.MVCAdminJspBean;
 import fr.paris.lutece.portal.util.mvc.admin.annotations.Controller;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
-import fr.paris.lutece.portal.util.mvc.utils.MVCMessage;
 import fr.paris.lutece.portal.web.cdi.mvc.Models;
 import fr.paris.lutece.portal.web.util.IPager;
 import fr.paris.lutece.portal.web.util.Pager;
-import fr.paris.lutece.util.ErrorMessage;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * Custom Menus JSP Bean using MVC annotations
@@ -337,7 +330,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 
 		String action = request.getParameter( PARAMETER_ACTION_CREATE_CUSTOM_MENU_BUTTON );
 
-		if( StringUtils.equals( VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON, action ) )
+		if( Strings.CS.equals( VALUE_ACTION_CREATE_CUSTOM_MENU_BUTTON, action ) )
 		{
 			return redirectView( request, VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS );
 		}
@@ -398,7 +391,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 
 		String action = request.getParameter( PARAMETER_ACTION_MODIFY_CUSTOM_MENU_BUTTON );
 
-		if( StringUtils.equals( VALUE_ACTION_MODIFY_CUSTOM_MENU_BUTTON, action ) )
+		if( Strings.CS.equals( VALUE_ACTION_MODIFY_CUSTOM_MENU_BUTTON, action ) )
 		{
 			return redirectView( request, VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS );
 		}
@@ -743,7 +736,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	{
 		String strButtonValue = request.getParameter( PARAMETER_ACTION_SEARCH_ITEMS_BUTTON );
 
-		if( StringUtils.equals( strButtonValue, VALUE_CLEAN_BUTTON ) )
+		if( Strings.CS.equals( strButtonValue, VALUE_CLEAN_BUTTON ) )
 		{
 			_strFilterCriteria = null;
 		}
@@ -1077,21 +1070,21 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 */
 	private void clearMenuCache( String menuType )
 	{
-		if( StringUtils.equals( MENU_TYPE_MENU_MAIN, menuType ) )
+		if( Strings.CS.equals( MENU_TYPE_MENU_MAIN, menuType ) )
 		{
 			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
 			{
 				_mainTreeMenuService.getCacheService( ).resetCache( );
 			}
 		}
-		else if( StringUtils.equals( MENU_TYPE_MENU_TREE, menuType ) )
+		else if( Strings.CS.equals( MENU_TYPE_MENU_TREE, menuType ) )
 		{
 			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
 			{
 				_mainTreeMenuService.getCacheService( ).resetCache( );
 			}
 		}
-		else if( StringUtils.equals( MENU_TYPE_MENU_TREE_ALL_PAGES, menuType ) )
+		else if( Strings.CS.equals( MENU_TYPE_MENU_TREE_ALL_PAGES, menuType ) )
 		{
 			if( _mainTreeMenuAllPagesService.isMainTreeCacheServiceEnable( ) )
 			{
@@ -1106,7 +1099,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 */
 	private void resetPagesCache( )
 	{
-		CacheableService cs = _manageCacheService.getCache( NAME_PAGE_SERVICE_CACHE );
+		CacheableService < String , String > cs = _manageCacheService.getCache( NAME_PAGE_SERVICE_CACHE );
 
 		if( cs != null )
 		{

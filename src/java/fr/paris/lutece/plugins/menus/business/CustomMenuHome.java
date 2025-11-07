@@ -40,7 +40,7 @@ import jakarta.enterprise.inject.spi.CDI;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 
 /**
  * This class provides instances management methods (create, find, ...) for
@@ -191,7 +191,7 @@ public final class CustomMenuHome
 		{
 			CustomMenu oldCustomMenu = _dao.load( customMenu.getId( ), _plugin );
 			return nCount == 0
-					|| ( nCount == 1 && StringUtils.equals( oldCustomMenu.getBookmark( ), customMenu.getBookmark( ) ) );
+					|| ( nCount == 1 && Strings.CS.equals( oldCustomMenu.getBookmark( ), customMenu.getBookmark( ) ) );
 		}
 	}
 }

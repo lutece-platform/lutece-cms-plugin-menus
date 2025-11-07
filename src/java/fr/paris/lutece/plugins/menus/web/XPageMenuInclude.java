@@ -53,8 +53,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import jakarta.enterprise.inject.spi.CDI;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -82,6 +80,7 @@ public class XPageMenuInclude implements PageInclude
 	 * @param request
 	 *                  The HTTP request
 	 */
+	@Override
 	public void fillTemplate( Map < String, Object > rootModel, PageData data, int nMode, HttpServletRequest request )
 	{
 		if( request != null )
