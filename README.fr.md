@@ -35,6 +35,8 @@ Les différents markers sont les suivants :
 *  `${page_tree_menu_tree}` : permet d'afficher sous forme de menu les pages filles de la page courante affichée
 *  `${page_tree_menu_tree_all_pages}` : permet d'afficher le menu sous forme d'arbre de l'ensemble des pages du site
 
+
+Attention, à l'activation du plugin-menus dans le back, il faut redémarrer le serveur pour que les pages includes, qui permettent l'inclusion de ces menus dans le page frameset, soient bien chargés dans le context CDI.
 II. Les menus personnalisés (CM)
 Les menus personnalisables sont éditables (création, modification, suppression) à partir du back office du site. Ils peuvent contenir des liens vers des pages, xpages, url externes et sous menus (à 1 ou 2 de profondeur).
 
