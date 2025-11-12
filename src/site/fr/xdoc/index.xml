@@ -63,7 +63,7 @@
 				<p>Attention, lorsque vous modifiez le page_frameset, vous devez réinitialiser le cache du service de page.</p>
                 
                 <h3>III. Fonction Rest</h3>
-                <p>Ce plugin offre un service REST permettant de récupérer le menu complet des pages du site sous forme d'arbre au format JSON. Dans la réponse, chaque item de menu contient les informations de chaque page du site avec notamment l'URL d'accès à la page</p>
+                <p>Ce plugin fournit un point d'accès JSON permettant d'obtenir le menu complet du site sous forme d'arborescence. La réponse contient, pour chaque élément de menu, les informations de la page, notamment son URL.</p>
             
             </subsection>
             
@@ -79,7 +79,7 @@
             </subsection>
             <subsection name="Usage">
                 <p>
-                   URL d'accès au service REST permettant de récupérer le menu complet sous forme d'arbre au format JSON : <code>${base_url}/rest/menus/tree_menu_pages</code>
+                   URL d'accès au service REST permettant de récupérer le menu complet sous forme d'arbre au format JSON : <code>${base_url}/jsp/site/Portal.jsp?page=treemenupages&amp;action=menutree</code>
                 </p>
             </subsection>
         </section>
