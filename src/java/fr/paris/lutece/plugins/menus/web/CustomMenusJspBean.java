@@ -57,7 +57,6 @@ import fr.paris.lutece.portal.web.util.Pager;
 import fr.paris.lutece.util.ReferenceList;
 import fr.paris.lutece.util.url.UrlItem;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -262,27 +261,8 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 		model.put( MARK_DEPTH_MENU_TREE, getDepthPropertyValue( PROPERTY_MENU_TREE, DEFAULT_MAX_DEPTH_TREE_MENU ) );
 		model.put( MARK_DEPTH_MENU_TREE_ALL_PAGES,
 				getDepthPropertyValue( PROPERTY_MENU_TREE_ALL_PAGES, DEFAULT_MAX_DEPTH_TREE_MENU ) );
-
-		putFillCommonsInModel( model );
 			
 		return getPage( PROPERTY_PAGE_TITLE_MANAGE_CUSTOM_MENUS, TEMPLATE_MANAGE_CUSTOM_MENUS, model );
-	}
-
-	/**
-	 * set fillCommons in model
-	 *
-	 * @param model model
-	 */
-	private void putFillCommonsInModel( Models model )
-	{
-		Map < String, Object > modelTmp = new HashMap<>( );
-		fillCommons( modelTmp );
-		
-	    for( Map.Entry<String, Object> entry : modelTmp.entrySet( ) )
-	    {
-	        model.put( entry.getKey( ), entry.getValue( ) );
-	    }
-		
 	}
 
 	// /////////////CREATE_CUSTOM_MENU/////////////////
@@ -445,8 +425,6 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 			model.put( MARK_CREATE_CUSTOM_MENU_ITEM_ERROR, _itemValidator.getListErrors( ) );
 			_itemValidator = null;
 		}
-		
-		putFillCommonsInModel( model );
 
 		return getPage( PROPERTY_PAGE_TITLE_MODIFY_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_MODIFY_CUSTOM_MENU_WITH_ITEMS,
 				model );
@@ -540,8 +518,6 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 			_itemValidator = null;
 		}
 		
-		putFillCommonsInModel( model );
-
 		return getPage( PROPERTY_PAGE_TITLE_CREATE_CUSTOM_MENU_WITH_ITEMS, TEMPLATE_CREATE_CUSTOM_MENU_WITH_ITEMS,
 				model );
 	}
