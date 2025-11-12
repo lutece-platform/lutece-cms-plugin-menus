@@ -50,7 +50,7 @@ Il existe trois types de menu personnalisable :
 
 Attention, lorsque vous modifiez le page_frameset, vous devez réinitialiser le cache du service de page.
 III. Fonction Rest
-Ce plugin offre un service REST permettant de récupérer le menu complet des pages du site sous forme d'arbre au format JSON. Dans la réponse, chaque item de menu contient les informations de chaque page du site avec notamment l'URL d'accès à la page
+Ce plugin fournit un point d'accès JSON permettant d'obtenir le menu complet du site sous forme d'arborescence. La réponse contient, pour chaque élément de menu, les informations de la page, notamment son URL.
 
 ## Configuration
 
@@ -65,7 +65,7 @@ Les principaux paramètres sont les suivants :
 
 ## Usage
 
-URL d'accès au service REST permettant de récupérer le menu complet sous forme d'arbre au format JSON : `${base_url}/rest/menus/tree_menu_pages` 
+URL d'accès au service REST permettant de récupérer le menu complet sous forme d'arbre au format JSON : `${base_url}/jsp/site/Portal.jsp?page=treemenupages&action=menutree` 
 
 
 [Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-menus/)

@@ -48,7 +48,7 @@ Three types of CM exist :
 Warning, when you change page_frameset, you have to reset page service cache.
 
 ## III. Rest feature
-This plugin provides a REST service allowing to get the full menu of the site in tree form in JSON format. In the response, each menu item contain page informations with especially the URL to access to the page
+This plugin provides a JSON endpoint allowing to get the full menu of the site in tree form. In the response, each menu item contains page information, especially the URL to access the page.
 
 ## Configuration
 
@@ -63,7 +63,7 @@ The main parameters are the following :
 
 ## Usage
 
-URL to access to the REST service allowing to get the full menu in JSON format : `${base_url}/rest/menus/tree_menu_pages` 
+URL to access the JSON menu endpoint : `${base_url}/jsp/site/Portal.jsp?page=treemenupages&action=menutree` 
 
 
 [Maven documentation and reports](https://dev.lutece.paris.fr/plugins/plugin-menus/)

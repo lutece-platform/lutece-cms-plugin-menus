@@ -1,48 +1,18 @@
-/*
- * Copyright (c) 2002-2025, City of Paris
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *  1. Redistributions of source code must retain the above copyright notice
- *     and the following disclaimer.
- *
- *  2. Redistributions in binary form must reproduce the above copyright notice
- *     and the following disclaimer in the documentation and/or other materials
- *     provided with the distribution.
- *
- *  3. Neither the name of 'Mairie de Paris' nor 'Lutece' nor the names of its
- *     contributors may be used to endorse or promote products derived from
- *     this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * License 1.0
- */
-package fr.paris.lutece.plugins.menus.web.rs;
+package fr.paris.lutece.plugins.menus.web;
 
-import jakarta.enterprise.inject.spi.CDI;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.Action;
+
+import fr.paris.lutece.portal.util.mvc.commons.annotations.ResponseBody;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
+import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,20 +21,20 @@ import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.business.PageInfo;
 import fr.paris.lutece.plugins.menus.service.MainTreeMenuAllPagesService;
 import fr.paris.lutece.plugins.menus.service.MenusService;
-import fr.paris.lutece.plugins.rest.service.RestConstants;
 
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 
 /**
- * REST service for MyFavorites resource
- */
-@Path( RestConstants.BASE_PATH + TreeMenuPagesRest.PLUGIN_PATH + TreeMenuPagesRest.TREE_MENUS_PAGES_PATH )
-public class TreeMenuPagesRest
+ * Xpage dedicated to tree menu all pages json Endpoint
+ **/
+@RequestScoped
+@Named( "menus.xpage.treemenupages" )
+@Controller( xpageName = "treemenupages", pageTitleI18nKey = "menus.xpage.treemenupages.pageTitle", pagePathI18nKey = "menus.xpage.treemenupages.pagePath" )
+public class XPageTreeMenuPages extends MVCApplication
 {
 	// Path constants
 	protected static final String PLUGIN_PATH = "menus/";
-	protected static final String TREE_MENUS_PAGES_PATH = "tree_menu_pages/";
 
 	// Format constants
 	private static final String KEY_MENUS_STATUS_RESPONSE = "status";
@@ -77,29 +47,33 @@ public class TreeMenuPagesRest
 	private static final String KEY_PAGE_DESC = "description";
 	private static final String KEY_PAGE_FULL_LINK = "pageFullLink";
 
+	//Action
+	private static final String ACTION_MENU_TREE = "menutree";
+	
 	// Status constants
 	private static final String STATUS_OK = "OK";
 	private static final String STATUS_KO = "KO";
 
-	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
-	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService = CDI.current( )
-			.select( MainTreeMenuAllPagesService.class ).get( );
-
 	private String _strPageFullLink;
 
+	@Inject
+	private MenusService _menusService;
+
+	@Inject
+	private MainTreeMenuAllPagesService _mainTreeMenuAllPagesService;
+
+	
 	/**
-	 * Return the tree of menu pages
-	 * 
-	 * @param request
-	 *                httpServletRequest
-	 * @return the tree of menu pages
+	 * Generate result of json endpoint
+	 *
+	 * @param request The Http request
+	 * @return tree menu all pages in json format 
 	 */
-	@GET
-	@Produces( MediaType.APPLICATION_JSON )
-	public Response getTreeMenuPages( @Context HttpServletRequest request )
+	@ResponseBody
+	@Action( value = ACTION_MENU_TREE )
+	public ObjectNode getMenuTree( HttpServletRequest request )
 	{
 		String strStatus = STATUS_OK;
-
 		String strTreeOfMenuPages = StringUtils.EMPTY;
 
 		setPageFullLink(
@@ -107,7 +81,7 @@ public class TreeMenuPagesRest
 
 		try
 		{
-			MenuItem rootMenuItem = _mainTreeMenuAllPagesService.getTreeMenuItems( 0 );
+			MenuItem rootMenuItem = _mainTreeMenuAllPagesService.getFullTreeMenuItems( );
 			if( rootMenuItem != null )
 			{
 				strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem );
@@ -115,43 +89,43 @@ public class TreeMenuPagesRest
 		}
 		catch( Exception exception )
 		{
-			// We set the status at KO if an error occurred during the processing
 			strStatus = STATUS_KO;
+			AppLogService.error( exception.getMessage( ), exception );
 		}
 
-		// Format the response with the given status and the tree of menu pages
-		String strResponse = formatResponse( strStatus, strTreeOfMenuPages );
-
-		return Response.ok( strResponse, MediaType.APPLICATION_JSON ).build( );
+		return createResponseObject( strStatus, strTreeOfMenuPages );
 	}
 
+	
 	/**
-	 * Return the Json response with the given status
+	 * Generate response object for json endpoint
+	 *
+	 * @param strStatus resonse status ("ok" or "ko")
+	 * @param strResponse Menu to return in json
 	 * 
-	 * @param strStatus
-	 *                    The status of the treatment "OK" by default "KO" if an
-	 *                    error occurred during the processing
-	 * @param strResponse
-	 *                    The response to send
-	 * @return the Json response with the given status
+	 * @return tree menu all pages in json format 
 	 */
-	private String formatResponse( String strStatus, String strResponse )
+	private ObjectNode createResponseObject( String strStatus, String strResponse )
 	{
-		// Création de l'ObjectMapper et du nœud JSON
 		ObjectMapper mapper = new ObjectMapper( );
 		ObjectNode jsonResponse = mapper.createObjectNode( );
 
 		try
 		{
 			jsonResponse.put( KEY_MENUS_STATUS_RESPONSE, strStatus );
-			jsonResponse.put( KEY_MENUS_RESPONSE_RESULT, strResponse );
+
+			if( StringUtils.isNotEmpty( strResponse ) )
+			{
+				JsonNode resultNode = mapper.readTree( strResponse );
+				jsonResponse.set( KEY_MENUS_RESPONSE_RESULT, resultNode );
+			}
 		}
 		catch( Exception e )
 		{
 			AppLogService.error( e.getMessage( ), e );
 		}
 
-		return jsonResponse.toString( );
+		return jsonResponse;
 	}
 
 	/**
@@ -262,5 +236,4 @@ public class TreeMenuPagesRest
 	{
 		_strPageFullLink = strPageFullLink;
 	}
-
 }
