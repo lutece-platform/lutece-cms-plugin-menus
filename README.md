@@ -35,6 +35,8 @@ These markers are the following :
 *  `${page_tree_menu_tree}` : allow to display the menu of child pages of the current page
 *  `${page_tree_menu_tree_all_pages}` : allow to display the full menu in tree form
 
+
+Warning: When activating the plugin-menus in the back office, the server must be restarted so that the include pages, which allow these menus to be included in the frameset page, are properly loaded into the CDI context.
 ## II.Customizable menus (CM)
 In the same way, you can display CM by custom marker (called bookmarks in back office) that you need to set in the back office. Customizable menus can be edited (create, modify, delete) from the site's back office. They can contain links to pages, xpages, external URLs, and submenus (1 or 2 deep).
 Three types of CM exist :

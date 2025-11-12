@@ -42,6 +42,8 @@
                 	</ul>
                 </p>
                 
+                <p>Attention, à l'activation du plugin-menus dans le back, il faut redémarrer le serveur pour que les pages includes, qui permettent l'inclusion de ces menus dans le page frameset, soient bien chargés dans le context CDI.</p>
+                
                 <h3>II. Les menus personnalisés (CM)</h3>
 
 				<p>

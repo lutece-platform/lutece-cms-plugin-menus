@@ -40,6 +40,9 @@
                     <li><code>${page_tree_menu_tree_all_pages}</code> : allow to display the full menu in tree form</li>
                 </ul>
                 </p>
+                
+                <p>Warning: When activating the plugin-menus in the back office, the server must be restarted so that the include pages, which allow these menus to be included in the frameset page, are properly loaded into the CDI context.</p>
+                
 				<br/>
                 ## II.Customizable menus (CM)
                 <br/>
