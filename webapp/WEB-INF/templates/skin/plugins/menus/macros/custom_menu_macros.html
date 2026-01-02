@@ -2,7 +2,6 @@
 <#if !dropdownDivCounter??>
   <#assign dropdownDivCounter = 0>
 </#if>
-
 <#--
 Macro: renderMenu
 
@@ -16,13 +15,12 @@ Parameters:
 - mainNavLutece (Boolean, optional): true if menu is displayed in default navBarLutece, false else.
 -->
 <#macro renderMenu currentMenu sitePath="" currentDepth=1 maxDepth=1 mainNavLutece=false>
-	<#if currentMenu.listItems?? && (currentMenu.listItems?size > 0)>
-      <ul class="custom-submenu-list">
-        <@renderMenuItems menu=currentMenu sitePath=sitePath currentDepth=currentDepth mainNavLutece=mainNavLutece maxDepth=maxDepth/>
-      </ul>
-	</#if>
+<#if currentMenu.listItems?? && (currentMenu.listItems?size > 0)>
+	<ul class="custom-submenu-list">
+	<@renderMenuItems menu=currentMenu sitePath=sitePath currentDepth=currentDepth mainNavLutece=mainNavLutece maxDepth=maxDepth/>
+	</ul>
+</#if>
 </#macro>
-
 <#--
 Macro: renderMenuItems
 
@@ -37,80 +35,77 @@ Parameters:
 - mainNavLutece (Boolean, optional): true if menu is displayed in default navBarLutece, false else.
 -->
 <#macro renderMenuItems menu sitePath="" classItem="" currentDepth=1 maxDepth=1 mainNavLutece=false >
-	<#if menu??>
-	    <#list menu.listItems as item>
-	    	<#assign itemUrl = buildItemUrl(item, sitePath) />
-	    	<#if item.type!="menu">
-		        <li class="<#if mainNavLutece>${classItem}<#elseif currentDepth &gt; 1>custom-submenu-item-depth-${currentDepth?string}<#else>custom-submenu-item</#if>">
-		            <a href="${itemUrl}" <#if item.type=='external_url'>target=<#if item.isBlank()?? && item.isBlank() >"_blank"<#else>"_self"</#if></#if>>
-		                    ${item.label!}
-		            </a>
-		        </li>
-		     <#else>
-		     	<#if currentDepth<=maxDepth>  
-					<li class="<#if mainNavLutece>${classItem} dropdown<#elseif currentDepth &gt; 1>custom-submenu-item-dropdown-depth-${currentDepth?string}<#else>custom-submenu-item-dropdown</#if>">
-			 			<#assign dropdownDivCounter = dropdownDivCounter + 1>
-			 			<#if mainNavLutece>
-							<a class="nav-link dropdown-toggle" id="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}" role="button" data-bs-toggle="dropdown" role="button" aria-expanded="false" href="${sitePath}#SUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
-								${item.label}
-							</a>
-							<div class="dropdown-menu" aria-labelledby="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
-								<div class="dropdown-menu-columns">
-									<div class="dropdown-menu-column">
-										<ul>
-											<@renderMenuItems menu=item.subMenu sitePath=sitePath currentDepth=currentDepth+1 mainNavLutece=mainNavLutece/>
-										</ul>
-									</div>
-								</div>
-							</div>
-						<#else>
-							<div class="custom-submenu-span-depth-${(currentDepth+1)?string}">${item.label}</div>
-							<ul class="custom-submenu-list-depth-${(currentDepth+1)?string}">
-								<@renderMenuItems menu=item.subMenu sitePath=sitePath currentDepth=currentDepth+1 maxDepth=maxDepth/>
+<#if menu??>
+<#list menu.listItems as item>
+<#assign itemUrl = buildItemUrl(item, sitePath) />
+<#if item.type!="menu">
+	<li class="<#if mainNavLutece>${classItem}<#elseif currentDepth &gt; 1>custom-submenu-item-depth-${currentDepth?string}<#else>custom-submenu-item</#if>">
+		<a class="nav-link" href="${itemUrl}" <#if item.type=='external_url'>target=<#if item.isBlank()?? && item.isBlank() >"_blank"<#else>"_self"</#if></#if>>
+		${item.label!}
+		</a>
+	</li>
+<#else>
+	<#if currentDepth<=maxDepth>  
+		<li class="<#if mainNavLutece>${classItem} dropdown<#elseif currentDepth &gt; 1>custom-submenu-item-dropdown-depth-${currentDepth?string}<#else>custom-submenu-item-dropdown</#if>">
+			<#assign dropdownDivCounter = dropdownDivCounter + 1>
+			<#if mainNavLutece>
+				<a class="nav-link dropdown-toggle" id="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}" role="button" data-bs-toggle="dropdown" role="button" aria-expanded="false" href="${sitePath}#SUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
+					${item.label}
+				</a>
+				<div class="dropdown-menu" aria-labelledby="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
+					<div class="dropdown-menu-columns">
+						<div class="dropdown-menu-column">
+							<ul>
+							<@renderMenuItems menu=item.subMenu sitePath=sitePath currentDepth=currentDepth+1 mainNavLutece=mainNavLutece/>
 							</ul>
-						</#if>
-					</li>
-				</#if>
-		     </#if>
-	    </#list>
+						</div>
+					</div>
+				</div>
+			<#else>
+				<p class="custom-submenu-span-depth-${(currentDepth+1)?string}">${item.label}</p>
+				<ul class="custom-submenu-list-depth-${(currentDepth+1)?string}">
+				<@renderMenuItems menu=item.subMenu sitePath=sitePath currentDepth=currentDepth+1 maxDepth=maxDepth/>
+				</ul>
+			</#if>
+		</li>
 	</#if>
+</#if>
+</#list>
+</#if>
 </#macro>
-
 <#-- 
 Function to build the URL based on the item type
 Possible types: "page", "xpage", "external_url", "menu"
 -->
 <#function buildItemUrl item sitePath="">
-    <#if !item.type??>
-        <#return item.url!"">
-    </#if>
-    
-    <#switch item.type>
-        <#case "page">
-            <#if item.url?? && item.url != "">
-                <#return sitePath + "?" + item.url>
-            <#else>
-                <#return sitePath + "?page_id=" + item.sourceItemId!"">
-            </#if>
-            <#break>
-        
-        <#case "xpage">
-            <#if item.url?? && item.url != "">
-                <#return sitePath + "?" + item.url>
-            <#else>
-                <#return sitePath + "?page=" + item.strSourceItemId!"">
-            </#if>
-            <#break>
-        
-        <#case "external_url">
-            <#return item.url!"">
-            <#break>
-        
-        <#case "menu">
-            <#return "#">
-            <#break>
-        
-        <#default>
-            <#return item.url!"">
-    </#switch>
+<#if !item.type??>
+<#return item.url!"">
+</#if>
+<#switch item.type>
+	<#case "page">
+		<#if item.url?? && item.url != "">
+			<#return sitePath + "?" + item.url>
+		<#else>
+			<#return sitePath + "?page_id=" + item.sourceItemId!"">
+		</#if>
+		<#break>
+	<#case "xpage">
+		<#if item.url?? && item.url != "">
+			<#return sitePath + "?" + item.url>
+		<#else>
+			<#return sitePath + "?page=" + item.strSourceItemId!"">
+		</#if>
+		<#break>
+	
+	<#case "external_url">
+		<#return item.url!"">
+		<#break>
+	
+	<#case "menu">
+		<#return "#">
+		<#break>
+	
+	<#default>
+		<#return item.url!"">
+</#switch>
 </#function>
