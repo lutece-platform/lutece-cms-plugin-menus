@@ -7,7 +7,6 @@
         </svg>
     </button>
 </div>
-
  <!-- Offcanvas sidebar -->
  <div class="col-xl-3">
      <div class="offcanvas-xl offcanvas-start border-end" tabindex="-1" id="sidebarOffcanvas">
@@ -19,7 +18,7 @@
                  <nav class="nav flex-column">
                  	<ul class="navbar-nav">
                  	<li class="nav-item">
-                 	<a class="nav-link active" href="${site_path!'#'}">#i18n{portal.site.page_home.label}</a>
+                 		<a class="nav-link active" href="${site_path!'#'}">#i18n{portal.site.page_home.label}</a>
 					</li>
 					<#list customMenu.listItems as item>
 						<#assign itemUrl = buildItemUrl(item, sitePath) />
@@ -52,7 +51,4 @@
          </div>
      </div>
  </div>
- 
 <script src='js/plugins/menus/menus-sidebar.js'></script>
-
- 

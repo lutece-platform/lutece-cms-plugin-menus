@@ -1,43 +1,15 @@
-<div class="row">
-	<div class="col-xs-12 col-sm-12 col-md-12">
-		<div class="box box-success">
-			<div class="box-header">
-				<h3 class="box-title">#i18n{menus.manage_menus.tableLabel}</h3>
-			</div>
-            <div class="box-body table-responsive">
-				<table class="table table-hover table-condensed">
-					<thead>
-						<tr>
-							<th>#i18n{menus.manage_menus.columnName}</th>
-							<th>#i18n{menus.manage_menus.columnType}</th>
-							<th>#i18n{menus.manage_menus.IdRootPage}</th>
-							<th>#i18n{menus.manage_menus.columnMarker}</th>
-							<th>#i18n{menus.manage_menus.columnTitleActions}</th>
-						</tr>
-					</thead>   
-					<tbody>
-					<#list menus_list as menus >
-					<tr>
-						<td>
-							<a class="btn btn-primary btn-xs btn-flat" href="" title="null" >
-								<i class="glyphicon glyphicon-question-sign"></i>
-							</a>
-						</td>
-						<td>
-							${menus.menuType}
-						</td>
-						<td>
-							${menus.idPageRoot}
-						</td>
-						<td>
-							${menus.menuMarker}
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-					</#list>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-</div>
+<@manageFeature>
+<#list menus_list as menus>
+	<@manageFeatureItem align='end'>
+		<@manageFeatureItemColumn align='end'>
+		#i18n{menus.manage_menus.columnType} : ${menus.menuType}
+		</@manageFeatureItemColumn>
+		<@manageFeatureItemColumn align='end'>
+		#i18n{menus.manage_menus.IdRootPage} : ${menus.idPageRoot}
+		</@manageFeatureItemColumn>
+		<@manageFeatureItemColumn align='end'>
+		#i18n{menus.manage_menus.columnMarker} : ${menus.menuMarker}
+		</@manageFeatureItemColumn>
+	</@manageFeatureItem>
+</#list>
+</@manageFeature>

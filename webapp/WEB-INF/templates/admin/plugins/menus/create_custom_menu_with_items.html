@@ -1,250 +1,189 @@
 <link rel="stylesheet" href="css/admin/plugins/menus/scrollable-lists.css">
 <#include "/admin/plugins/menus/macro/custom_menu_macro.html">
-
 <@pageContainer>
     <@pageColumn>
-        <@pageHeader title='#i18n{menus.create_custom_menu_with_items.pageTitle}' />
+        <@pageHeader title='#i18n{menus.create_custom_menu_with_items.pageTitle}'>
+            <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenu&id=${id_current_custom_menu!}' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='secondary' />
+        </@pageHeader>
         <@row>
-            <@columns md=12>
-				<@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=searchItems' boxed=true>
-                	
+            <@columns md=4>
+                <@messages errors=errors/>
+                <@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=searchItems' id='modify_custom_menu_with_items' boxed=true>
                 	<@input type='hidden' name='id' value=id_current_custom_menu!'' />
-                	<br>
                     <@formGroup labelKey='#i18n{menus.create_custom_menu_with_items.labelSearch}' labelFor='search'>
-	                    <@row>
-	                        <@columns md=8>
-	                            <@div class="search-input-container">
-	                                <@input type='text' class="form-control" id="searchInput" name='search' value=search_criteria!'' placeHolder='#i18n{menus.create_custom_menu_with_items.placeholderSearch}' />
-	                            </@div>
-	                        </@columns>
-	                        <@columns md=4>
-	                            <@button type='submit' name='searchItemsButton' value="search" buttonIcon='search' title='#i18n{menus.create_custom_menu_with_items.labelSearch}' color='primary' />
-	                            <@button type='submit' name='searchItemsButton' value="clean" buttonIcon='times' title='#i18n{menus.create_custom_menu_with_items.buttonCleanSearch}' color='secondary' />
-	                        </@columns>
-	                    </@row>
+                        <@inputGroup>
+                            <@input type='text' id='searchInput' name='search' value=search_criteria!'' placeHolder='#i18n{menus.create_custom_menu_with_items.placeholderSearch}' />
+                            <@button type='submit' name='searchItemsButton' id='btn-reset-search' value="clean" buttonIcon='times' title='#i18n{portal.util.labelReset}' color='secondary' hideTitle=['all'] />
+                            <@button type='submit' name='searchItemsButton' value="search" buttonIcon='search' title='#i18n{menus.create_custom_menu_with_items.labelSearch}' color='primary' />
+                        </@inputGroup>
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpSearch}</@formHelp>
                       </@formGroup>
-                      <br>
                       <!-- List of Page, Xpage and SubMenu -->
-                      <@row class='mt-3'>
-                          <@columns md=4>
-                              <@box>
-                                  <@boxHeader class='text-center'>
-                                      <h5>#i18n{menus.create_custom_menu_with_items.labelListPages}</h5>
-                                  </@boxHeader>
-                                  <@boxBody>
-                                      <div class="scrollable-list" style="max-height: 200px !important; overflow-y: auto !important; border: 1px solid #dee2e6; border-radius: 0.375rem;">
-									<@listGroup>
-                                              <#if available_pages_list?? && available_pages_list?size &gt; 0>
-                                                  <#list available_pages_list as page>
-                                                      <@listGroupItem id=page.code!'' class='hoverable-item' params='data-type="page"'>
-                                                          ${page.name}
-                                                      </@listGroupItem>
-                                                  </#list>
-                                              </#if>
-                                          </@listGroup>
-                                      </div>
-                                  </@boxBody>
-                              </@box>
-                            </@columns>
-                            <@columns md=4>
-                                <@box>
-                                    <@boxHeader class='text-center'>
-                                        <h5>#i18n{menus.create_custom_menu_with_items.labelListXPages}</h5>
-                                    </@boxHeader>
-                                    <@boxBody>
-                                        <div class="scrollable-list" style="max-height: 200px !important; overflow-y: auto !important; border: 1px solid #dee2e6; border-radius: 0.375rem;">
-											<@listGroup>
-                                                <#if available_xpages_list?? && available_xpages_list?size &gt; 0>
-                                                    <#list available_xpages_list as xpage>
-                                                        <@listGroupItem id=xpage.code!'' class='hoverable-item' params='data-type="xpage"'>
-                                                            ${xpage.name}
-                                                        </@listGroupItem>
-                                                    </#list>
-                                                </#if>
-                                            </@listGroup>
-                                        </div>
-                                    </@boxBody>
-                                </@box>
-                            </@columns>
-                            <@columns md=4>
-                                <@box>
-                                    <@boxHeader class='text-center'>
-                                        <h5>#i18n{menus.create_custom_menu_with_items.labelListMenus}</h5>
-                                    </@boxHeader>
-                                    <@boxBody>
-                                        <div class="scrollable-list" style="max-height: 200px !important; overflow-y: auto !important; border: 1px solid #dee2e6; border-radius: 0.375rem;">
-                                            <@listGroup>
-                                                <#if available_menus_list?? && available_menus_list?size &gt; 0>
-                                                    <#list available_menus_list as menu>
-                                                        <@listGroupItem id=menu.code!'' class='hoverable-item' params='data-type="menu"'>
-                                                            ${menu.name}
-                                                        </@listGroupItem>
-                                                    </#list>
-                                                </#if>
-                                            </@listGroup>
-                                        </div>
-                                    </@boxBody>
-                                </@box>
-                            </@columns>
-                        </@row>
+                    <@box title='#i18n{menus.create_custom_menu_with_items.labelListPages}'>
+                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                    <@listGroup>
+                    <#if available_pages_list?? && available_pages_list?size gt 0>
+                    <#list available_pages_list as page>
+                        <@listGroupItem id=page.code!'' class='hoverable-item' params='data-type="page"'>
+                            ${page.name}
+                        </@listGroupItem>
+                    </#list>
+                    </#if>
+                    </@listGroup>
+                    </@div>
+                    </@box>
+                    <@box title='#i18n{menus.create_custom_menu_with_items.labelListXPages}'>
+                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                        <@listGroup>
+                        <#if available_xpages_list?? && available_xpages_list?size gt 0>
+                        <#list available_xpages_list as xpage>
+                            <@listGroupItem id=xpage.code!'' class='hoverable-item' params='data-type="xpage"'>
+                                ${xpage.name}
+                            </@listGroupItem>
+                        </#list>
+                        </#if>
+                        </@listGroup>
+                    </@div>
+                    </@box>
+                    <@box title='#i18n{menus.create_custom_menu_with_items.labelListMenus}'>
+                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                    <@listGroup>
+                    <#if available_menus_list?? && available_menus_list?size gt 0>
+                        <#list available_menus_list as menu>
+                            <@listGroupItem id=menu.code!'' class='hoverable-item' params='data-type="menu"'>
+                                ${menu.name}
+                            </@listGroupItem>
+                        </#list>
+                    </#if>
+                    </@listGroup>
+                    </@div>
+                    </@box>
                 </@tform>
             </@columns>
-        </@row>
-        
-        <@row class='mt-5'>
-        <@messages errors=errors/>
-            <@columns md=4>
-                <@box>
-                    <@boxHeader class='text-center'>
-                        <h4>#i18n{menus.create_custom_menu_with_items.formPreviewItemTitle}</h4>
-                    </@boxHeader>
-                    <@boxBody>
-
-                        <@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=createCustomMenuItems' id='add-item-form'>
-
-                        	<@messages errors=create_items_errors_list/>
-                        	<@input type='hidden' name='parent_menu_id' value=id_current_custom_menu!'' />
-                        	<@input type='hidden' id='source_id_item' name='source_item_id' value='' />
-
-                            <@formGroup id='type-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemType}' labelFor='item_type' mandatory=true>
-                                <@select name='type' id='item_type' items=item_types_list />
-                            </@formGroup>
-
-                            <@formGroup id='dynamic-group' params="hidden=true">
-                                <@checkBox name='is_label_dynamic' id='item_dynamic' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsLabelDynamic}' value='1' />
-                                <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsLabelDynamic}</@formHelp>
-                            </@formGroup>
-
-                            <@formGroup id='blank-group' params="hidden=true">
-                                <@checkBox name='is_blank' id='item_blank' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsBlank}' value='1'/>
-                                <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsBlank}</@formHelp>
-                            </@formGroup>
-                            
-                            <@formGroup id='label-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemLabel}' labelFor='item_label' mandatory=true params="hidden=true">
-                                <@input type='text' name='label' id='item_label' maxlength=50/>
-                                <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemLabel}</@formHelp>
-                            </@formGroup>
-                                                        
-                            <@formGroup id='url-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemUrl}' labelFor='item_url' mandatory=true params="hidden=true">
-                                <@input type='text' name='url' id='item_url' />
-                                <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemUrlPage}</@formHelp>
-                            </@formGroup>
-                            
-                            <@formGroup id='menu-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemSubMenu} *' labelFor='item_target_menu'  params="hidden=true">
-                                <@select name="select_menu" id='item_target_menu' items=available_menus_list />
-                                <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemSubMenu}</@formHelp>
-                            </@formGroup>
-                            
-                            <@formGroup>
-                                <@button type='submit' buttonIcon='plus' title='#i18n{menus.create_custom_menu_with_items.buttonAddItem}' color='success' />
-                            </@formGroup>
-                        </@tform>
-                    </@boxBody>
+            <@columns md=3>
+                <@box title='#i18n{menus.create_custom_menu_with_items.formPreviewItemTitle}'>
+                <@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=createCustomMenuItems' id='add-item-form'>
+                    <@messages errors=create_items_errors_list/>
+                    <@input type='hidden' name='parent_menu_id' value=id_current_custom_menu!'' />
+                    <@input type='hidden' id='source_id_item' name='source_item_id' value='' />
+                    <@formGroup id='type-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemType}' labelFor='item_type' mandatory=true>
+                        <@select name='type' id='item_type' items=item_types_list />
+                    </@formGroup>
+                    <@formGroup id='dynamic-group' params="hidden=true">
+                        <@checkBox name='is_label_dynamic' id='item_dynamic' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsLabelDynamic}' value='1' />
+                        <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsLabelDynamic}</@formHelp>
+                    </@formGroup>
+                    <@formGroup id='blank-group' params="hidden=true">
+                        <@checkBox name='is_blank' id='item_blank' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsBlank}' value='1'/>
+                        <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsBlank}</@formHelp>
+                    </@formGroup>
+                    <@formGroup id='label-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemLabel}' labelFor='item_label' mandatory=true params="hidden=true">
+                        <@input type='text' name='label' id='item_label' maxlength=50/>
+                        <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemLabel}</@formHelp>
+                    </@formGroup>
+                    <@formGroup id='url-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemUrl}' labelFor='item_url' mandatory=true params="hidden=true">
+                        <@input type='text' name='url' id='item_url' />
+                        <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemUrlPage}</@formHelp>
+                    </@formGroup>
+                    <@formGroup id='menu-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemSubMenu} *' labelFor='item_target_menu'  params="hidden=true">
+                        <@select name="select_menu" id='item_target_menu' items=available_menus_list />
+                        <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemSubMenu}</@formHelp>
+                    </@formGroup>
+                    <@formGroup>
+                        <@button type='submit' buttonIcon='plus' title='#i18n{menus.create_custom_menu_with_items.buttonAddItem}' color='success w-100' />
+                    </@formGroup>
+                </@tform>
                 </@box>
             </@columns>
-            <@columns class="col-md-1 d-flex justify-content-center align-items-center">
-            	<i class="ti ti-arrow-right" style="font-size: 3rem; color: #007bff;"></i>
-            </@columns>
-            <@columns md=7>
-                <@box>
-                    <@boxHeader class='text-center'>
-                        <h4>#i18n{menus.create_custom_menu_with_items.previewMenuTitle}</h4>
-                    </@boxHeader>
-                    <@boxBody>
-                        <@table>
-                            <@tr>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemType}</@th>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemIdOrName}</@th>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemIsLabelDynamic}</@th>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemLabel}</@th>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemOrder}</@th>
-                                <@th>#i18n{menus.create_custom_menu_with_items.labelColumnItemActions}</@th>
-                            </@tr>
-                            <#if custom_menu_items_list?? && custom_menu_items_list?size &gt; 0>
-                                <#if max_order_size??>
-                                	<#assign size_list = max_order_size />
+            <@columns>
+                <@box title='#i18n{menus.modify_custom_menu_with_items.previewMenuTitle}'>
+                <#if custom_menu_items_list?? && custom_menu_items_list?size gt 0>
+                    <#if max_order_size??><#assign size_list = max_order_size /><#else><#assign size_list = custom_menu_items_list?size /></#if>
+                    <@manageFeature>    
+                    <#list custom_menu_items_list as item>
+                        <@manageFeatureItem>
+                            <@manageFeatureItemColumn auto=true>
+                             <#if item.type='page' && item.isLabelDynamic( )?? && item.isLabelDynamic( )>
+                                    <#if available_pages_list?? && available_pages_list?size gt 0 && item.sourceItemId??>
+                                        <#list available_pages_list as page>
+                                            <#if page.code=item.sourceItemId>
+                                                <#if page.code=item.sourceItemId>
+                                                    ${(page.name?? && page.name?has_content)?then(page.name?split("-")[0], "")}
+                                                </#if>
+                                            </#if>
+                                        </#list>
+                                    </#if>
                                 <#else>
-                                    <#assign size_list = custom_menu_items_list?size />
+                                    ${item.label!''}
+                                </#if> - #i18n{menus.modify_custom_menu_with_items.labelColumnItemType} : ${item.type!''}
+                            </@manageFeatureItemColumn>
+                            <#--
+                            <@manageFeatureItemColumn auto=true>
+                            	<#if item.type!='menu'> 
+                                	<#if item.sourceItemId?? && item.sourceItemId?trim?length gt 0>
+                                      ${item.sourceItemId!''}       
+                                    <#else>
+									    <@p class='text-muted'>#i18n{menus.modify_custom_menu_with_items.labelCustomItem}</@p>
+									</#if>
+                                <#else>
+                                    <#assign matched_menu = ''>
+                                    <#list available_menus_list as menu>
+                                        <#if menu.code = item.sourceItemId>
+                                            <#assign matched_menu = menu.name>
+                                            <#break>
+                                        </#if>
+                                    </#list>
+                                    ${matched_menu}
                                 </#if>
-                                <#list custom_menu_items_list as item>
-                                    <@tr>
-                                        <@td>${item.type!''}</@td>
-                                        <@td> 
-                                        <#if item.type!='menu'> 
-                                        	<#if item.sourceItemId?? && item.sourceItemId?trim?length &gt; 0>
-											  ${item.sourceItemId!''}
-											<#else>
-											  <div class='text-muted'>#i18n{menus.create_custom_menu_with_items.labelCustomItem}</div>
-											</#if>
-                                        <#else>
-                                        <#assign matched_menu = ''>
-										<#list available_menus_list as menu>
-										    <#if menu.code = item.sourceItemId>
-										        <#assign matched_menu = menu.name>
-										        <#break>
-										    </#if>
-										</#list>
-										${matched_menu}
-										</#if>
-										</@td>
-                                        <@td> 
-                                        	<#if item.isLabelDynamic( )?? && item.isLabelDynamic( )>
-                                        	  	<span class="badge bg-success"><i class="ti ti-check"></i></span>
-                                        	<#else>
-                                        		<span class="badge bg-warning"><i class="ti ti-x"></i></span>
-                                        	</#if>
-                                        </@td>
-                                        <@td>
-                                       		<#if item.type='page' && item.isLabelDynamic( )?? && item.isLabelDynamic( )>
-                                       			<#if available_pages_list?? && available_pages_list?size &gt; 0 && item.sourceItemId??>
-                                                    <#list available_pages_list as page>
-                                                    	<#if page.code=item.sourceItemId>
-                                                            ${(page.name?? && page.name?has_content)?then(page.name?split("-")[0], "")}
-                                                        </#if>
-                                                    </#list>
-                                                 </#if>
-                                       		<#else>
-                                       			${item.label!''}
-                                       		</#if>
-                                        </@td>
-                                        <@td>
-                                            <!-- SELECT LIST FOR ORDER CHANGE -->
-											<@tform type='inline' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=changeMenuItemsOrder&id=${item.id}'>
-												<@input type='hidden' name='id_item' value=item.id />
-												<@inputGroup>
-													<@comboOrders name='order_id' default_value=item.order!'' max=size_list />
-													<@inputGroupItem type='btn'>
-														<@button type='submit' buttonIcon='check' color='default' title='#i18n{menus.create_custom_menu_with_items.buttonChangeItemOrder}' hideTitle=['all'] size='sm'/>
-													</@inputGroupItem>
-												</@inputGroup>
-											</@tform>
-                                        </@td>
-                                        <@td>
-                                        	<@offcanvas btnClass="btn-sm btnAddCanvas" size='25' targetUrl='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenuItem&id=${item.id}' targetElement='#modify-item-form' redirectForm=false id='custom-menu-item-modify-${item.id}' title='#i18n{menus.create_custom_menu_with_items.buttonModifyItem}' position='end' hideTitle=['all'] btnIcon='edit' />
-                        					<@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=removeCustomMenuItem&id=${item.id}' title='#i18n{menus.create_custom_menu_with_items.buttonRemoveItem}' buttonIcon='trash' color='danger' hideTitle=['all'] size='sm' />
-                                        </@td>
-                                    </@tr>
-                                </#list>
-                            <#else>
-                                <@tr>
-                                    <@td colspan=3 class='text-center text-muted'>#i18n{menus.create_custom_menu_with_items.labelNoItem}</@td>
-                                </@tr>
-                            </#if>
-                        </@table>
-                        <@paginationAdmin paginator=paginator combo=1 />
-                    </@boxBody>
+                            </@manageFeatureItemColumn>
+                            <@manageFeatureItemColumn> 
+                                <#if item.isLabelDynamic( )?? && item.isLabelDynamic( )>
+                                    <span class="badge bg-success"><i class="ti ti-check"></i></span>
+                                <#else>
+                                    <span class="badge bg-warning"><i class="ti ti-x"></i></span>
+                                </#if>
+                            </@manageFeatureItemColumn>
+                            -->
+                            <@manageFeatureItemColumn auto=true>
+                                <!-- SELECT LIST FOR ORDER CHANGE -->
+                                <@tform type='inline' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=changeMenuItemsOrder&id=${item.id}'>
+                                    <@input type='hidden' name='id_item' value=item.id />
+                                    <@inputGroup>
+                                        <@comboOrders name='order_id' default_value=item.order!'' max=size_list />
+                                        <@button type='submit' buttonIcon='check' color='default' title='#i18n{menus.modify_custom_menu_with_items.buttonChangeItemOrder}' hideTitle=['all'] size='sm'/>
+                                    </@inputGroup>
+                                </@tform>
+                            </@manageFeatureItemColumn>
+                            <@manageFeatureItemColumn align='end'>
+                                <@offcanvas btnClass="btnAddCanvas"  size='25' targetUrl='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=modifyCustomMenuItem&id=${item.id}' targetElement='#modify-item-form' redirectForm=false id='custom-menu-item-modify-${item.id}' title='#i18n{menus.modify_custom_menu_with_items.buttonModifyItem}' position='end' hideTitle=['all'] btnIcon='edit' />
+                                <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=removeCustomMenuItem&id=${item.id}' title='#i18n{menus.modify_custom_menu_with_items.buttonRemoveItem}' buttonIcon='trash' color='danger' hideTitle=['all'] />
+                            </@manageFeatureItemColumn>
+                        </@manageFeatureItem>
+                    </#list>
+                    </@manageFeature>    
+                    <@paginationAdmin paginator=paginator combo=1 showcount=0 />
+                <#else>
+                    <@empty title='#i18n{menus.modify_custom_menu_with_items.labelNoItem}' />
+                </#if>
                 </@box>
-            </@columns>
-        </@row>
-        
-        <!-- Bouton retour en bas de page -->
-        <@row class='mt-4'>
-            <@columns md=12 class='text-center'>
-                <@aButton href='jsp/admin/plugins/menus/ManageCustomMenus.jsp' buttonIcon='times' title='#i18n{portal.util.labelBack}' color='secondary' />
             </@columns>
         </@row>
     </@pageColumn>
 </@pageContainer>
-
 <script src='js/plugins/menus/menus-searchbar.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const btnResetSearch = document.getElementById('btn-reset-search');
+    if (document.getElementById('searchInput').value === '') {
+        btnResetSearch.style.display = 'none';
+    }
+    searchInput.addEventListener('input', function() {
+        if (this.value.trim() !== '') {
+            btnResetSearch.style.display = 'inline-block';
+        } else {
+            btnResetSearch.style.display = 'none';
+        }   
+    });
+});
+</script>

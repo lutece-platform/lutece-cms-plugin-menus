@@ -2,34 +2,27 @@
     <@pageColumn>
         <@pageHeader title='#i18n{menus.create_custom_menu.pageTitle}' />
             <@tform name='create_custom_menu' id='create_custom_menu' method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp'>
-            	
             	<@input type='hidden' name='action' value='createCustomMenu' />
-            	
 	             <@formGroup labelKey='#i18n{menus.create_custom_menu.labelName}' labelFor='name' mandatory=true>
 	                 <@input type='text' name='name' id='name' maxlength=100 value='' />
 	                 <@formHelp>#i18n{menus.create_custom_menu.helpName}</@formHelp>
 	             </@formGroup>
-	             
 	             <@formGroup labelKey='#i18n{menus.create_custom_menu.labelBookmark}' labelFor='bookmark' mandatory=true>
 	                 <@input type='text' name='bookmark' id='bookmark' maxlength=100 value='' />
 	                 <@formHelp>#i18n{menus.create_custom_menu.helpRuleBookmark}</@formHelp>
 	             </@formGroup>
-	             
 	             <@formGroup labelKey='#i18n{menus.create_custom_menu.labelType}' labelFor='type' mandatory=true>
 	                 <@select name='type' id='type' default_value='' items=menu_types_list />
 	                 <@formHelp>#i18n{menus.create_custom_menu.helpType}</@formHelp>
 	             </@formGroup>
-	
 	             <@formGroup labelKey='#i18n{menus.create_custom_menu.labelDescription}' labelFor='description'>
 	                 <@input type='text' name='description' id='description' maxlength=255 value='' />
 	                 <@formHelp>#i18n{menus.create_custom_menu.helpDescription}</@formHelp>
 	             </@formGroup>
-	             
 	             <@formGroup >
-		                	<@button type='submit' buttonIcon='device-floppy' title='#i18n{menus.create_custom_menu.buttonCreate}' name="actionCreateCustomMenuButton" value="create_custom_menu" color='primary' />
-		                	<@button type='submit' buttonIcon='device-ipad-plus' title='#i18n{menus.create_custom_menu.buttonCreateAndAddItems}' name="actionCreateCustomMenuButton" value="create_custom_menu_with_items" color='primary' />
+					<@button type='submit' buttonIcon='device-floppy' title='#i18n{menus.create_custom_menu.buttonCreate}' name="actionCreateCustomMenuButton" value="create_custom_menu" color='primary' />
+					<@button type='submit' buttonIcon='device-ipad-plus' title='#i18n{menus.create_custom_menu.buttonCreateAndAddItems}' name="actionCreateCustomMenuButton" value="create_custom_menu_with_items" color='primary' />
                  </@formGroup>
-
            </@tform>
  	  </@pageColumn>
 </@pageContainer>
