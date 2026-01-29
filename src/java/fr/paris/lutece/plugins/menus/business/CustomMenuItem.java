@@ -57,7 +57,6 @@ public class CustomMenuItem implements Serializable
 	private boolean _bIsLabelDynamic;
 	private boolean _bIsBlank;
 	@Size( max = 50, message = "#i18n{menus.validation.customMenuItem.label.size}" )
-	@Pattern( regexp = "^\\S+$", message = "#i18n{menus.validation.customMenuItem.label.pattern}" )
 	private String _strLabel;
 	private String _strType;
 	@Size( max = 500, message = "#i18n{menus.validation.customMenuItem.url.size}" )
