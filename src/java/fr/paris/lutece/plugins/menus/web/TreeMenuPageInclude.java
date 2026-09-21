@@ -33,31 +33,29 @@
  */
 package fr.paris.lutece.plugins.menus.web;
 
+import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.plugins.menus.business.Menus;
 import fr.paris.lutece.plugins.menus.business.MenusHome;
 import fr.paris.lutece.plugins.menus.service.MenusPlugin;
-import fr.paris.lutece.portal.business.XmlContent;
+import fr.paris.lutece.plugins.menus.service.MenusService;
 import fr.paris.lutece.portal.business.page.Page;
 import fr.paris.lutece.portal.business.page.PageHome;
-import fr.paris.lutece.portal.business.portalcomponent.PortalComponentHome;
-import fr.paris.lutece.portal.business.style.ModeHome;
-import fr.paris.lutece.portal.business.stylesheet.StyleSheet;
 import fr.paris.lutece.portal.service.content.PageData;
-import fr.paris.lutece.portal.service.html.XmlTransformerService;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.portal.PortalMenuService;
-import fr.paris.lutece.portal.service.portal.PortalService;
+import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Parameters;
-import fr.paris.lutece.util.xml.XmlUtil;
+import fr.paris.lutece.util.html.HtmlTemplate;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -68,8 +66,17 @@ public class TreeMenuPageInclude implements PageInclude
 {
 	// ///////////////////////////////////////////////////////////////////////////////////////////
 	// Constants
-	private static final int PORTAL_COMPONENT_MENU_TREE = 7;
 	private static final String MENU_MARKER = "page_tree_menu";
+
+	// Templates
+	private static final String TEMPLATE_TREE_MENU_PAGES = "skin/plugins/menus/tree_menu_page_list.html";
+
+	// Markers
+	private static final String MARK_MENU = "menu";
+	private static final String MARK_CURRENT_PAGE_ID = "current_page_id";
+	private static final String MARK_ROOT_PAGE_ID = "root_page_id";
+
+	private MenusService _menusService = CDI.current( ).select( MenusService.class ).get( );
 
 	/**
 	 * Substitue specific Freemarker markers in the page template.
@@ -101,21 +108,14 @@ public class TreeMenuPageInclude implements PageInclude
 				nCurrentPageId = 0;
 			}
 
-			/*
-			 * int nCurrentPageId = ( request.getParameter( Parameters.PAGE_ID ) == null ) ?
-			 * 0 : Integer.parseInt( request.getParameter( Parameters.PAGE_ID ) );
-			 */
 			Plugin plugin = PluginService.getPlugin( MenusPlugin.PLUGIN_NAME );
 
 			for( Menus menus : MenusHome.findAll( plugin ) )
 			{
 				if( menus.getMenuType( ).startsWith( MENU_MARKER ) )
 				{
-					String strTreeMenuPage = ( ( getTreeMenuPage( nCurrentPageId, nMode, menus, request ) == null ) ? ""
-							: getTreeMenuPage( nCurrentPageId,
-									nMode, menus, request ) );
-					String strMarkerTreeMenuPage = menus.getMenuMarker( );
-					rootModel.put( strMarkerTreeMenuPage, strTreeMenuPage );
+					String strTreeMenuPage = getTreeMenuPage( nCurrentPageId, nMode, menus, request );
+					rootModel.put( menus.getMenuMarker( ), ( strTreeMenuPage == null ) ? "" : strTreeMenuPage );
 				}
 			}
 		}
@@ -132,88 +132,63 @@ public class TreeMenuPageInclude implements PageInclude
 	 *                the current menu
 	 * @param request
 	 *                The HttpServletRequest
-	 * @return The list of the tree menus layed out with the stylesheet of the mode
+	 * @return The list of the tree menus rendered with the template of the plugin
 	 */
 	public String getTreeMenuPage( int nIdPage, int nMode, Menus menus, HttpServletRequest request )
 	{
-		StringBuffer strXml = new StringBuffer( );
+		MenuItem root = new MenuItem( );
 
-		String strCurrentPageId = Integer.toString( nIdPage );
-
-		Collection < Page > listPagesMenu;
-
-		listPagesMenu = PageHome.getChildPagesMinimalData( menus.getIdPageRoot( ) );
-		strXml.append( XmlUtil.getXmlHeader( ) );
-		XmlUtil.beginElement( strXml, XmlContent.TAG_MENU_LIST );
-
-		int nMenuIndex = 1;
-
-		for( Page menuPage : listPagesMenu )
+		for( Page menuPage : PageHome.getChildPagesMinimalData( menus.getIdPageRoot( ) ) )
 		{
 			if( ( menuPage.isVisible( request ) ) || ( nMode == PortalMenuService.MODE_ADMIN ) )
 			{
-				XmlUtil.beginElement( strXml, XmlContent.TAG_MENU );
-				XmlUtil.addElement( strXml, XmlContent.TAG_MENU_INDEX, nMenuIndex );
-				XmlUtil.addElement( strXml, XmlContent.TAG_PAGE_ID, menuPage.getId( ) );
-				XmlUtil.addElementHtml( strXml, XmlContent.TAG_PAGE_NAME, menuPage.getName( ) );
-				XmlUtil.addElementHtml( strXml, XmlContent.TAG_PAGE_DESCRIPTION, menuPage.getDescription( ) );
-				XmlUtil.addElementHtml( strXml, XmlContent.TAG_CURRENT_PAGE_ID, strCurrentPageId );
-
-				// Seek of the sub-menus
-				XmlUtil.beginElement( strXml, XmlContent.TAG_SUBLEVEL_MENU_LIST );
-
-				Collection < Page > listSubLevelMenuPages = PageHome.getChildPagesMinimalData( menuPage.getId( ) );
-				int nSubLevelMenuIndex = 1;
-
-				for( Page subLevelMenuPage : listSubLevelMenuPages )
-				{
-					if( ( subLevelMenuPage.isVisible( request ) ) || ( nMode == PortalMenuService.MODE_ADMIN ) )
-					{
-						XmlUtil.beginElement( strXml, XmlContent.TAG_SUBLEVEL_MENU );
-						XmlUtil.addElement( strXml, XmlContent.TAG_MENU_INDEX, nMenuIndex );
-						XmlUtil.addElement( strXml, XmlContent.TAG_SUBLEVEL_INDEX, nSubLevelMenuIndex );
-						XmlUtil.addElement( strXml, XmlContent.TAG_PAGE_ID, subLevelMenuPage.getId( ) );
-						XmlUtil.addElementHtml( strXml, XmlContent.TAG_PAGE_NAME, subLevelMenuPage.getName( ) );
-						XmlUtil.addElementHtml( strXml, XmlContent.TAG_PAGE_DESCRIPTION,
-								subLevelMenuPage.getDescription( ) );
-						XmlUtil.addElementHtml( strXml, XmlContent.TAG_CURRENT_PAGE_ID, strCurrentPageId );
-						XmlUtil.endElement( strXml, XmlContent.TAG_SUBLEVEL_MENU );
-					}
-				}
-
-				XmlUtil.endElement( strXml, XmlContent.TAG_SUBLEVEL_MENU_LIST );
-				XmlUtil.endElement( strXml, XmlContent.TAG_MENU );
-				nMenuIndex ++ ;
+				root.addChild( buildMenuItem( menuPage, nMode, request ) );
 			}
 		}
 
-		XmlUtil.endElement( strXml, XmlContent.TAG_MENU_LIST );
+		Locale locale = ( request == null ) ? null : request.getLocale( );
 
-		StyleSheet xslSource;
+		Map < String, Object > model = new HashMap < String, Object >( );
+		model.put( MARK_MENU, root );
+		model.put( MARK_ROOT_PAGE_ID, menus.getIdPageRoot( ) );
+		model.put( MARK_CURRENT_PAGE_ID, Integer.toString( nIdPage ) );
 
-		// Selection of the XSL stylesheet
-		switch( nMode )
+		// Define the site path from url, by mode
+		model.put( MenusService.MARKER_SITE_PATH, _menusService.getSitePath( nMode ) );
+
+		HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_TREE_MENU_PAGES, locale, model );
+
+		return template.getHtml( );
+	}
+
+	/**
+	 * Builds a menu item and its sub level menu items
+	 *
+	 * @param menuPage
+	 *                 The page of the menu item
+	 * @param nMode
+	 *                 the mode id
+	 * @param request
+	 *                 The HttpServletRequest
+	 * @return The menu item
+	 */
+	private MenuItem buildMenuItem( Page menuPage, int nMode, HttpServletRequest request )
+	{
+		MenuItem menuItem = new MenuItem( );
+		menuItem.setPage( menuPage );
+
+		Collection < Page > listSubLevelMenuPages = PageHome.getChildPagesMinimalData( menuPage.getId( ) );
+
+		for( Page subLevelMenuPage : listSubLevelMenuPages )
 		{
-			case PortalMenuService.MODE_NORMAL :
-			case PortalMenuService.MODE_ADMIN :
-				xslSource = PortalComponentHome.getXsl( PORTAL_COMPONENT_MENU_TREE, PortalMenuService.MODE_NORMAL );
-
-				break;
-
-			default :
-				xslSource = PortalComponentHome.getXsl( PORTAL_COMPONENT_MENU_TREE, nMode );
-
-				break;
+			if( ( subLevelMenuPage.isVisible( request ) ) || ( nMode == PortalMenuService.MODE_ADMIN ) )
+			{
+				MenuItem subMenuItem = new MenuItem( );
+				subMenuItem.setPage( subLevelMenuPage );
+				menuItem.addChild( subMenuItem );
+			}
 		}
 
-		Properties outputProperties = ModeHome.getOuputXslProperties( nMode );
-
-		Map < String, String > mapParamRequest = new HashMap < String, String >( );
-		PortalService.setXslPortalPath( mapParamRequest, nMode );
-
-		XmlTransformerService xmlTransformerService = new XmlTransformerService( );
-
-		return xmlTransformerService.transformBySourceWithXslCache( strXml.toString( ), xslSource, mapParamRequest,
-				outputProperties );
+		return menuItem;
 	}
 }

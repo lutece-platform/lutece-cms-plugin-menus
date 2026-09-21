@@ -1,0 +1,18 @@
+<#if menu.childs?has_content>
+	<div class="tree-menu" id="tree-menu-${root_page_id}">
+		<ul>
+			<#list menu.childs as submenu >
+				<li><a href="${site_path}?page_id=${submenu.page.id}" target="_top" aria-current="<#if submenu.page.id?string == current_page_id>true<#else>false</#if>">${submenu.page.name}</a>
+					<#if submenu.page.description?has_content><br />${submenu.page.description}</#if>
+					<#if submenu.childs?has_content>
+						<ul>
+							<#list submenu.childs as subsubmenu >
+								<li><a href="${site_path}?page_id=${subsubmenu.page.id}" target="_top" aria-current="<#if subsubmenu.page.id?string == current_page_id>true<#else>false</#if>">${subsubmenu.page.name}</a></li>
+							</#list>
+						</ul>
+					</#if>
+				</li>
+			</#list>
+		</ul>
+	</div>
+</#if>
