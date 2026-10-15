@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.menus.service.cache;
 
 import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.portal.service.cache.AbstractCacheableService;
+import fr.paris.lutece.portal.service.page.PageEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Initialized;
@@ -108,5 +109,16 @@ public class MainTreeMenuCacheService extends AbstractCacheableService < String,
 	public void initializedService( @Observes @Initialized( ApplicationScoped.class ) ServletContext context )
 	{
 		// This method is intentionally left empty to trigger CDI bean instantiation
+	}
+
+	/**
+	 * Resets the cached menus when a page is created, modified or removed.
+	 *
+	 * @param event
+	 *            the page event
+	 */
+	public void processPageEvent( @Observes PageEvent event )
+	{
+		resetCache( );
 	}
 }

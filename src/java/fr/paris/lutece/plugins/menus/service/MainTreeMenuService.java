@@ -142,16 +142,8 @@ public class MainTreeMenuService
 			if( root == null )
 			{
 				root = new MenuItem( );
-			}
-			
-			generateTreeMenu( root, nCurrentPageId, nParentCurrentPageId );
-
-			if (_cacheService != null) {
-				try {
-					_cacheService.put(strCacheKey, root);
-				} catch (NullPointerException e) {
-					
-				}
+				generateTreeMenu( root, nCurrentPageId, nParentCurrentPageId );
+				_cacheService.put( strCacheKey, root );
 			}
 		}
 		else
