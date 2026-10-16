@@ -1050,26 +1050,15 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 */
 	private void clearMenuCache( String menuType )
 	{
-		if( Strings.CS.equals( MENU_TYPE_MENU_MAIN, menuType ) )
+		// No test of the status: resetCache is safe on a disabled cache, and reaches the cache shared with the other
+		// instances when this one has it disabled
+		if( Strings.CS.equals( MENU_TYPE_MENU_MAIN, menuType ) || Strings.CS.equals( MENU_TYPE_MENU_TREE, menuType ) )
 		{
-			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
-			{
-				_mainTreeMenuService.getCacheService( ).resetCache( );
-			}
-		}
-		else if( Strings.CS.equals( MENU_TYPE_MENU_TREE, menuType ) )
-		{
-			if( _mainTreeMenuService.isMainTreeCacheServiceEnable( ) )
-			{
-				_mainTreeMenuService.getCacheService( ).resetCache( );
-			}
+			_mainTreeMenuService.getCacheService( ).resetCache( );
 		}
 		else if( Strings.CS.equals( MENU_TYPE_MENU_TREE_ALL_PAGES, menuType ) )
 		{
-			if( _mainTreeMenuAllPagesService.isMainTreeCacheServiceEnable( ) )
-			{
-				_mainTreeMenuAllPagesService.getCacheService( ).resetCache( );
-			}
+			_mainTreeMenuAllPagesService.getCacheService( ).resetCache( );
 		}
 	}
 
