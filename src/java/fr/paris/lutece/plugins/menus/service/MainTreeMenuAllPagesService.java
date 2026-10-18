@@ -192,12 +192,13 @@ public class MainTreeMenuAllPagesService
 	{
 		if( nDepth > 0 )
 		{
-			Collection < Page > listPages = PageHome.getChildPages( nPageId );
+			// id, name, description and role: what the menu templates show; no portlets, no image
+			Collection < Page > listPages = PageHome.getChildPagesMinimalData( nPageId );
 
 			for( Page page : listPages )
 			{
 				MenuItem menuItem = new MenuItem( );
-				menuItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+				menuItem.setPage( page );
 				item.addChild( menuItem );
 				buildMenuTree( menuItem, page.getId( ), nDepth - 1 );
 			}
@@ -212,7 +213,7 @@ public class MainTreeMenuAllPagesService
 	{
 		int nRootId = PortalService.getRootPageId( );
 		MenuItem root = new MenuItem( );
-		root.setPage( PageHome.findByPrimaryKey( nRootId ) );
+		root.setPage( PageHome.getPageWithoutImageContent( nRootId ) );
 		buildFullMenuTreeRecursive( root, nRootId );
 		return root;
 	}
@@ -224,7 +225,8 @@ public class MainTreeMenuAllPagesService
 	 */
 	private void buildFullMenuTreeRecursive( MenuItem item, int nPageId )
 	{
-		Collection < Page > listPages = PageHome.getChildPages( nPageId );
+		// id, name, description and role: what the menu templates show; no portlets, no image
+		Collection < Page > listPages = PageHome.getChildPagesMinimalData( nPageId );
 		if( listPages == null || listPages.isEmpty( ) )
 		{
 			// No more child
@@ -233,7 +235,7 @@ public class MainTreeMenuAllPagesService
 		for( Page page : listPages )
 		{
 			MenuItem childItem = new MenuItem( );
-			childItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+			childItem.setPage( page );
 			item.addChild( childItem );
 			buildFullMenuTreeRecursive( childItem, page.getId( ) );
 		}

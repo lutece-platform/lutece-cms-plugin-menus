@@ -182,7 +182,7 @@ public class MainTreeMenuService
         {
         	//Add currentPage in menu
     		MenuItem menuItem = new MenuItem( );
-            menuItem.setPage( PageHome.findByPrimaryKey( nCurrentPageId ) );
+            menuItem.setPage( PageHome.getPageWithoutImageContent( nCurrentPageId ) );
             root.addChild( menuItem );
         	
             //Add its child pages
@@ -218,12 +218,13 @@ public class MainTreeMenuService
 	{
 		if( nDepth > 0 )
 		{
-			Collection < Page > listPages = PageHome.getChildPages( nPageId );
+			// id, name, description and role: what the menu templates show; no portlets, no image
+			Collection < Page > listPages = PageHome.getChildPagesMinimalData( nPageId );
 
 			for( Page page : listPages )
 			{
 				MenuItem menuItem = new MenuItem( );
-				menuItem.setPage( PageHome.findByPrimaryKey( page.getId( ) ) );
+				menuItem.setPage( page );
 				item.addChild( menuItem );
 				buildMenuTree( menuItem, page.getId( ), nDepth - 1 );
 			}
