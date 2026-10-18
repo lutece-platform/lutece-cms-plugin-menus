@@ -175,27 +175,7 @@ public class MainTreeMenuAllPagesService
 	 */
 	public int getRootParentTree( int nPageId )
 	{
-		Page page = PageHome.getPage( nPageId );
-		int nParentPageId = page.getParentPageId( );
-
-		if( nParentPageId == 0 )
-		{
-			return nPageId;
-		}
-
-		int nParentTree = nParentPageId;
-
-		int nPageRootId = PortalService.getRootPageId( );
-
-		while( nParentPageId != nPageRootId )
-		{
-			nParentTree = nParentPageId;
-
-			Page parentPage = PageHome.getPage( nParentPageId );
-			nParentPageId = parentPage.getParentPageId( );
-		}
-
-		return nParentTree;
+		return PageTreeUtils.getRootParentTree( nPageId, PortalService.getRootPageId( ), PageHome::getPage );
 	}
 
 	/**
