@@ -180,9 +180,16 @@ public class MainTreeMenuService
         }
         else
         {
+            Page currentPage = PageHome.getPageWithoutImageContent( nCurrentPageId );
+            if ( currentPage.getId( ) != nCurrentPageId )
+            {
+                // Unknown page: the tree of the root, as for the home page (a page without name broke the template)
+                buildMenuTree( root, nRootId, nDepth );
+                return;
+            }
         	//Add currentPage in menu
     		MenuItem menuItem = new MenuItem( );
-            menuItem.setPage( PageHome.getPageWithoutImageContent( nCurrentPageId ) );
+            menuItem.setPage( currentPage );
             root.addChild( menuItem );
         	
             //Add its child pages
