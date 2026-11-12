@@ -51,7 +51,7 @@ public class CustomMenu implements Serializable
 	// Variables declarations
 	private int _nId;
 	@NotEmpty( message = "#i18n{menus.validation.customMenu.name.notEmpty}" )
-	@Size( max = 100, message = "#i18n{menus.validation.customMenu.name.size}" )
+	@Size( max = 50, message = "#i18n{menus.validation.customMenu.name.size}" )
 	private String _strName;
 	@Pattern( regexp = "^[a-zA-Z0-9_]*$", message = "#i18n{menus.validation.customMenu.bookmark.pattern}" )
 	@Pattern( regexp = "^(?!customMenu$|customMenuMainPage$|customMenuInternalPage$|customMenuSideBar$|page_tree_menu_main$|page_tree_menu_tree$|page_tree_menu_tree_all_pages$).+$", message = "#i18n{menus.validation.customMenu.bookmark.forbiddenName}" )
