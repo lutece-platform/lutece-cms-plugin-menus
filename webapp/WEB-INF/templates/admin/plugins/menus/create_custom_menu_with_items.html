@@ -10,7 +10,7 @@
                 <@messages errors=errors infos=infos![] />
                 <@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=searchItems' id='modify_custom_menu_with_items' boxed=true>
                 	<@input type='hidden' name='id' value=id_current_custom_menu!'' />
-                    <@formGroup labelKey='#i18n{menus.create_custom_menu_with_items.labelSearch}' labelFor='search'>
+                    <@formGroup labelKey='#i18n{menus.create_custom_menu_with_items.labelSearch}' labelFor='searchInput'>
                         <@inputGroup>
                             <@input type='text' id='searchInput' name='search' value=search_criteria!'' placeHolder='#i18n{menus.create_custom_menu_with_items.placeholderSearch}' />
                             <@button type='submit' name='searchItemsButton' id='btn-reset-search' value="clean" buttonIcon='times' title='#i18n{portal.util.labelReset}' color='secondary' hideTitle=['all'] />
@@ -25,7 +25,7 @@
                     <#if available_pages_list?? && available_pages_list?size gt 0>
                     <#list available_pages_list as page>
                         <@listGroupItem id=page.code!'' class='hoverable-item' params={"data-type": "page"}>
-                            ${page.name}
+                            <button type="button" class="btn btn-link p-0 text-start text-reset text-decoration-none w-100">${page.name}</button>
                         </@listGroupItem>
                     </#list>
                     </#if>
@@ -38,7 +38,7 @@
                         <#if available_xpages_list?? && available_xpages_list?size gt 0>
                         <#list available_xpages_list as xpage>
                             <@listGroupItem id=xpage.code!'' class='hoverable-item' params={"data-type": "xpage"}>
-                                ${xpage.name}
+                                <button type="button" class="btn btn-link p-0 text-start text-reset text-decoration-none w-100">${xpage.name}</button>
                             </@listGroupItem>
                         </#list>
                         </#if>
@@ -51,7 +51,7 @@
                     <#if available_menus_list?? && available_menus_list?size gt 0>
                         <#list available_menus_list as menu>
                             <@listGroupItem id=menu.code!'' class='hoverable-item' params={"data-type": "menu"}>
-                                ${menu.name}
+                                <button type="button" class="btn btn-link p-0 text-start text-reset text-decoration-none w-100">${menu.name}</button>
                             </@listGroupItem>
                         </#list>
                     </#if>
@@ -149,7 +149,7 @@
                                 <@tform type='inline' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=changeMenuItemsOrder&id=${item.id}'>
                                     <@input type='hidden' name='id_item' value=item.id />
                                     <@inputGroup>
-                                        <@comboOrders name='order_id' default_value=item.order!'' max=size_list />
+                                        <@comboOrders name='order_id' default_value=item.order!'' max=size_list label='#i18n{menus.modify_custom_menu_with_items.labelColumnItemOrder}' />
                                         <@button type='submit' buttonIcon='check' color='default' title='#i18n{menus.modify_custom_menu_with_items.buttonChangeItemOrder}' hideTitle=['all'] size='sm'/>
                                     </@inputGroup>
                                 </@tform>

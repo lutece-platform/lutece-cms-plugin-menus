@@ -7,9 +7,10 @@ Parameters:
 - name (String): name of the select
 - default_value (Integer, optional): value to selected by default
 - max (Integer, optional): value max
+- label (String, optional): accessible name of the select
 -->
-<#macro comboOrders name default_value max >
-<@select name=name>	
+<#macro comboOrders name default_value max label='' >
+<@select name=name params=label?has_content?then( { 'aria-label': label }, {} )>	
 <#list 1..max as i>		
 <#if "${default_value}" == "${i}">
 	<option selected="selected" value="${i?c}" >${i?c}</option>		

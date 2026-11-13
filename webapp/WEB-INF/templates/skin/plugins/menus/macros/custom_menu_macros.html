@@ -41,7 +41,7 @@ Parameters:
 <#if item.type!="menu">
 	<li class="<#if mainNavLutece>${classItem}<#elseif currentDepth &gt; 1>custom-submenu-item-depth-${currentDepth?string}<#else>custom-submenu-item</#if>">
 		<a class="nav-link" href="${safeUrl(itemUrl)}" <#if item.type=='external_url'>target=<#if item.isBlank()?? && item.isBlank() >"_blank"<#else>"_self"</#if></#if>>
-		${item.label!}
+		${item.label!}<#if item.type=='external_url' && item.isBlank()?? && item.isBlank()><span class="visually-hidden"> (#i18n{portal.site.portal_footer.newWindow})</span></#if>
 		</a>
 	</li>
 <#else>
@@ -49,7 +49,7 @@ Parameters:
 		<li class="<#if mainNavLutece>${classItem} dropdown<#elseif currentDepth &gt; 1>custom-submenu-item-dropdown-depth-${currentDepth?string}<#else>custom-submenu-item-dropdown</#if>">
 			<#assign dropdownDivCounter = dropdownDivCounter + 1>
 			<#if mainNavLutece>
-				<a class="nav-link dropdown-toggle" id="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}" role="button" data-bs-toggle="dropdown" role="button" aria-expanded="false" href="${sitePath}#SUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
+				<a class="nav-link dropdown-toggle" id="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="${sitePath}#SUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
 					${item.label}
 				</a>
 				<div class="dropdown-menu" aria-labelledby="dLabelSUBMENU${item.sourceItemId!''}-${dropdownDivCounter!}">
