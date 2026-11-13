@@ -7,7 +7,7 @@
         </@pageHeader>
         <@row>
             <@columns md=4>
-                <@messages errors=errors/>
+                <@messages errors=errors infos=infos![] />
                 <@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=searchItems' id='modify_custom_menu_with_items' boxed=true>
                 	<@input type='hidden' name='id' value=id_current_custom_menu!'' />
                     <@formGroup labelKey='#i18n{menus.create_custom_menu_with_items.labelSearch}' labelFor='search'>
