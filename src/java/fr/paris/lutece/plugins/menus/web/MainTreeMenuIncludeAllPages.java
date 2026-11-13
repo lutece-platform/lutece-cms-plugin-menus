@@ -39,6 +39,7 @@ import fr.paris.lutece.plugins.menus.service.MenusService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -115,8 +116,8 @@ public class MainTreeMenuIncludeAllPages implements PageInclude
 				nCurrentPageId = 0;
 			}
 
-			rootModel.put( MARK_PAGE_MENU_MAIN_ALL_PAGES, getMainPageList( nCurrentPageId, nMode, request ) );
-			rootModel.put( MARK_PAGE_MENU_TREE_ALL_PAGES, getTreePageList( nCurrentPageId, nMode, request ) );
+			rootModel.put( MARK_PAGE_MENU_MAIN_ALL_PAGES, HtmlMarkup.of( getMainPageList( nCurrentPageId, nMode, request ) ) );
+			rootModel.put( MARK_PAGE_MENU_TREE_ALL_PAGES, HtmlMarkup.of( getTreePageList( nCurrentPageId, nMode, request ) ) );
 		}
 	}
 

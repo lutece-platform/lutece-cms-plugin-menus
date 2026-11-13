@@ -42,6 +42,7 @@ import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -94,7 +95,7 @@ public class AccessibilityAnchorMenuInclude implements PageInclude
 				if( menus.getMenuType( ).equals( MENU_MARKER ) )
 				{
 					String strMarkerMenuXPage = menus.getMenuMarker( );
-					rootModel.put( strMarkerMenuXPage, getAccessibilityTemplate( nMode, request ) );
+					rootModel.put( strMarkerMenuXPage, HtmlMarkup.of( getAccessibilityTemplate( nMode, request ) ) );
 				}
 			}
 		}

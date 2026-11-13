@@ -20,11 +20,11 @@
                       </@formGroup>
                       <!-- List of Page, Xpage and SubMenu -->
                     <@box title='#i18n{menus.create_custom_menu_with_items.labelListPages}'>
-                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                    <@div class='scrollable-list overflow-y-auto'>
                     <@listGroup>
                     <#if available_pages_list?? && available_pages_list?size gt 0>
                     <#list available_pages_list as page>
-                        <@listGroupItem id=page.code!'' class='hoverable-item' params='data-type="page"'>
+                        <@listGroupItem id=page.code!'' class='hoverable-item' params={"data-type": "page"}>
                             ${page.name}
                         </@listGroupItem>
                     </#list>
@@ -33,11 +33,11 @@
                     </@div>
                     </@box>
                     <@box title='#i18n{menus.create_custom_menu_with_items.labelListXPages}'>
-                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                    <@div class='scrollable-list overflow-y-auto'>
                         <@listGroup>
                         <#if available_xpages_list?? && available_xpages_list?size gt 0>
                         <#list available_xpages_list as xpage>
-                            <@listGroupItem id=xpage.code!'' class='hoverable-item' params='data-type="xpage"'>
+                            <@listGroupItem id=xpage.code!'' class='hoverable-item' params={"data-type": "xpage"}>
                                 ${xpage.name}
                             </@listGroupItem>
                         </#list>
@@ -46,11 +46,11 @@
                     </@div>
                     </@box>
                     <@box title='#i18n{menus.create_custom_menu_with_items.labelListMenus}'>
-                    <@div class='scrollable-list overflow-y-auto' params='style="max-height: 200px;"'>
+                    <@div class='scrollable-list overflow-y-auto'>
                     <@listGroup>
                     <#if available_menus_list?? && available_menus_list?size gt 0>
                         <#list available_menus_list as menu>
-                            <@listGroupItem id=menu.code!'' class='hoverable-item' params='data-type="menu"'>
+                            <@listGroupItem id=menu.code!'' class='hoverable-item' params={"data-type": "menu"}>
                                 ${menu.name}
                             </@listGroupItem>
                         </#list>
@@ -69,23 +69,23 @@
                     <@formGroup id='type-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemType}' labelFor='item_type' mandatory=true>
                         <@select name='type' id='item_type' items=item_types_list />
                     </@formGroup>
-                    <@formGroup id='dynamic-group' params="hidden=true">
+                    <@formGroup id='dynamic-group' params={"hidden": "true"}>
                         <@checkBox name='is_label_dynamic' id='item_dynamic' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsLabelDynamic}' value='1' />
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsLabelDynamic}</@formHelp>
                     </@formGroup>
-                    <@formGroup id='blank-group' params="hidden=true">
+                    <@formGroup id='blank-group' params={"hidden": "true"}>
                         <@checkBox name='is_blank' id='item_blank' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemIsBlank}' value='1'/>
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemIsBlank}</@formHelp>
                     </@formGroup>
-                    <@formGroup id='label-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemLabel}' labelFor='item_label' mandatory=true params="hidden=true">
+                    <@formGroup id='label-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemLabel}' labelFor='item_label' mandatory=true params={"hidden": "true"}>
                         <@input type='text' name='label' id='item_label' maxlength=50/>
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemLabel}</@formHelp>
                     </@formGroup>
-                    <@formGroup id='url-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemUrl}' labelFor='item_url' mandatory=true params="hidden=true">
+                    <@formGroup id='url-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemUrl}' labelFor='item_url' mandatory=true params={"hidden": "true"}>
                         <@input type='text' name='url' id='item_url' />
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemUrlPage}</@formHelp>
                     </@formGroup>
-                    <@formGroup id='menu-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemSubMenu} *' labelFor='item_target_menu'  params="hidden=true">
+                    <@formGroup id='menu-group' labelKey='#i18n{menus.create_custom_menu_with_items.labelPreviewItemSubMenu} *' labelFor='item_target_menu'  params={"hidden": "true"}>
                         <@select name="select_menu" id='item_target_menu' items=available_menus_list />
                         <@formHelp>#i18n{menus.create_custom_menu_with_items.helpPreviewItemSubMenu}</@formHelp>
                     </@formGroup>

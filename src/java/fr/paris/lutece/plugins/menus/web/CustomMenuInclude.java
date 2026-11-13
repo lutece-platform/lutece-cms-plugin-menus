@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.menus.service.MenusService;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -138,14 +139,14 @@ public class CustomMenuInclude implements PageInclude
 					loadMenuItems( cm, CURRENT_DEPTH, MAX_DEPTH );
 
 					rootModel.put( cm.getBookmark( ),
-							getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) );
+							HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) ) );
 
 					if( Strings.CS.equals( cm.getType( ), TYPE_MAIN_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_MAIN_MENU,
-								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) );
+								HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) ) );
 						rootModel.put( PARAMETER_PAGE_MAIN_MENU,
-								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) ); // Compatibility
+								HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) ) ); // Compatibility
 																											// with old
 																											// page_frameset
 																											// version
@@ -157,9 +158,9 @@ public class CustomMenuInclude implements PageInclude
 						if( ! isInternalMenu )
 						{
 							rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU,
-									getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) );
+									HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) ) );
 							rootModel.put( PARAMETER_PAGE_MAIN_MENU,
-									getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) ); // Compatibility
+									HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MAIN_MENU ) ) ); // Compatibility
 																												// with
 																												// old
 																												// page_frameset
@@ -174,13 +175,13 @@ public class CustomMenuInclude implements PageInclude
 					if( Strings.CS.equals( cm.getType( ), TYPE_INTERNAL_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_INTERNAL_MENU,
-								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) );
+								HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_INTERNAL_MENU ) ) );
 					}
 
 					if( Strings.CS.equals( cm.getType( ), TYPE_SIDEBAR_MENU ) )
 					{
 						rootModel.put( PARAMETER_CUSTOM_SIDEBAR_MENU,
-								getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_SIDEBAR_MENU ) );
+								HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_SIDEBAR_MENU ) ) );
 					}
 				}
 			}

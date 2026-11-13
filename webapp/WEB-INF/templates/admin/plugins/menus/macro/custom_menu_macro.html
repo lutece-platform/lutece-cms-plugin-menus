@@ -12,9 +12,9 @@ Parameters:
 <@select name=name>	
 <#list 1..max as i>		
 <#if "${default_value}" == "${i}">
-	<option selected="selected" value="${i}" >${i}</option>		
+	<option selected="selected" value="${i?c}" >${i?c}</option>		
 <#else>
-	<option value="${i}" >${i}</option>		
+	<option value="${i?c}" >${i?c}</option>		
 </#if>	
 </#list>
 </@select>

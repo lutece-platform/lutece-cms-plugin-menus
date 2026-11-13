@@ -40,7 +40,7 @@ Parameters:
 <#assign itemUrl = buildItemUrl(item, sitePath) />
 <#if item.type!="menu">
 	<li class="<#if mainNavLutece>${classItem}<#elseif currentDepth &gt; 1>custom-submenu-item-depth-${currentDepth?string}<#else>custom-submenu-item</#if>">
-		<a class="nav-link" href="${itemUrl}" <#if item.type=='external_url'>target=<#if item.isBlank()?? && item.isBlank() >"_blank"<#else>"_self"</#if></#if>>
+		<a class="nav-link" href="${safeUrl(itemUrl)}" <#if item.type=='external_url'>target=<#if item.isBlank()?? && item.isBlank() >"_blank"<#else>"_self"</#if></#if>>
 		${item.label!}
 		</a>
 	</li>

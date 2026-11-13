@@ -24,7 +24,7 @@
 						<#assign itemUrl = buildItemUrl(item, sitePath) />
     					<#if item.type!="menu">
     						<li class="nav-item">
-	       			 		<a class="nav-link" href="${itemUrl}">${item.label!}</a>
+	       			 		<a class="nav-link" href="${safeUrl(itemUrl)}">${item.label!}</a>
 	       			 		</li>
 	       			 	<#else>
 	       			 		<li class="nav-item">
@@ -37,7 +37,7 @@
 				                    	<#list item.subMenu.listItems as subItem>
 				                        <li class="nav-item">
 				                        	<#assign subItemUrl = buildItemUrl(subItem, sitePath) />
-				       			 			<a class="nav-link" href="${subItemUrl}">${subItem.label!}</a>
+				       			 			<a class="nav-link" href="${safeUrl(subItemUrl)}">${subItem.label!}</a>
 				       			 		</li>
 				       			 		</#list>
 				                    </ul>

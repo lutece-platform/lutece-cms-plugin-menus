@@ -43,6 +43,7 @@ import fr.paris.lutece.portal.service.includes.PageInclude;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.web.xpages.XPageApplicationEntry;
 import fr.paris.lutece.util.html.HtmlTemplate;
 
@@ -92,7 +93,7 @@ public class XPageMenuInclude implements PageInclude
 				if( menus.getMenuType( ).equals( MENU_MARKER ) )
 				{
 					String strMarkerMenuXPage = menus.getMenuMarker( );
-					rootModel.put( strMarkerMenuXPage, getXPageList( nMode, request ) );
+					rootModel.put( strMarkerMenuXPage, HtmlMarkup.of( getXPageList( nMode, request ) ) );
 				}
 			}
 		}
