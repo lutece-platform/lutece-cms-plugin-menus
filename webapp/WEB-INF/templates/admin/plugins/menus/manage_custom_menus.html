@@ -1,6 +1,6 @@
 <@pageContainer>
     <@pageColumn>
-		<#assign pageTitle>#i18n{menus.manage_custom_menus.title.customMenu} <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoType}"} /></#assign>
+		<#assign pageTitle>#i18n{menus.manage_custom_menus.title.customMenu} <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoType}"} title='#i18n{menus.manage_custom_menus.helpInfoType}' /></#assign>
         <@pageHeader title=pageTitle>
 			<@offcanvas targetUrl='jsp/admin/plugins/menus/ManageCustomMenus.jsp?view=createCustomMenu' targetElement='#create_custom_menu' redirectForm=false id='custom-menu-create' title='#i18n{menus.manage_custom_menus.buttonCreateMenu}' position='end' btnTitle='#i18n{menus.manage_custom_menus.buttonCreateMenu}' btnIcon='plus' />
         </@pageHeader>
@@ -46,7 +46,7 @@
 				<@manageFeatureItemColumn align='end'>
 				<@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=doModifyNativeMenuSettings' id='form-depth-main'>
 					<@input type='hidden' name='menu_type' value='menuMain' />
-					<@select name='depth_value' default_value='${depth_menu_main!"1"}' items=depth_options_main params={"data-lutece-action": "submit"} />
+					<@select name='depth_value' default_value='${depth_menu_main!"1"}' items=depth_options_main params={"data-lutece-action": "submit", "aria-label": "#i18n{menus.manage_custom_menus.depth}"} />
 				</@tform>
 				</@manageFeatureItemColumn>
 			</@manageFeatureItem>
@@ -55,12 +55,12 @@
 					#i18n{menus.manage_custom_menus.constant.name.menuTree} - #i18n{menus.manage_custom_menus.constant.description.menuTree}
 				</@manageFeatureItemColumn>
 				<@manageFeatureItemColumn auto=true>
-					<@tag color='' title='#i18n{menus.manage_custom_menus.columnBookmark}' tagIcon='bookmark'>#i18n{menus.manage_custom_menus.constant.bookmark.menuTree}</@tag> <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoBookmark}"} />
+					<@tag color='' title='#i18n{menus.manage_custom_menus.columnBookmark}' tagIcon='bookmark'>#i18n{menus.manage_custom_menus.constant.bookmark.menuTree}</@tag> <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoBookmark}"} title='#i18n{menus.manage_custom_menus.helpInfoBookmark}' />
 				</@manageFeatureItemColumn>
 				<@manageFeatureItemColumn align='end'>
 				<@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=doModifyNativeMenuSettings' id='form-depth-tree'>
 					<@input type='hidden' name='menu_type' value='menuTree' />
-					<@select name='depth_value' default_value='${depth_menu_tree!"1"}' items=depth_options_tree params={"data-lutece-action": "submit"} />
+					<@select name='depth_value' default_value='${depth_menu_tree!"1"}' items=depth_options_tree params={"data-lutece-action": "submit", "aria-label": "#i18n{menus.manage_custom_menus.depth}"} />
 				</@tform>
 				</@manageFeatureItemColumn>
 			</@manageFeatureItem>
@@ -69,12 +69,12 @@
 					#i18n{menus.manage_custom_menus.constant.name.menuTreeAllPages} - #i18n{menus.manage_custom_menus.constant.description.menuTreeAllPages}
 				</@manageFeatureItemColumn>
 				<@manageFeatureItemColumn auto=true>
-					<@tag color='' title='#i18n{menus.manage_custom_menus.columnBookmark}' tagIcon='bookmark'>#i18n{menus.manage_custom_menus.constant.bookmark.menuTreeAllPages}</@tag> <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoBookmark}"} />
+					<@tag color='' title='#i18n{menus.manage_custom_menus.columnBookmark}' tagIcon='bookmark'>#i18n{menus.manage_custom_menus.constant.bookmark.menuTreeAllPages}</@tag> <@icon style='info-circle ms-1' params={"data-bs-toggle": "tooltip", "data-bs-title": "#i18n{menus.manage_custom_menus.helpInfoBookmark}"} title='#i18n{menus.manage_custom_menus.helpInfoBookmark}' />
 				</@manageFeatureItemColumn>
 				<@manageFeatureItemColumn align='end'>
 				<@tform method='post' action='jsp/admin/plugins/menus/ManageCustomMenus.jsp?action=doModifyNativeMenuSettings' id='form-depth-all-pages'>
 					<@input type='hidden' name='menu_type' value='menuTreeAllPages' />
-					<@select name='depth_value' default_value='${depth_menu_tree!"2"}' items=depth_options_tree params={"data-lutece-action": "submit"} />
+					<@select name='depth_value' default_value='${depth_menu_tree!"2"}' items=depth_options_tree params={"data-lutece-action": "submit", "aria-label": "#i18n{menus.manage_custom_menus.depth}"} />
 				</@tform>
 				</@manageFeatureItemColumn>
 			</@manageFeatureItem>
