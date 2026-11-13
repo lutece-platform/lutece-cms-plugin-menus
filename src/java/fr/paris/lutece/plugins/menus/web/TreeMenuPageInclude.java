@@ -46,6 +46,7 @@ import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
 import fr.paris.lutece.portal.service.portal.PortalMenuService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.web.constants.Parameters;
 import fr.paris.lutece.util.html.HtmlTemplate;
@@ -115,7 +116,7 @@ public class TreeMenuPageInclude implements PageInclude
 				if( menus.getMenuType( ).startsWith( MENU_MARKER ) )
 				{
 					String strTreeMenuPage = getTreeMenuPage( nCurrentPageId, nMode, menus, request );
-					rootModel.put( menus.getMenuMarker( ), ( strTreeMenuPage == null ) ? "" : strTreeMenuPage );
+					rootModel.put( menus.getMenuMarker( ), HtmlMarkup.of( strTreeMenuPage ) );
 				}
 			}
 		}

@@ -1,3 +1,8 @@
+/* Hauteur maximale des listes de pages, xpages et menus */
+.scrollable-list {
+    max-height: 200px;
+}
+
 /* Effet hover pour les éléments des listes dans les menus */
 .scrollable-list .list-group-item {
     cursor: pointer;
