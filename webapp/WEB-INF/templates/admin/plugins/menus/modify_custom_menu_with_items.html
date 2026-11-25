@@ -111,19 +111,8 @@
                     <#list custom_menu_items_list as item>
                         <@manageFeatureItem>
                             <@manageFeatureItemColumn auto=true>
-                             <#if item.type='page' && item.isLabelDynamic( )?? && item.isLabelDynamic( )>
-                                    <#if available_pages_list?? && available_pages_list?size gt 0 && item.sourceItemId??>
-                                        <#list available_pages_list as page>
-                                            <#if page.code=item.sourceItemId>
-                                                <#if page.code=item.sourceItemId>
-                                                    ${(page.name?? && page.name?has_content)?then(page.name?split("-")[0], "")}
-                                                </#if>
-                                            </#if>
-                                        </#list>
-                                    </#if>
-                                <#else>
-                                    ${item.label!''}
-                                </#if> - #i18n{menus.modify_custom_menu_with_items.labelColumnItemType} : ${item.type!''}
+                             <#-- the label of a dynamic page item is the page name (CustomMenuItem.getLabel) -->
+                             ${item.label!''} - #i18n{menus.modify_custom_menu_with_items.labelColumnItemType} : ${item.type!''}
                             </@manageFeatureItemColumn>
                             <#--
                             <@manageFeatureItemColumn auto=true>

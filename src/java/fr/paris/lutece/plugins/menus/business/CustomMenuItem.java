@@ -211,20 +211,7 @@ public class CustomMenuItem implements Serializable
 
 			String strLabel = _customMenuService.getLabelPageById( this._strSourceItemId );
 
-			if( strLabel != null )
-			{
-				int dashIndex = strLabel.indexOf( "-" );
-				if( dashIndex != - 1 )
-				{
-					strLabel = strLabel.substring( 0, dashIndex );
-				}
-			}
-			else
-			{
-				strLabel = "";
-			}
-
-			return strLabel;
+			return ( strLabel != null ) ? strLabel : "";
 		}
 
 		return _strLabel;

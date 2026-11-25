@@ -39,7 +39,6 @@ import fr.paris.lutece.plugins.menus.business.MenuItem;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.web.xpages.XPageApplicationEntry;
-import fr.paris.lutece.util.ReferenceItem;
 import fr.paris.lutece.util.ReferenceList;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -205,20 +204,51 @@ public class CustomMenuService
 		}
 	}
 
+	/**
+	 * Returns the name of a page of the site, the dynamic label of a « page » item
+	 * 
+	 * @param strSourceItemId
+	 *                        the page id
+	 * @return the page name, or an empty string when the page is not in the tree of the site
+	 */
 	public String getLabelPageById( String strSourceItemId )
 	{
+		MenuItem root = _mainTreeMenuAllPagesService.getFullTreeMenuItems( );
+		String strName = ( root != null ) ? findPageName( root, strSourceItemId ) : null;
 
-		ReferenceList listPages = getAvailablePagesReferenceList( "" );
+		return ( strName != null ) ? strName : "";
+	}
 
-		for( ReferenceItem page : listPages )
+	/**
+	 * Recursive search of a page name in the tree of the pages
+	 * 
+	 * @param item
+	 *                        the current item
+	 * @param strSourceItemId
+	 *                        the page id
+	 * @return the page name, or null if the page is not under this item
+	 */
+	private String findPageName( MenuItem item, String strSourceItemId )
+	{
+		if( item.getPage( ) != null && Strings.CS.equals( strSourceItemId, String.valueOf( item.getPage( ).getId( ) ) ) )
 		{
-			if( Strings.CS.equals( strSourceItemId, page.getCode( ) ) )
+			return StringUtils.defaultString( item.getPage( ).getName( ) );
+		}
+
+		if( item.getChilds( ) != null )
+		{
+			for( MenuItem child : item.getChilds( ) )
 			{
-				return page.getName( );
+				String strName = findPageName( child, strSourceItemId );
+
+				if( strName != null )
+				{
+					return strName;
+				}
 			}
 		}
 
-		return "";
+		return null;
 	}
 
 	/**
