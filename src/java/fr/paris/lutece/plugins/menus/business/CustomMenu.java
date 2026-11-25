@@ -54,7 +54,7 @@ public class CustomMenu implements Serializable
 	@Size( max = 50, message = "#i18n{menus.validation.customMenu.name.size}" )
 	private String _strName;
 	@Pattern( regexp = "^[a-zA-Z0-9_]*$", message = "#i18n{menus.validation.customMenu.bookmark.pattern}" )
-	@Pattern( regexp = "^(?!customMenu$|customMenuMainPage$|customMenuInternalPage$|customMenuSideBar$|page_tree_menu_main$|page_tree_menu_tree$|page_tree_menu_tree_all_pages$).+$", message = "#i18n{menus.validation.customMenu.bookmark.forbiddenName}" )
+	@Pattern( regexp = "^(?!customMenu$|customMenuMainPage$|customMenuInternalPage$|customMenuSideBar$|page_tree_menu_main$|page_tree_menu_tree$|page_tree_menu_tree_all_pages$|page_content_col[0-9]+$|page_main_menu$|page_tree_menu$|page_name$|page_path$|page_title$|page_id$|page_content$|page_header$|page_footer$|page_init_menu$|page_tools_menu$).+$", message = "#i18n{menus.validation.customMenu.bookmark.forbiddenName}" )
 	@Size( max = 100, message = "#i18n{menus.validation.customMenu.bookmark.size}" )
 	@NotEmpty( message = "#i18n{menus.validation.customMenu.bookmark.notEmpty}" )
 	private String _strBookmark;
