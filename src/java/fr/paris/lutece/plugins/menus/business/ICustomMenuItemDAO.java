@@ -83,9 +83,10 @@ public interface ICustomMenuItemDAO
 	void deleteByMenuId( int nMenuId, Plugin plugin );
 
 	/**
-	 * Delete all subMenu item from all menu
+	 * Delete, in every menu, the sub-menu items (type menu) pointing to a menu. The items of the other types keep
+	 * their source id, which is a page id or an XPage name.
 	 * 
-	 * @param nMenuId
+	 * @param nMenuSourceId
 	 *                The identifier of the menu to delete
 	 * @param plugin
 	 *                the Plugin

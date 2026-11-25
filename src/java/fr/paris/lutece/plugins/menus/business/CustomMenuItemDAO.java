@@ -53,7 +53,7 @@ public final class CustomMenuItemDAO implements ICustomMenuItemDAO
 	private static final String SQL_QUERY_SELECT_MAX_ORDER = "SELECT max(item_order) FROM menus_custom_menu_items WHERE id_parent_menu= ?";
 	private static final String SQL_QUERY_DELETE = "DELETE FROM menus_custom_menu_items WHERE id_item = ?";
 	private static final String SQL_QUERY_DELETE_BY_MENU = "DELETE FROM menus_custom_menu_items WHERE id_parent_menu = ?";
-	private static final String SQL_QUERY_DELETE_ALL_SUBMENU_BY_ID_SUBMENU = "DELETE FROM menus_custom_menu_items WHERE id_source_item = ?";
+	private static final String SQL_QUERY_DELETE_ALL_SUBMENU_BY_ID_SUBMENU = "DELETE FROM menus_custom_menu_items WHERE id_source_item = ? AND type = 'menu'";
 	private static final String SQL_QUERY_UPDATE = "UPDATE menus_custom_menu_items SET id_parent_menu = ?, id_source_item = ?, is_label_dynamic = ?, is_blank = ?, label = ?, type = ?, url = ?, item_order = ? WHERE id_item = ?";
 	private static final String SQL_QUERY_SELECTALL = "SELECT id_item, id_parent_menu, id_source_item, is_label_dynamic, label, type, url, item_order FROM menus_custom_menu_items";
 	private static final String SQL_QUERY_SELECTALL_BY_MENU = "SELECT id_item, id_parent_menu, id_source_item, is_label_dynamic, is_blank, label, type, url, item_order FROM menus_custom_menu_items WHERE id_parent_menu = ? ORDER BY item_order";
@@ -168,7 +168,7 @@ public final class CustomMenuItemDAO implements ICustomMenuItemDAO
 	{
 		try( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_DELETE_ALL_SUBMENU_BY_ID_SUBMENU, plugin ) )
 		{
-			daoUtil.setInt( 1, nMenuSourceId );
+			daoUtil.setString( 1, String.valueOf( nMenuSourceId ) );
 			daoUtil.executeUpdate( );
 		}
 	}
