@@ -36,6 +36,8 @@ package fr.paris.lutece.plugins.menus.business;
 import java.io.Serializable;
 
 import fr.paris.lutece.portal.business.page.Page;
+import fr.paris.lutece.portal.service.security.SecurityService;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * PageInfo
@@ -47,6 +49,7 @@ public class PageInfo implements Serializable
 	private String _strName;
 	private String _strDescription;
 	private int _nParentPageId;
+	private String _strRole;
 
 	/**
 	 * Contructor
@@ -60,6 +63,7 @@ public class PageInfo implements Serializable
 		_strName = page.getName( );
 		_strDescription = page.getDescription( );
 		_nParentPageId = page.getParentPageId( );
+		_strRole = page.getRole( );
 	}
 
 	/**
@@ -128,6 +132,44 @@ public class PageInfo implements Serializable
 	public void setParentPageId( int nParentPageId )
 	{
 		_nParentPageId = nParentPageId;
+	}
+
+	/**
+	 * Returns the front office role of the page
+	 * 
+	 * @return the role, {@link Page#ROLE_NONE} when the page is public
+	 */
+	public String getRole( )
+	{
+		return _strRole;
+	}
+
+	/**
+	 * Sets the front office role of the page
+	 * 
+	 * @param strRole
+	 *                the role
+	 */
+	public void setRole( String strRole )
+	{
+		_strRole = strRole;
+	}
+
+	/**
+	 * Checks whether the visitor of the request may see the page, with the rule of {@link Page#isVisible}
+	 * 
+	 * @param request
+	 *                the HTTP request
+	 * @return true if the page is public, if the authentication is off, or if the visitor has the role of the page
+	 */
+	public boolean isVisible( HttpServletRequest request )
+	{
+		if( SecurityService.isAuthenticationEnable( ) && _strRole != null && ! _strRole.isEmpty( ) && ! Page.ROLE_NONE.equals( _strRole ) )
+		{
+			return SecurityService.getInstance( ).isUserInRole( request, _strRole );
+		}
+
+		return true;
 	}
 
 }

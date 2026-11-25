@@ -84,7 +84,7 @@ public class XPageTreeMenuPages extends MVCApplication
 			MenuItem rootMenuItem = _mainTreeMenuAllPagesService.getFullTreeMenuItems( );
 			if( rootMenuItem != null )
 			{
-				strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem );
+				strTreeOfMenuPages = formatTreeMenuItems( rootMenuItem, request );
 			}
 		}
 		catch( Exception exception )
@@ -133,14 +133,16 @@ public class XPageTreeMenuPages extends MVCApplication
 	 * 
 	 * @param rootMenuItem
 	 *                     the root MenuItem
+	 * @param request
+	 *                     the HTTP request, the pages the visitor may not see are left out
 	 * @return the Json tree of menu pages
 	 */
-	private String formatTreeMenuItems( MenuItem rootMenuItem )
+	private String formatTreeMenuItems( MenuItem rootMenuItem, HttpServletRequest request )
 	{
 		ObjectMapper mapper = new ObjectMapper( );
 		ObjectNode jsonResponse = mapper.createObjectNode( );
 
-		ArrayNode jsonAllMenusItems = formatListMenuItems( rootMenuItem );
+		ArrayNode jsonAllMenusItems = formatListMenuItems( rootMenuItem, request );
 
 		try
 		{
@@ -159,20 +161,27 @@ public class XPageTreeMenuPages extends MVCApplication
 	 * 
 	 * @param currentMenuItem
 	 *                        the current MenuItem
-	 * @return the Json list of the current MenuItem
+	 * @param request
+	 *                        the HTTP request
+	 * @return the Json list of the current MenuItem, without the pages the visitor may not see nor their sub-pages
 	 */
-	private ArrayNode formatListMenuItems( MenuItem currentMenuItem )
+	private ArrayNode formatListMenuItems( MenuItem currentMenuItem, HttpServletRequest request )
 	{
 		ObjectMapper mapper = new ObjectMapper( );
 		ArrayNode jsonMenusList = mapper.createArrayNode( );
 
 		for( MenuItem childMenuItem : currentMenuItem.getChilds( ) )
 		{
+			if( childMenuItem.getPage( ) != null && ! childMenuItem.getPage( ).isVisible( request ) )
+			{
+				continue;
+			}
+
 			ObjectNode jsonMenus = mapper.createObjectNode( );
 
 			add( jsonMenus, childMenuItem.getPage( ) );
 
-			ArrayNode jsonChildMenusList = formatListMenuItems( childMenuItem );
+			ArrayNode jsonChildMenusList = formatListMenuItems( childMenuItem, request );
 
 			try
 			{
