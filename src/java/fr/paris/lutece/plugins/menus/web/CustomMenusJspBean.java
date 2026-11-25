@@ -73,13 +73,15 @@ import org.apache.commons.lang3.Strings;
  */
 @SessionScoped
 @Named
-@Controller( controllerJsp = "ManageCustomMenus.jsp", controllerPath = "jsp/admin/plugins/menus/", right = "CUSTOM_MENUS_MANAGEMENT" )
+@Controller( controllerJsp = "ManageCustomMenus.jsp", controllerPath = "jsp/admin/plugins/menus/", right = "CUSTOM_MENUS_MANAGEMENT", securityTokenEnabled = true )
 public class CustomMenusJspBean extends MVCAdminJspBean
 {
 
 	private static final long serialVersionUID = 1L;
 
 	public static final String RIGHT_MANAGE_CUSTOM_MENUS = "CUSTOM_MENUS_MANAGEMENT";
+	/** Key of the security token shared by the views and the actions of the controller */
+	public static final String SECURITY_TOKEN_ACTION = "menus.admin";
 
 	// Views
 	private static final String VIEW_MANAGE_CUSTOM_MENUS = "manageCustomMenus";
@@ -238,7 +240,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( value = VIEW_MANAGE_CUSTOM_MENUS, defaultView = true )
+	@View( value = VIEW_MANAGE_CUSTOM_MENUS, defaultView = true, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getManageCustomMenus( HttpServletRequest request, Models model )
 	{
 		_currentCustomMenu = null;
@@ -273,7 +275,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_CREATE_CUSTOM_MENU )
+	@View( value = VIEW_CREATE_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getCreateCustomMenu( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
@@ -289,7 +291,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http Request
 	 * @return The JSP URL which displays the process result
 	 */
-	@Action( ACTION_CREATE_CUSTOM_MENU )
+	@Action( value = ACTION_CREATE_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doCreateCustomMenu( HttpServletRequest request )
 	{
 		_currentCustomMenu = new CustomMenu( );
@@ -329,7 +331,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_MODIFY_CUSTOM_MENU )
+	@View( value = VIEW_MODIFY_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getModifyCustomMenu( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
@@ -349,7 +351,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http Request
 	 * @return The JSP URL which displays the process result
 	 */
-	@Action( ACTION_MODIFY_CUSTOM_MENU )
+	@Action( value = ACTION_MODIFY_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doModifyCustomMenu( HttpServletRequest request )
 	{
 
@@ -388,7 +390,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS )
+	@View( value = VIEW_MODIFY_CUSTOM_MENU_WITH_ITEMS, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getModifyCustomMenuWithItems( HttpServletRequest request, Models model )
 	{
 
@@ -439,7 +441,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the html code to confirm
 	 */
-	@View( VIEW_CONFIRM_REMOVE_CUSTOM_MENU )
+	@View( value = VIEW_CONFIRM_REMOVE_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getConfirmRemoveCustomMenu( HttpServletRequest request, Models model )
 	{
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
@@ -458,7 +460,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the JSP URL to display the form to manage custom menus
 	 */
-	@Action( ACTION_REMOVE_CUSTOM_MENU )
+	@Action( value = ACTION_REMOVE_CUSTOM_MENU, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doRemoveCustomMenu( HttpServletRequest request )
 	{
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
@@ -481,7 +483,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS )
+	@View( value = VIEW_CREATE_CUSTOM_MENU_WITH_ITEMS, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getCreateCustomMenuWithItems( HttpServletRequest request, Models model )
 	{
 		initReferenceLists( ); // init constant lists : _listMenuTypes and _listMenuItemTypes
@@ -528,7 +530,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http Request
 	 * @return The JSP URL which displays the process result
 	 */
-	@Action( ACTION_CREATE_CUSTOM_MENU_ITEMS )
+	@Action( value = ACTION_CREATE_CUSTOM_MENU_ITEMS, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String docreateCustomMenuItems( HttpServletRequest request )
 	{
 		_itemValidator = new ValidatorCustomItemForm( );
@@ -558,7 +560,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_MODIFY_CUSTOM_MENU_ITEM )
+	@View( value = VIEW_MODIFY_CUSTOM_MENU_ITEM, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getModifyCustomMenuItem( HttpServletRequest request, Models model )
 	{
 		if( _currentCustomMenu == null )
@@ -602,7 +604,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http Request
 	 * @return The JSP URL which displays the process result
 	 */
-	@Action( ACTION_MODIFY_CUSTOM_MENU_ITEM )
+	@Action( value = ACTION_MODIFY_CUSTOM_MENU_ITEM, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doModifyCustomMenuItem( HttpServletRequest request )
 	{
 		_itemValidator = new ValidatorCustomItemForm( );
@@ -632,7 +634,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the View
 	 */
-	@View( VIEW_CONFIRM_REMOVE_CUSTOM_MENU_ITEM )
+	@View( value = VIEW_CONFIRM_REMOVE_CUSTOM_MENU_ITEM, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String getConfirmRemoveCustomMenuItem( HttpServletRequest request, Models model )
 	{
 		int nId = Integer.parseInt( request.getParameter( PARAMETER_ID ) );
@@ -651,7 +653,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return the JSP URL to display the form to manage custom menus
 	 */
-	@Action( ACTION_REMOVE_CUSTOM_MENU_ITEM )
+	@Action( value = ACTION_REMOVE_CUSTOM_MENU_ITEM, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doRemoveCustomMenuItem( HttpServletRequest request )
 	{
 		// Retrieve the ID of the item to delete
@@ -708,7 +710,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return JSON response with search results
 	 */
-	@Action( ACTION_SEARCH_ITEMS )
+	@Action( value = ACTION_SEARCH_ITEMS, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doSearchItems( HttpServletRequest request )
 	{
 		String strButtonValue = request.getParameter( PARAMETER_ACTION_SEARCH_ITEMS_BUTTON );
@@ -735,7 +737,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return a view
 	 */
-	@Action( ACTION_CHANGE_ITEMS_ORDER )
+	@Action( value = ACTION_CHANGE_ITEMS_ORDER, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doChangeItemOrder( HttpServletRequest request )
 	{
 
@@ -883,7 +885,7 @@ public class CustomMenusJspBean extends MVCAdminJspBean
 	 * @param request The Http request
 	 * @return The URL to go after performing the action
 	 */
-	@Action( ACTION_MODIFY_NATIVE_MENU_SETTINGS )
+	@Action( value = ACTION_MODIFY_NATIVE_MENU_SETTINGS, securityTokenAction = SECURITY_TOKEN_ACTION )
 	public String doModifyNativeMenuSettings( HttpServletRequest request )
 	{
 		String menuType = request.getParameter( PARAMETER_MENU_TYPE );
