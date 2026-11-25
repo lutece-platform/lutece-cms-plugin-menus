@@ -37,9 +37,13 @@ import fr.paris.lutece.plugins.menus.business.CustomMenu;
 import fr.paris.lutece.plugins.menus.business.CustomMenuHome;
 import fr.paris.lutece.plugins.menus.business.CustomMenuItem;
 import fr.paris.lutece.plugins.menus.business.CustomMenuItemHome;
+import fr.paris.lutece.plugins.menus.service.CustomMenuService;
 import fr.paris.lutece.plugins.menus.service.MenusService;
+import fr.paris.lutece.portal.business.page.Page;
+import fr.paris.lutece.portal.business.page.PageHome;
 import fr.paris.lutece.portal.service.content.PageData;
 import fr.paris.lutece.portal.service.includes.PageInclude;
+import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 import fr.paris.lutece.portal.service.template.HtmlMarkup;
 import fr.paris.lutece.portal.service.util.AppLogService;
@@ -81,6 +85,7 @@ public class CustomMenuInclude implements PageInclude
 																					// page_frameset version
 
 	private static final String TYPE_MENU = "menu";
+	private static final String TYPE_PAGE = "page";
 	private static final String TYPE_MAIN_MENU = "main";
 	private static final String TYPE_INTERNAL_MENU = "internal";
 	private static final String TYPE_SIDEBAR_MENU = "sidebar";
@@ -136,7 +141,7 @@ public class CustomMenuInclude implements PageInclude
 			{
 				if( ! StringUtils.isBlank( cm.getBookmark( ) ) )
 				{
-					loadMenuItems( cm, CURRENT_DEPTH, MAX_DEPTH );
+					loadMenuItems( cm, CURRENT_DEPTH, MAX_DEPTH, nMode, request );
 
 					rootModel.put( cm.getBookmark( ),
 							HtmlMarkup.of( getCustomMenuList( cm, nCurrentPageId, nMode, request, TYPE_MENU ) ) );
@@ -239,8 +244,10 @@ public class CustomMenuInclude implements PageInclude
 	 * Loads menu items recursively, setting sub-menus for menu type items
 	 * 
 	 * @param menu The menu to load items for
+	 * @param nMode The current mode: in the front office the « page » items the visitor may not see are left out
+	 * @param request The HTTP request
 	 */
-	private void loadMenuItems( CustomMenu menu, Integer currentDepth, Integer maxDepth )
+	private void loadMenuItems( CustomMenu menu, Integer currentDepth, Integer maxDepth, int nMode, HttpServletRequest request )
 	{
 		// Stop recursion if maximum depth is exceeded
 		if( currentDepth > maxDepth )
@@ -249,6 +256,11 @@ public class CustomMenuInclude implements PageInclude
 		}
 
 		List < CustomMenuItem > listItems = CustomMenuItemHome.getCustomMenuItemsListByMenuId( menu.getId( ) );
+
+		if( nMode != CustomMenuService.MODE_ADMIN && SecurityService.isAuthenticationEnable( ) )
+		{
+			listItems.removeIf( item -> ! isPageItemVisible( item, request ) );
+		}
 
 		for( CustomMenuItem item : listItems )
 		{
@@ -266,7 +278,7 @@ public class CustomMenuInclude implements PageInclude
 						List < CustomMenuItem > items = CustomMenuItemHome.getCustomMenuItemsListByMenuId( nId );
 						subMenu.setListItems( items );
 
-						loadMenuItems( subMenu, currentDepth + 1, maxDepth );
+						loadMenuItems( subMenu, currentDepth + 1, maxDepth, nMode, request );
 						item.setSubMenu( subMenu );
 					}
 				}
@@ -277,5 +289,27 @@ public class CustomMenuInclude implements PageInclude
 			}
 		}
 		menu.setListItems( listItems );
+	}
+
+	/**
+	 * Checks whether the visitor may see the page of a « page » item, with the rule of the core menus
+	 * ({@link Page#isVisible})
+	 * 
+	 * @param item
+	 *                the item
+	 * @param request
+	 *                the HTTP request
+	 * @return false for a « page » item whose page is restricted to a role the visitor does not have, true otherwise
+	 */
+	private static boolean isPageItemVisible( CustomMenuItem item, HttpServletRequest request )
+	{
+		if( ! Strings.CS.equals( item.getType( ), TYPE_PAGE ) || ! StringUtils.isNumeric( item.getSourceItemId( ) ) )
+		{
+			return true;
+		}
+
+		Page page = PageHome.getPageWithoutImageContent( Integer.parseInt( item.getSourceItemId( ) ) );
+
+		return ( page == null ) || page.isVisible( request );
 	}
 }
